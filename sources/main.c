@@ -6,15 +6,15 @@
 #include "Vec2.h"
 
 #define SCREEN_WIDTH (800)
-#define SCREEN_HEIGHT (450)
+#define SCREEN_HEIGHT (600)
 
 #define WINDOW_TITLE "Pong but its rounds"
 
 // TODO: these should be user defined somewhere
-#define P1_UP_KEY 87 // W Key
-#define P1_DOWN_KEY 83 // S Key
-#define P2_UP_KEY 265 // Up Arrow
-#define P2_DOWN_KEY 264 // Down Arrow
+#define P1_LEFT_KEY 65 // A Key
+#define P1_RIGHT_KEY 68 // D Key
+#define P2_LEFT_KEY 263 // Left Arrow
+#define P2_RIGHT_KEY 262 // Right Arrow
 
 int randInt(int lower, int upper) {
 	return rand() % (upper - lower + 1) + lower;
@@ -23,8 +23,8 @@ int randInt(int lower, int upper) {
 
 // INIT FNS //
 void init_paddle(struct PaddleData *p) {
-	p->pos.x = 0;
-	p->pos.y = 0;
+	p->pos.x = SCREEN_WIDTH/2 - 50;
+	p->pos.y = 40;
 	p->paddle_width = 100;
 	p->paddle_thickness = 20;
 	p->color = WHITE;
@@ -34,28 +34,28 @@ void init_ball(struct BallData *b) {
 	b->pos.x = SCREEN_WIDTH/2;
 	b->pos.y = SCREEN_HEIGHT/2;
 	b->radius = 10;
-	b->vel.x = 5;
-	b->vel.y = 0;
+	b->vel.y = 5;
+	b->vel.x = 0;
 
 }
 
 void ball_respawn(struct BallData *b) {
 	b->pos.x = SCREEN_WIDTH/2;
 	b->pos.y = SCREEN_HEIGHT/2;
-	b->vel.x = -b->vel.x;
-	if (b->vel.x < 0) { b->vel.x = -5; } else { b->vel.x = 5; }
+	b->vel.y = -b->vel.y;
+	if (b->vel.y < 0) { b->vel.y = -5; } else { b->vel.y = 5; }
 	// Vel y ?
 }
 
 void ball_paddle_hit(struct BallData *b) {
-	b->vel.x = -b->vel.x;
-	if (b->vel.x < 0) {
-		b->vel.x -= 0.2;
+	b->vel.y = -b->vel.y;
+	if (b->vel.y < 0) {
+		b->vel.y -= 0.2;
 	} else {
-		b->vel.x += 0.2;
+		b->vel.y += 0.2;
 	}
 
-	//b->vel.y = randInt(-40, 40) / 10;
+	b->vel.x = randInt(-40, 40) / 10;
 }
 
 
@@ -74,17 +74,13 @@ int main(void)
 
 	struct PaddleData p1;
 	init_paddle(&p1);
-	p1.pos.x = 20;
-	p1.pos.y = SCREEN_HEIGHT/2 - p1.paddle_width/2;
 
 	struct PaddleData p2;
 	init_paddle(&p2);
-	p2.pos.x = SCREEN_WIDTH - p2.paddle_thickness - 20;
-	p2.pos.y = SCREEN_HEIGHT/2 - p2.paddle_width/2;
+	p2.pos.y = SCREEN_HEIGHT - p2.paddle_thickness - 40;
 
 	struct BallData ball;
 	init_ball(&ball);
-	
 
     while (!WindowShouldClose())
     {
@@ -92,52 +88,52 @@ int main(void)
 		ball.pos = Vec2Add(ball.pos, ball.vel);
 
 		/*
+		*/
 		int pressed = GetKeyPressed();
 		while (pressed != 0) {
 			printf("Key pressed: %d\n", pressed);
 			pressed = GetKeyPressed();
 		}
-		*/
 
 		// Collisions
-		if (ball.pos.y - ball.radius <= 0) {
-			ball.pos.y = ball.radius;
-			ball.vel.y = -ball.vel.y;
-		} else if (ball.pos.y + ball.radius >= SCREEN_HEIGHT) {
-			ball.pos.y = SCREEN_HEIGHT - ball.radius;
-			ball.vel.y = -ball.vel.y;
+		if (ball.pos.x - ball.radius <= 0) {
+			ball.pos.x = ball.radius;
+			ball.vel.x = -ball.vel.x;
+		} else if (ball.pos.x + ball.radius >= SCREEN_WIDTH) {
+			ball.pos.x = SCREEN_WIDTH - ball.radius;
+			ball.vel.x = -ball.vel.x;
 		}
 
-		struct Rectangle p1Rect = {p1.pos.x, p1.pos.y, p1.paddle_thickness, p1.paddle_width};
+		struct Rectangle p1Rect = {p1.pos.x, p1.pos.y, p1.paddle_width, p1.paddle_thickness};
 		if (CheckCollisionCircleRec(ball.pos, ball.radius, p1Rect)) {
 			ball_paddle_hit(&ball);
 		}
 
-		struct Rectangle p2Rect = {p2.pos.x, p2.pos.y, p2.paddle_thickness, p2.paddle_width};
+		struct Rectangle p2Rect = {p2.pos.x, p2.pos.y, p2.paddle_width, p2.paddle_thickness};
 		if (CheckCollisionCircleRec(ball.pos, ball.radius, p2Rect)) {
 			ball_paddle_hit(&ball);
 		}
 
 		// Scoring
-		if (ball.pos.x > SCREEN_WIDTH) {
+		if (ball.pos.y > SCREEN_HEIGHT) {
 			player1.score += 1;
 			ball_respawn(&ball);
-		} else if (ball.pos.x < 0) {
+		} else if (ball.pos.y < 0) {
 			player2.score += 1;
 			ball_respawn(&ball);
 		}
 
 		// Player control
-		if (IsKeyDown(P1_UP_KEY)) {
-			p1.pos.y -= 5;
-		} else if (IsKeyDown(P1_DOWN_KEY)) {
-			p1.pos.y += 5;
+		if (IsKeyDown(P1_LEFT_KEY)) {
+			p1.pos.x -= 5;
+		} else if (IsKeyDown(P1_RIGHT_KEY)) {
+			p1.pos.x += 5;
 		}
 
-		if (IsKeyDown(P2_UP_KEY)) {
-			p2.pos.y -= 5;
-		} else if (IsKeyDown(P2_DOWN_KEY)) {
-			p2.pos.y += 5;
+		if (IsKeyDown(P2_LEFT_KEY)) {
+			p2.pos.x -= 5;
+		} else if (IsKeyDown(P2_RIGHT_KEY)) {
+			p2.pos.x += 5;
 		}
 
 		// Draw //
@@ -146,10 +142,10 @@ int main(void)
         ClearBackground(BLACK);
 
 		// Draw Paddle One
-		DrawRectangle(p1.pos.x, p1.pos.y, p1.paddle_thickness, p1.paddle_width, p2.color);
+		DrawRectangle(p1.pos.x, p1.pos.y, p1.paddle_width, p1.paddle_thickness, p2.color);
 
 		// Draw Paddle Two
-		DrawRectangle(p2.pos.x, p2.pos.y, p2.paddle_thickness, p2.paddle_width, p2.color);
+		DrawRectangle(p2.pos.x, p2.pos.y, p2.paddle_width, p2.paddle_thickness, p2.color);
 	
 		// BALL
 		DrawCircle(ball.pos.x, ball.pos.y, ball.radius, WHITE);
