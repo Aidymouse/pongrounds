@@ -28,12 +28,19 @@ void init_paddle(struct PaddleData *p) {
 	p->paddle_width = 100;
 	p->paddle_thickness = 20;
 	p->color = WHITE;
+
+	p->loss_protection = 0;
+	enum Items pi = EXPIRED_PANADOL;
+	for (int i=0; i<p->items_count[pi]; i++) {
+		p->loss_protection++;
+	}
+
 }
 
 void init_ball(struct BallData *b) {
 	b->pos.x = SCREEN_WIDTH/2;
 	b->pos.y = SCREEN_HEIGHT/2;
-	b->radius = 10;
+	b->radius = 6;
 	b->vel.y = 5;
 	b->vel.x = 0;
 
