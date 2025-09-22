@@ -3,8 +3,8 @@
 const int NUM_ITEMS=2;
 
 enum Items {
-	EXPIRED_PANADOL=0, // Adds one loss protection
-	CHERRY_BLOSSOM_CLOAK=1, // Let's the paddle dash
+	ITEM_EXPIRED_PANADOL=0, // Higher than 0 and the ball will respawn on score, decrementing this number
+	ITEM_CHERRY_BLOSSOM_CLOAK=1, // Let's the paddle dash
 };
 
 struct PaddleData {
@@ -13,10 +13,9 @@ struct PaddleData {
 	int paddle_thickness;
 	Color color;
 	
-	int items[16];
-	int items_count[16];
+	int items[16]; // Current items
+	int items_total[16]; // Total held items
 
-	int loss_protection; // Higher than 0 and the ball will respawn on score, decrementing this number
 
 };
 
