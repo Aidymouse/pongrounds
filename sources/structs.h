@@ -1,10 +1,20 @@
+#ifndef _STRUCTSH_
+#define _STRUCTSH_
+
 #include "raylib.h"
 
-const int NUM_ITEMS=2;
+#define NUM_ITEMS 2;
 
 enum Items {
 	ITEM_EXPIRED_PANADOL=0, // Higher than 0 and the ball will respawn on score, decrementing this number
 	ITEM_CHERRY_BLOSSOM_CLOAK=1, // Let's the paddle dash
+};
+ 
+enum GAME_STATES {
+	PONG=0,
+	PICK_ITEM=1,
+	PAUSE=2,
+	MENU=3
 };
 
 struct PaddleData {
@@ -30,3 +40,10 @@ struct BallData {
 	Vector2 vel;
 	int radius;
 };
+
+struct GameState {
+	int current_round;
+	int state; // GAME_STATE
+};
+
+#endif

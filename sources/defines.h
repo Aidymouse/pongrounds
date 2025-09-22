@@ -1,0 +1,15 @@
+
+#define SCREEN_WIDTH (800)
+#define SCREEN_HEIGHT (600)
+
+#define WINDOW_TITLE "Prounds"
+
+// Game Vars
+#define POINTS_PER_ROUND (2)
+#define NUM_ROUNDS (7)
+
+// TODO: these should be user defined somewhere
+#define P1_LEFT_KEY 65 // A Key
+#define P1_RIGHT_KEY 68 // D Key
+#define P2_LEFT_KEY 263 // Left Arrow
+#define P2_RIGHT_KEY 262 // Right Arrow
