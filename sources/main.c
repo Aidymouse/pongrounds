@@ -10,6 +10,10 @@
 
 #define WINDOW_TITLE "Pong but its rounds"
 
+// Game Vars
+#define POINTS_PER_ROUND (2)
+#define NUM_ROUNDS (7)
+
 // TODO: these should be user defined somewhere
 #define P1_LEFT_KEY 65 // A Key
 #define P1_RIGHT_KEY 68 // D Key
@@ -29,10 +33,22 @@ void init_paddle(struct PaddleData *p) {
 	p->paddle_thickness = 20;
 	p->color = WHITE;
 
-	p->loss_protection = 0;
-	enum Items pi = EXPIRED_PANADOL;
-	for (int i=0; i<p->items_count[pi]; i++) {
-		p->loss_protection++;
+	for (int i=0; i<16; i++) {
+		p->items[i] = 0;
+		p->items_total[i] = 0;
+	} 
+
+}
+
+int get_num_items(enum Items i, struct PaddleData *p) {
+	return p->items[i];
+}
+
+// Called on point score
+void refresh_paddle(struct PaddleData *p) {
+
+	for (int i=0; i<16; i++) {
+		p->items[i] = p->items_total[i];
 	}
 
 }
@@ -49,7 +65,6 @@ void init_ball(struct BallData *b) {
 	b->radius = 6;
 	b->vel.y = 5;
 	b->vel.x = 0;
-
 }
 
 void ball_respawn(struct BallData *b) {
@@ -72,8 +87,27 @@ void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 }
 
 void ball_score_hit(struct BallData *b, struct PlayerData *scorer) {
+
+	struct PaddleData *paddle = scorer->paddle;
+	
+	if (get_num_items(ITEM_EXPIRED_PANADOL, paddle)) {
+		paddle->items[ITEM_EXPIRED_PANADOL] -= 1;
+		ball_paddle_hit(b, paddle);
+		return;
+	}
+
 	scorer->score +=1;
 	ball_respawn(b);
+}
+
+void display_items(struct PaddleData *p, int x, int y) {
+	for (int i=0; i<16; i++) {
+		char s[16];
+		//sprintf(p1score, "%d", player1.score);
+		sprintf(s, "%d", p->items[i]);
+		DrawText(s, x, y+i*10, 10, WHITE);
+		
+	}
 }
 
 
@@ -93,6 +127,10 @@ int main(void)
 	init_player(&player1, &p1);
 	init_player(&player2, &p2);
 
+	p2.items_total[0] += 2;
+
+	refresh_paddle(&p2);
+
 	p2.pos.y = SCREEN_HEIGHT - p2.paddle_thickness - 40;
 
 	struct BallData ball;
@@ -104,12 +142,12 @@ int main(void)
 		ball.pos = Vec2Add(ball.pos, ball.vel);
 
 		/*
-		*/
 		int pressed = GetKeyPressed();
 		while (pressed != 0) {
 			printf("Key pressed: %d\n", pressed);
 			pressed = GetKeyPressed();
 		}
+		*/
 
 		// Collisions
 		if (ball.pos.x - ball.radius <= 0) {
@@ -164,13 +202,17 @@ int main(void)
 		// BALL
 		DrawCircle(ball.pos.x, ball.pos.y, ball.radius, WHITE);
 
+		// Score
 		char p1score[9];
 		sprintf(p1score, "%d", player1.score);
 		DrawText(p1score, 10, 10, 20, WHITE);
+		display_items(&p1, 20, 20);
 
 		char p2score[9];
 		sprintf(p2score, "%d", player2.score);
 		DrawText(p2score, SCREEN_WIDTH-10, 10, 20, WHITE);
+		display_items(&p2, SCREEN_WIDTH-20-10, 20);
+
 
         EndDrawing();
     }
