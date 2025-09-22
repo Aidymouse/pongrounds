@@ -7,10 +7,6 @@ enum Items {
 	CHERRY_BLOSSOM_CLOAK=1, // Let's the paddle dash
 };
 
-struct PlayerData {
-	int score;
-};
-
 struct PaddleData {
 	Vector2 pos;
 	int paddle_width;
@@ -23,6 +19,12 @@ struct PaddleData {
 	int loss_protection; // Higher than 0 and the ball will respawn on score, decrementing this number
 
 };
+
+struct PlayerData {
+	int score;
+	struct PaddleData *paddle;
+};
+
 
 struct BallData {
 	Vector2 pos;

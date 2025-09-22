@@ -37,6 +37,12 @@ void init_paddle(struct PaddleData *p) {
 
 }
 
+void init_player(struct PlayerData *player, struct PaddleData *paddle) {
+	player->score = 0;
+	player->paddle = paddle;
+	init_paddle(player->paddle);
+}
+
 void init_ball(struct BallData *b) {
 	b->pos.x = SCREEN_WIDTH/2;
 	b->pos.y = SCREEN_HEIGHT/2;
@@ -54,7 +60,7 @@ void ball_respawn(struct BallData *b) {
 	// Vel y ?
 }
 
-void ball_paddle_hit(struct BallData *b) {
+void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 	b->vel.y = -b->vel.y;
 	if (b->vel.y < 0) {
 		b->vel.y -= 0.2;
@@ -63,6 +69,11 @@ void ball_paddle_hit(struct BallData *b) {
 	}
 
 	b->vel.x = randInt(-40, 40) / 10;
+}
+
+void ball_score_hit(struct BallData *b, struct PlayerData *scorer) {
+	scorer->score +=1;
+	ball_respawn(b);
 }
 
 
@@ -74,16 +85,14 @@ int main(void)
 
     Texture2D texture = LoadTexture(ASSETS_PATH"test.png"); // Check README.md for how this works
 
-	struct PlayerData player1;
-	player1.score = 0;
-	struct PlayerData player2;
-	player2.score = 0;
-
 	struct PaddleData p1;
-	init_paddle(&p1);
-
+	struct PlayerData player1;
 	struct PaddleData p2;
-	init_paddle(&p2);
+	struct PlayerData player2;
+ 	
+	init_player(&player1, &p1);
+	init_player(&player2, &p2);
+
 	p2.pos.y = SCREEN_HEIGHT - p2.paddle_thickness - 40;
 
 	struct BallData ball;
@@ -113,21 +122,19 @@ int main(void)
 
 		struct Rectangle p1Rect = {p1.pos.x, p1.pos.y, p1.paddle_width, p1.paddle_thickness};
 		if (CheckCollisionCircleRec(ball.pos, ball.radius, p1Rect)) {
-			ball_paddle_hit(&ball);
+			ball_paddle_hit(&ball, &p1);
 		}
 
 		struct Rectangle p2Rect = {p2.pos.x, p2.pos.y, p2.paddle_width, p2.paddle_thickness};
 		if (CheckCollisionCircleRec(ball.pos, ball.radius, p2Rect)) {
-			ball_paddle_hit(&ball);
+			ball_paddle_hit(&ball, &p2);
 		}
 
 		// Scoring
 		if (ball.pos.y > SCREEN_HEIGHT) {
-			player1.score += 1;
-			ball_respawn(&ball);
+			ball_score_hit(&ball, &player1);
 		} else if (ball.pos.y < 0) {
-			player2.score += 1;
-			ball_respawn(&ball);
+			ball_score_hit(&ball, &player2);
 		}
 
 		// Player control
