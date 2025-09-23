@@ -23,6 +23,8 @@ struct PaddleData {
 
 	int paddle_width;
 	int paddle_thickness;
+	int hp;
+	int max_hp;
 	Color color;
 	
 	int items[16]; // Current items. Idx of arr is equal to item enum
@@ -52,6 +54,7 @@ struct PickItemsState {
 	int item_choices[8]; // 4 by default but can do up
 	int num_item_choices; // 4 by default
 	int hovered_item; // Idx of the hovered item
+	struct PaddleData *choosing_paddle;
 };
 
 struct GameState {

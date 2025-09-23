@@ -50,7 +50,7 @@ void init_pong_state(struct PongState *g) {
 }
 
 void init_pick_items_state(struct PickItemsState *s) {
-	s->num_item_choices = 4;
+	s->num_item_choices = 3;
 }
 
 
@@ -106,6 +106,8 @@ int main(void)
 		// Update
 		if (state.state == PONG) {
 			state_pong(dt, &state);
+		} else if (state.state == PICK_ITEM) {
+			state_pick_items(state.pick_items_state, &state);
 		}
 
 		// Draw

@@ -45,13 +45,17 @@ void ball_respawn(struct BallData *b) {
 	if (b->vel.y < 0) { b->vel.y = -BALL_INIT_SPEED; } else { b->vel.y = BALL_INIT_SPEED; }
 }
 
-void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
+void ball_reflect(struct BallData *b) {
 	b->vel.y = -b->vel.y;
 	if (b->vel.y < 0) {
 		b->vel.y -= 20;
 	} else {
 		b->vel.y += 20;
 	}
+}
+
+void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
+	ball_reflect(b);
 
 	b->vel.x = randInt(-300, 300);
 }
@@ -59,12 +63,6 @@ void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 void ball_score_hit(struct BallData *b, struct PlayerData *scorer) {
 
 	struct PaddleData *paddle = scorer->paddle;
-	
-	if (paddle->items[ITEM_EXPIRED_PANADOL] > 0) {
-		paddle->items[ITEM_EXPIRED_PANADOL] -= 1;
-		ball_paddle_hit(b, paddle);
-		return;
-	}
 
 	scorer->score +=1;
 	ball_respawn(b);
@@ -122,17 +120,25 @@ void state_pong(float dt, struct GameState *state) {
 			ball_paddle_hit(ball, p2);
 		}
 
+		if (ball->pos.y - ball->radius < 0 && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
+			p1->items[ITEM_EXPIRED_PANADOL] -= 1;
+			ball_reflect(ball);
+		} else if (ball->pos.y + ball->radius > SCREEN_HEIGHT && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
+			p2->items[ITEM_EXPIRED_PANADOL] -= 1;
+			ball_reflect(ball);
+		}
+
 		// Scoring
-		if (ball->pos.y > SCREEN_HEIGHT) {
+		if (ball->pos.y - ball->radius > SCREEN_HEIGHT+10) {
 			ball_score_hit(ball, player1);
-		} else if (ball->pos.y < 0) {
+		} else if (ball->pos.y + ball->radius + 10 < 0) {
 			ball_score_hit(ball, player2);
 		}
 
 		if (player1->score >= POINTS_PER_ROUND) {
-			change_state(PICK_ITEM, state);
+			change_state_to_pick_items(state, player2->paddle);
 		} else if (player2->score >= POINTS_PER_ROUND) {
-			change_state(PICK_ITEM, state);
+			change_state_to_pick_items(state, player1->paddle);
 		}
 
 		// Player control

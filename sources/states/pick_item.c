@@ -2,6 +2,7 @@
 #include "structs.h"
 #include "helper.h"
 #include "items.h"
+#include "state_change.h"
 #include <stdio.h>
 
 void roll_items(struct PickItemsState *state) {
@@ -30,7 +31,24 @@ Rectangle get_rect_for_item_idx(int idx, int num_cards) {
 	return r;
 }
 
-void state_pick_items(struct PickItemsState *state) {
+void state_pick_items(struct PickItemsState *state, struct GameState *gamestate) {
+
+	state->hovered_item = -1;
+	for (int i=0; i<state->num_item_choices; i++) {
+		Rectangle item_rect = get_rect_for_item_idx(i, state->num_item_choices);
+		Rectangle mouse_rect = { GetMouseX(), GetMouseY(), 1, 1 };
+		//printf("Mouse pos: %d, %d\n", GetMouseX(), GetMouse
+		if (CheckCollisionRecs(item_rect, mouse_rect)) {
+			state->hovered_item = i;
+			break;
+		}
+	}
+
+	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && state->hovered_item != -1) {
+		int item_idx = state->item_choices[state->hovered_item];
+		state->choosing_paddle->items[item_idx] += 1;
+		change_state_to_pong(gamestate);
+	}
 }
 
 void draw_pick_items(struct PickItemsState *state) {
@@ -38,7 +56,12 @@ void draw_pick_items(struct PickItemsState *state) {
 	for (int i=0; i<state->num_item_choices; i++) {
 		Rectangle item_rect = get_rect_for_item_idx(i, state->num_item_choices);
 		//printf("%d\n", i);
-		DrawRectangleLines(item_rect.x, item_rect.y, item_rect.width, item_rect.height, WHITE);
+		if (i==state->hovered_item) {
+			DrawRectangleLines(item_rect.x, item_rect.y, item_rect.width, item_rect.height, RED);
+		} else {
+			DrawRectangleLines(item_rect.x, item_rect.y, item_rect.width, item_rect.height, WHITE);
+		}
+
 		DrawTextCentered( item_labels[state->item_choices[i]], item_rect.x+item_rect.width/2, item_rect.y+item_rect.height-25, 15, WHITE);
 
 	}
