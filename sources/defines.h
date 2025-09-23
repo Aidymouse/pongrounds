@@ -8,6 +8,11 @@
 #define POINTS_PER_ROUND (2)
 #define NUM_ROUNDS (7)
 
+#define NUM_ITEMS 2
+
+#define BALL_INIT_SPEED (200)
+
+
 // TODO: these should be user defined somewhere
 #define P1_LEFT_KEY 65 // A Key
 #define P1_RIGHT_KEY 68 // D Key

@@ -3,8 +3,6 @@
 
 #include "raylib.h"
 
-#define NUM_ITEMS 2;
-
 enum Items {
 	ITEM_EXPIRED_PANADOL=0, // Higher than 0 and the ball will respawn on score, decrementing this number
 	ITEM_CHERRY_BLOSSOM_CLOAK=1, // Let's the paddle dash
@@ -25,14 +23,15 @@ struct PaddleData {
 	int paddle_thickness;
 	Color color;
 	
-	int items[16]; // Current items
-	int items_total[16]; // Total held items
+	int items[16]; // Current items. Idx of arr is equal to item enum
+	int items_total[16]; // Total held items, used to replenish above arr
 
 
 };
 
 struct PlayerData {
 	int score;
+	int rounds_won;
 	struct PaddleData *paddle;
 };
 
@@ -43,12 +42,23 @@ struct BallData {
 	int radius;
 };
 
-struct GameState {
+struct PongState {
 	int current_round;
-	int state; // GAME_STATE
 };
 
 struct PickItemsState {
-	
+	int item_choices[8]; // 4 by default but can do up
+	int num_item_choices; // 4 by default
 };
+
+struct GameState {
+	int state; // GAME_STATE
+
+	struct PlayerData *player1;
+	struct PlayerData *player2;
+	struct BallData *ball;
+	struct PongState *pong_state;
+	struct PickItemsState *pick_items_state;
+};
+
 #endif

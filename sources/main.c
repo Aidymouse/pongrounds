@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "states/pong.h"
+#include "states/pick_item.h"
 
 #include "defines.h"
 
@@ -11,6 +12,10 @@
 
 
 // INIT FNS //
+void init_gamestate(struct GameState *gs) {
+	gs->state = PONG;
+}
+
 void init_paddle(struct PaddleData *p) {
 	p->pos.x = SCREEN_WIDTH/2 - 50;
 	p->pos.y = 40;
@@ -36,13 +41,16 @@ void init_ball(struct BallData *b) {
 	b->pos.x = SCREEN_WIDTH/2;
 	b->pos.y = SCREEN_HEIGHT/2;
 	b->radius = 6;
-	b->vel.y = 100;
+	b->vel.y = BALL_INIT_SPEED;
 	b->vel.x = 0;
 }
 
-void init_state(struct GameState *g) {
-	g->state = PONG;
+void init_pong_state(struct PongState *g) {
 	g->current_round = 0;
+}
+
+void init_pick_items_state(struct PickItemsState *s) {
+	s->num_item_choices = 4;
 }
 
 
@@ -58,7 +66,13 @@ int main(void)
 	enum GAME_STATES game_state = PONG;
 
 	struct GameState state;
-	init_state(&state);
+	init_gamestate(&state);
+
+	struct PongState pong_state;
+	init_pong_state(&pong_state);
+
+	struct PickItemsState pick_items_state;
+	init_pick_items_state(&pick_items_state);
 
 	struct PaddleData p1;
 	struct PlayerData player1;
@@ -68,14 +82,21 @@ int main(void)
 	init_player(&player1, &p1);
 	init_player(&player2, &p2);
 
-	p2.items_total[0] += 2;
+	//p2.items_total[0] += 2;
 
-	refresh_paddle(&p2);
+	//refresh_paddle(&p2);
 
 	p2.pos.y = SCREEN_HEIGHT - p2.paddle_thickness - 40;
 
 	struct BallData ball;
 	init_ball(&ball);
+
+	state.player1 = &player1;
+	state.player2 = &player2;
+	state.ball = &ball;
+	state.pong_state = &pong_state;
+	state.pick_items_state = &pick_items_state;
+
 	float dt = 0;
 
     while (!WindowShouldClose())
@@ -84,7 +105,7 @@ int main(void)
 
 		// Update
 		if (state.state == PONG) {
-			state_pong(dt, &ball, &player1, &player2, &state);
+			state_pong(dt, &state);
 		}
 
 		// Draw
@@ -92,7 +113,9 @@ int main(void)
         ClearBackground(BLACK);
 
 		if (state.state == PONG) {
-			draw_pong(&ball, &player1, &player2, &state);
+			draw_pong(&state);
+		} else if (state.state == PICK_ITEM) {
+			draw_pong(&state); // Still in background
 		}
 
         EndDrawing();

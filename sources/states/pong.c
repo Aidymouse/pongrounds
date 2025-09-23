@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "defines.h"
 #include "structs.h"
+#include "state_change.h"
 
 #include "Vec2.h"
 #include "helper.h"
@@ -26,12 +27,22 @@ void display_items(struct PaddleData *p, int x, int y) {
 	}
 }
 
+void display_round_score(struct PlayerData *p, int x, int y) {
+	for (int i=0; i<POINTS_PER_ROUND; i++) {
+		if (p->score >= (i+1)) {
+			DrawCircle(x + i*15, y, 5, WHITE);	
+		} else {
+			DrawCircleLines(x+i*15, y, 5, WHITE);	
+		}
+	}
+}
+
 // BALL //
 void ball_respawn(struct BallData *b) {
 	b->pos.x = SCREEN_WIDTH/2;
 	b->pos.y = SCREEN_HEIGHT/2;
 	b->vel.y = -b->vel.y;
-	if (b->vel.y < 0) { b->vel.y = -100; } else { b->vel.y = 100; }
+	if (b->vel.y < 0) { b->vel.y = -BALL_INIT_SPEED; } else { b->vel.y = BALL_INIT_SPEED; }
 }
 
 void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
@@ -72,10 +83,14 @@ void paddle_move(float dt, struct PaddleData *p, int left_control, int right_con
 		p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, dt));
 }
 
-void state_pong(float dt, struct BallData *ball, struct PlayerData *player1, struct PlayerData *player2, struct GameState *state) {
+void state_pong(float dt, struct GameState *state) {
 
+		struct PlayerData *player1 = state->player1;
+		struct PlayerData *player2 = state->player2;
 		struct PaddleData *p1 = player1->paddle;
 		struct PaddleData *p2 = player2->paddle;
+
+		struct BallData *ball = state->ball;
 
 		// Update //
 		ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, dt));
@@ -114,16 +129,27 @@ void state_pong(float dt, struct BallData *ball, struct PlayerData *player1, str
 			ball_score_hit(ball, player2);
 		}
 
+		if (player1->score >= POINTS_PER_ROUND) {
+			change_state(PICK_ITEM, state);
+		} else if (player2->score >= POINTS_PER_ROUND) {
+			change_state(PICK_ITEM, state);
+		}
+
 		// Player control
 		paddle_move(dt, p1, P1_LEFT_KEY, P1_RIGHT_KEY);
 		paddle_move(dt, p2, P2_LEFT_KEY, P2_RIGHT_KEY);
 
 }
 
-void draw_pong(struct BallData *ball, struct PlayerData *player1, struct PlayerData *player2, struct GameState *state) {
+void draw_pong(struct GameState *state) {
+
+		struct PlayerData *player1 = state->player1;
+		struct PlayerData *player2 = state->player2;
 
 		struct PaddleData *p1 = player1->paddle;
 		struct PaddleData *p2 = player2->paddle;
+
+		struct  BallData *ball = state->ball;
 
 		// Draw Paddle One
 		DrawRectangle(p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness, p2->color);
@@ -135,15 +161,11 @@ void draw_pong(struct BallData *ball, struct PlayerData *player1, struct PlayerD
 		DrawCircle(ball->pos.x, ball->pos.y, ball->radius, WHITE);
 
 		// Score
-		char p1score[9];
-		sprintf(p1score, "%d", player1->score);
-		DrawText(p1score, 10, 10, 20, WHITE);
 		display_items(p1, 20, 20);
+		display_round_score(player1, SCREEN_WIDTH/2, 10);
 
-		char p2score[9];
-		sprintf(p2score, "%d", player2->score);
-		DrawText(p2score, SCREEN_WIDTH-10, 10, 20, WHITE);
 		display_items(p2, SCREEN_WIDTH-20-10, 20);
+		display_round_score(player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-15);
 
 
 }
