@@ -6,6 +6,8 @@
 enum Items {
 	ITEM_EXPIRED_PANADOL=0, // Higher than 0 and the ball will respawn on score, decrementing this number
 	ITEM_CHERRY_BLOSSOM_CLOAK=1, // Let's the paddle dash
+	ITEM_HYPERGONADISM=2, // 
+	ITEM_CHASTITY_CAGE=3, // Make opponents paddle shorter
 };
  
 enum GAME_STATES {
@@ -49,6 +51,7 @@ struct PongState {
 struct PickItemsState {
 	int item_choices[8]; // 4 by default but can do up
 	int num_item_choices; // 4 by default
+	int hovered_item; // Idx of the hovered item
 };
 
 struct GameState {

@@ -116,6 +116,7 @@ int main(void)
 			draw_pong(&state);
 		} else if (state.state == PICK_ITEM) {
 			draw_pong(&state); // Still in background
+			draw_pick_items(state.pick_items_state);
 		}
 
         EndDrawing();
