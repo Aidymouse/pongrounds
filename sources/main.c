@@ -36,12 +36,12 @@ void init_ball(struct BallData *b) {
 	b->pos.x = SCREEN_WIDTH/2;
 	b->pos.y = SCREEN_HEIGHT/2;
 	b->radius = 6;
-	b->vel.y = 5;
+	b->vel.y = 100;
 	b->vel.x = 0;
 }
 
 void init_state(struct GameState *g) {
-	g->state = 1;
+	g->state = PONG;
 	g->current_round = 0;
 }
 
@@ -76,10 +76,26 @@ int main(void)
 
 	struct BallData ball;
 	init_ball(&ball);
+	float dt = 0;
 
     while (!WindowShouldClose())
     {
-		state_pong(&ball, &player1, &player2, &state);
+		dt = GetFrameTime();
+
+		// Update
+		if (state.state == PONG) {
+			state_pong(dt, &ball, &player1, &player2, &state);
+		}
+
+		// Draw
+        BeginDrawing();
+        ClearBackground(BLACK);
+
+		if (state.state == PONG) {
+			draw_pong(&ball, &player1, &player2, &state);
+		}
+
+        EndDrawing();
     }
 
     CloseWindow();

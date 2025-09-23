@@ -19,6 +19,8 @@ enum GAME_STATES {
 
 struct PaddleData {
 	Vector2 pos;
+	Vector2 vel;
+
 	int paddle_width;
 	int paddle_thickness;
 	Color color;
@@ -46,4 +48,7 @@ struct GameState {
 	int state; // GAME_STATE
 };
 
+struct PickItemsState {
+	
+};
 #endif

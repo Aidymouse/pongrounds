@@ -16,23 +16,33 @@ void refresh_paddle(struct PaddleData *p) {
 
 }
 
+void display_items(struct PaddleData *p, int x, int y) {
+	for (int i=0; i<16; i++) {
+		char s[16];
+		//sprintf(p1score, "%d", player1.score);
+		sprintf(s, "%d", p->items[i]);
+		DrawText(s, x, y+i*10, 10, WHITE);
+		
+	}
+}
+
+// BALL //
 void ball_respawn(struct BallData *b) {
 	b->pos.x = SCREEN_WIDTH/2;
 	b->pos.y = SCREEN_HEIGHT/2;
 	b->vel.y = -b->vel.y;
-	if (b->vel.y < 0) { b->vel.y = -5; } else { b->vel.y = 5; }
-	// Vel y ?
+	if (b->vel.y < 0) { b->vel.y = -100; } else { b->vel.y = 100; }
 }
 
 void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 	b->vel.y = -b->vel.y;
 	if (b->vel.y < 0) {
-		b->vel.y -= 0.2;
+		b->vel.y -= 20;
 	} else {
-		b->vel.y += 0.2;
+		b->vel.y += 20;
 	}
 
-	b->vel.x = randInt(-40, 40) / 10;
+	b->vel.x = randInt(-300, 300);
 }
 
 void ball_score_hit(struct BallData *b, struct PlayerData *scorer) {
@@ -49,22 +59,26 @@ void ball_score_hit(struct BallData *b, struct PlayerData *scorer) {
 	ball_respawn(b);
 }
 
-void display_items(struct PaddleData *p, int x, int y) {
-	for (int i=0; i<16; i++) {
-		char s[16];
-		//sprintf(p1score, "%d", player1.score);
-		sprintf(s, "%d", p->items[i]);
-		DrawText(s, x, y+i*10, 10, WHITE);
-		
-	}
+
+// PADDLE //
+void paddle_move(float dt, struct PaddleData *p, int left_control, int right_control) {
+		if (IsKeyDown(left_control)) {
+			p->vel.x = -200;
+		} else if (IsKeyDown(right_control)) {
+			p->vel.x = 200;
+		} else {
+			p->vel.x = 0;
+		}
+		p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, dt));
 }
-void state_pong(struct BallData *ball, struct PlayerData *player1, struct PlayerData *player2, struct GameState *state) {
+
+void state_pong(float dt, struct BallData *ball, struct PlayerData *player1, struct PlayerData *player2, struct GameState *state) {
 
 		struct PaddleData *p1 = player1->paddle;
 		struct PaddleData *p2 = player2->paddle;
 
 		// Update //
-		ball->pos = Vec2Add(ball->pos, ball->vel);
+		ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, dt));
 
 		/*
 		int pressed = GetKeyPressed();
@@ -101,22 +115,15 @@ void state_pong(struct BallData *ball, struct PlayerData *player1, struct Player
 		}
 
 		// Player control
-		if (IsKeyDown(P1_LEFT_KEY)) {
-			p1->pos.x -= 5;
-		} else if (IsKeyDown(P1_RIGHT_KEY)) {
-			p1->pos.x += 5;
-		}
+		paddle_move(dt, p1, P1_LEFT_KEY, P1_RIGHT_KEY);
+		paddle_move(dt, p2, P2_LEFT_KEY, P2_RIGHT_KEY);
 
-		if (IsKeyDown(P2_LEFT_KEY)) {
-			p2->pos.x -= 5;
-		} else if (IsKeyDown(P2_RIGHT_KEY)) {
-			p2->pos.x += 5;
-		}
+}
 
-		// Draw //
-        BeginDrawing();
+void draw_pong(struct BallData *ball, struct PlayerData *player1, struct PlayerData *player2, struct GameState *state) {
 
-        ClearBackground(BLACK);
+		struct PaddleData *p1 = player1->paddle;
+		struct PaddleData *p2 = player2->paddle;
 
 		// Draw Paddle One
 		DrawRectangle(p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness, p2->color);
@@ -139,5 +146,4 @@ void state_pong(struct BallData *ball, struct PlayerData *player1, struct Player
 		display_items(p2, SCREEN_WIDTH-20-10, 20);
 
 
-        EndDrawing();
 }
