@@ -47,6 +47,7 @@ void state_pick_items(struct PickItemsState *state, struct GameState *gamestate)
 	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && state->hovered_item != -1) {
 		int item_idx = state->item_choices[state->hovered_item];
 		state->choosing_paddle->items[item_idx] += 1;
+		state->choosing_paddle->items_total[item_idx] += 1;
 		change_state_to_pong(gamestate);
 	}
 }

@@ -3,5 +3,5 @@
 void state_pong(float dt, struct GameState *state); 
 void draw_pong(struct GameState *state); 
 
-void refresh_paddle(struct PaddleData *p); // Won't need this here forever I think
+void refresh_paddle(struct PaddleData *p); // This is here because we need to call it on state change
 
