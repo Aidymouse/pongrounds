@@ -11,7 +11,7 @@
 #define NUM_ITEMS 4
 
 #define BALL_INIT_SPEED (200)
-
+#define DEFAULT_PADDLE_WIDTH (100)
 
 // TODO: these should be user defined somewhere
 #define P1_LEFT_KEY 65 // A Key

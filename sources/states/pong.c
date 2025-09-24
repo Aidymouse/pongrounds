@@ -15,6 +15,8 @@ void refresh_paddle(struct PaddleData *p) {
 		p->items[i] = p->items_total[i];
 	}
 
+	p->paddle_width = DEFAULT_PADDLE_WIDTH + 10 * (p->items[ITEM_HYPERGONADISM]);
+	// TODO: reduce width by enemy
 }
 
 void display_items(struct PaddleData *p, int x, int y) {

@@ -19,7 +19,7 @@ void init_gamestate(struct GameState *gs) {
 void init_paddle(struct PaddleData *p) {
 	p->pos.x = SCREEN_WIDTH/2 - 50;
 	p->pos.y = 40;
-	p->paddle_width = 100;
+	p->paddle_width = DEFAULT_PADDLE_WIDTH;
 	p->paddle_thickness = 20;
 	p->color = WHITE;
 
