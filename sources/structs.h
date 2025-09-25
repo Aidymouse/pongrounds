@@ -67,4 +67,10 @@ struct GameState {
 	struct PickItemsState *pick_items_state;
 };
 
+struct PaddleControls {
+	int left;
+	int right;
+	int dash;
+};
+
 #endif

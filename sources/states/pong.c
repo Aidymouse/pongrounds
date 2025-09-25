@@ -72,14 +72,32 @@ void ball_score_hit(struct BallData *b, struct PlayerData *scorer) {
 
 
 // PADDLE //
-void paddle_move(float dt, struct PaddleData *p, int left_control, int right_control) {
-		if (IsKeyDown(left_control)) {
-			p->vel.x = -200;
-		} else if (IsKeyDown(right_control)) {
-			p->vel.x = 200;
+
+void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls) {
+
+		if (p->vel.x > 200) {
+			p->vel.x -= 40;
+		} else if (p->vel.x < -200) {
+			p->vel.x += 40;
+		} else if (IsKeyDown(controls.left)) {
+				p->vel.x = -200;
+
+				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
+					p->vel.x = -600 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*-100;
+				}
+		} else if (IsKeyDown(controls.right)) {
+				p->vel.x = 200;
+
+				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
+					p->vel.x = 600 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*100;
+				}
 		} else {
 			p->vel.x = 0;
 		}
+
+
+
+
 		p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, dt));
 }
 
@@ -144,8 +162,10 @@ void state_pong(float dt, struct GameState *state) {
 		}
 
 		// Player control
-		paddle_move(dt, p1, P1_LEFT_KEY, P1_RIGHT_KEY);
-		paddle_move(dt, p2, P2_LEFT_KEY, P2_RIGHT_KEY);
+		struct PaddleControls p1_controls = { P1_LEFT_KEY, P1_RIGHT_KEY, P1_DASH_KEY };
+		paddle_move(dt, p1, p1_controls);
+		struct PaddleControls p2_controls = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY };
+		paddle_move(dt, p2, p2_controls);
 
 }
 
