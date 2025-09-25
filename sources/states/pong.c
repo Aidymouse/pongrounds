@@ -9,14 +9,13 @@
 #include "helper.h"
 
 // Called on point score
-void refresh_paddle(struct PaddleData *p) {
+void refresh_paddle(struct PaddleData *p, struct PaddleData *opponent) {
 
 	for (int i=0; i<16; i++) {
 		p->items[i] = p->items_total[i];
 	}
 
-	p->paddle_width = DEFAULT_PADDLE_WIDTH + 10 * (p->items[ITEM_HYPERGONADISM]);
-	// TODO: reduce width by enemy
+	p->paddle_width = DEFAULT_PADDLE_WIDTH + 20 * (p->items[ITEM_HYPERGONADISM]) - 20 * (opponent->items[ITEM_CHASTITY_CAGE]);
 }
 
 void display_items(struct PaddleData *p, int x, int y) {
@@ -76,20 +75,20 @@ void ball_score_hit(struct BallData *b, struct PlayerData *scorer) {
 void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls) {
 
 		if (p->vel.x > 200) {
-			p->vel.x -= 40;
+			p->vel.x -= 500;
 		} else if (p->vel.x < -200) {
-			p->vel.x += 40;
+			p->vel.x += 500;
 		} else if (IsKeyDown(controls.left)) {
 				p->vel.x = -200;
 
 				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
-					p->vel.x = -600 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*-100;
+					p->vel.x = -3000 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*-100;
 				}
 		} else if (IsKeyDown(controls.right)) {
 				p->vel.x = 200;
 
 				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
-					p->vel.x = 600 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*100;
+					p->vel.x = 3000 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*100;
 				}
 		} else {
 			p->vel.x = 0;
