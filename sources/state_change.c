@@ -24,13 +24,9 @@ void change_state_to_pick_items(struct GameState *state, struct PaddleData *choo
 }
 
 void change_state_to_pong(struct GameState *state) {
-	
-	state->player1->score = 0;
-	state->player2->score = 0;
 
 	refresh_paddle(state->player1->paddle, state->player2->paddle);
 	refresh_paddle(state->player2->paddle, state->player1->paddle);
-
 
 	state->state = PONG;
 }

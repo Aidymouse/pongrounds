@@ -22,6 +22,8 @@ void init_paddle(struct PaddleData *p) {
 	p->paddle_width = DEFAULT_PADDLE_WIDTH;
 	p->paddle_thickness = 20;
 	p->color = WHITE;
+	p->hp = DEFAULT_PADDLE_HP;
+	p->max_hp = DEFAULT_PADDLE_HP;
 
 	for (int i=0; i<16; i++) {
 		p->items[i] = 0;
@@ -32,7 +34,6 @@ void init_paddle(struct PaddleData *p) {
 
 
 void init_player(struct PlayerData *player, struct PaddleData *paddle) {
-	player->score = 0;
 	player->paddle = paddle;
 	init_paddle(player->paddle);
 }
@@ -43,6 +44,7 @@ void init_ball(struct BallData *b) {
 	b->radius = 6;
 	b->vel.y = BALL_INIT_SPEED;
 	b->vel.x = 0;
+	b->speed = BALL_INIT_SPEED;
 }
 
 void init_pong_state(struct PongState *g) {
@@ -86,7 +88,10 @@ int main(void)
 
 	//refresh_paddle(&p2);
 
+	p1.color = BLUE;
+
 	p2.pos.y = SCREEN_HEIGHT - p2.paddle_thickness - 40;
+	p2.color = ORANGE;
 
 	struct BallData ball;
 	init_ball(&ball);

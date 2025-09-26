@@ -11,6 +11,8 @@
 // Called on point score
 void refresh_paddle(struct PaddleData *p, struct PaddleData *opponent) {
 
+	p->hp = p->max_hp;
+
 	for (int i=0; i<16; i++) {
 		p->items[i] = p->items_total[i];
 	}
@@ -28,6 +30,7 @@ void display_items(struct PaddleData *p, int x, int y) {
 	}
 }
 
+/*
 void display_round_score(struct PlayerData *p, int x, int y) {
 	for (int i=0; i<POINTS_PER_ROUND; i++) {
 		if (p->score >= (i+1)) {
@@ -36,6 +39,16 @@ void display_round_score(struct PlayerData *p, int x, int y) {
 			DrawCircleLines(x+i*15, y, 5, WHITE);	
 		}
 	}
+}
+*/
+
+void display_health(struct PlayerData *p, int x, int y) {
+	struct PaddleData *paddle = p->paddle;
+
+	int width = paddle->max_hp;
+
+	DrawRectangleLines(x - width/2, y, width, 10, WHITE);
+	DrawRectangle(x - width/2, y, paddle->hp, 10, WHITE);
 }
 
 // BALL //
@@ -47,45 +60,59 @@ void ball_respawn(struct BallData *b) {
 }
 
 void ball_reflect(struct BallData *b) {
-	b->vel.y = -b->vel.y;
-	if (b->vel.y < 0) {
-		b->vel.y -= 20;
+	b->speed += 20;
+	if (b->vel.y > 0) {
+		b->vel.y = -b->speed;
 	} else {
-		b->vel.y += 20;
+		b->vel.y = b->speed;
 	}
+
 }
 
 void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 	ball_reflect(b);
 
+	if (p->items[ITEM_NIEKRO_CARD] > 0) {
+		int knuckleball_chance = 20 + p->items[ITEM_NIEKRO_CARD]-1 * 5;
+		if (randInt(1, 100) < knuckleball_chance) {
+ 			// TODO: start ball knuckleball
+		}
+	}
+
 	b->vel.x = randInt(-300, 300);
 }
 
-void ball_score_hit(struct BallData *b, struct PlayerData *scorer) {
+void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct PlayerData *opponent) {
 
 	struct PaddleData *paddle = scorer->paddle;
 
-	scorer->score +=1;
+	//scorer->score +=1;
+	opponent->paddle->hp -= SCORE_DAMAGE;
 	ball_respawn(b);
+}
+
+void ball_move(float dt, struct BallData *ball) {
+	ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, dt));
+
+	// TODO: knuckleball
 }
 
 
 // PADDLE //
-
 void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls) {
 
-		if (p->vel.x > 200) {
+		if (p->vel.x > 300) {
 			p->vel.x -= 500;
-		} else if (p->vel.x < -200) {
+		} else if (p->vel.x < -300) {
 			p->vel.x += 500;
 		} else if (IsKeyDown(controls.left)) {
-				p->vel.x = -200;
+				p->vel.x = -300;
 
 				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
 					p->vel.x = -3000 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*-100;
 				}
 		} else if (IsKeyDown(controls.right)) {
-				p->vel.x = 200;
+				p->vel.x = 300;
 
 				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
 					p->vel.x = 3000 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*100;
@@ -94,10 +121,13 @@ void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls)
 			p->vel.x = 0;
 		}
 
-
-
-
 		p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, dt));
+
+		if (p->pos.x + p->paddle_width > SCREEN_WIDTH) {
+			p->pos.x = SCREEN_WIDTH - p->paddle_width;
+		} else if (p->pos.x < 0) {
+			p->pos.x = 0;
+		}
 }
 
 void state_pong(float dt, struct GameState *state) {
@@ -110,15 +140,7 @@ void state_pong(float dt, struct GameState *state) {
 		struct BallData *ball = state->ball;
 
 		// Update //
-		ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, dt));
-
-		/*
-		int pressed = GetKeyPressed();
-		while (pressed != 0) {
-			printf("Key pressed: %d\n", pressed);
-			pressed = GetKeyPressed();
-		}
-		*/
+		ball_move(dt, ball);
 
 		// Collisions
 		if (ball->pos.x - ball->radius <= 0) {
@@ -149,15 +171,15 @@ void state_pong(float dt, struct GameState *state) {
 
 		// Scoring
 		if (ball->pos.y - ball->radius > SCREEN_HEIGHT+10) {
-			ball_score_hit(ball, player1);
+			ball_score_hit(ball, player1, player2);
 		} else if (ball->pos.y + ball->radius + 10 < 0) {
-			ball_score_hit(ball, player2);
+			ball_score_hit(ball, player2, player1);
 		}
 
-		if (player1->score >= POINTS_PER_ROUND) {
-			change_state_to_pick_items(state, player2->paddle);
-		} else if (player2->score >= POINTS_PER_ROUND) {
+		if (player1->paddle->hp <= 0) {
 			change_state_to_pick_items(state, player1->paddle);
+		} else if (player2->paddle->hp <= 0) {
+			change_state_to_pick_items(state, player2->paddle);
 		}
 
 		// Player control
@@ -179,7 +201,7 @@ void draw_pong(struct GameState *state) {
 		struct  BallData *ball = state->ball;
 
 		// Draw Paddle One
-		DrawRectangle(p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness, p2->color);
+		DrawRectangle(p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness, p1->color);
 
 		// Draw Paddle Two
 		DrawRectangle(p2->pos.x, p2->pos.y, p2->paddle_width, p2->paddle_thickness, p2->color);
@@ -189,10 +211,9 @@ void draw_pong(struct GameState *state) {
 
 		// Score
 		display_items(p1, 20, 20);
-		display_round_score(player1, SCREEN_WIDTH/2, 10);
+		display_health(player1, SCREEN_WIDTH/2, 10);
 
 		display_items(p2, SCREEN_WIDTH-20-10, 20);
-		display_round_score(player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-15);
-
+		display_health(player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-10-10);
 
 }

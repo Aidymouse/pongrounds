@@ -8,6 +8,7 @@ enum Items {
 	ITEM_CHERRY_BLOSSOM_CLOAK=1, // Let's the paddle dash
 	ITEM_HYPERGONADISM=2, // 
 	ITEM_CHASTITY_CAGE=3, // Make opponents paddle shorter
+	ITEM_NIEKRO_CARD=4, // Chance of knuckleball on hit
 };
  
 enum GAME_STATES {
@@ -34,16 +35,28 @@ struct PaddleData {
 };
 
 struct PlayerData {
-	int score;
 	int rounds_won;
 	struct PaddleData *paddle;
 };
 
+enum BallState {
+	BS_NORMAL=0,
+	BS_KNUCKLEBALL=0,
+};
 
 struct BallData {
 	Vector2 pos;
-	Vector2 vel;
 	int radius;
+	Vector2 vel;
+	int speed; // Usually just the y component of speed, but sometimes applied in ball direction (e.g. knuckleball)
+
+	enum BallState state;
+
+	int kb_dir; // Angle direction when knuckleball
+	int kb_desired_dir; // Desired angle
+	
+
+	
 };
 
 struct PongState {

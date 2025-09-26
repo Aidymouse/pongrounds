@@ -12,6 +12,9 @@
 
 #define BALL_INIT_SPEED (200)
 #define DEFAULT_PADDLE_WIDTH (100)
+#define DEFAULT_PADDLE_HP (100)
+
+#define SCORE_DAMAGE (50) // Damage against opponent when you score against them
 
 // TODO: these should be user defined somewhere
 #define P1_LEFT_KEY 65 // A Key
