@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "helper.h"
 #include "raylib.h"
 #include <math.h>
@@ -15,13 +16,13 @@ void DrawTextCentered(const char *t, int x, int y, int fontSize, Color color) {
 /** Gets closest distance in degrees between two angles, assuming negative is rotating anti-clockwise and positive rotating clockwise */
 float get_angle_distance(float angle1, float angle2) {
 
-	// Compare angle 1 to angle 2 at its normal angle and its angle +360. Take the shorter of both direction to both angles, then the shorter of those two.
 
+	// Normalize all angles so they're from 0 to 360
 	angle1 = fmod(angle1, 360);
-	if (angle1 < 0) { angle1 = 360 + angle2; }
 	angle2 = fmod(angle2, 360);
+	if (angle1 < 0) { angle1 = 360 + angle1; }
 	if (angle2 < 0) { angle2 = 360 + angle2; }
-	
+
 	float dist1 = angle2 - angle1;
 	float dist2 = (angle2+360) - angle1;
 	if (abs(dist1) < abs(dist2)) { return dist1; } else { return dist2; }

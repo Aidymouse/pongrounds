@@ -8,6 +8,7 @@
 #include "raylib.h"
 #include "structs.h"
 #include "Vec2.h"
+#include "helper.h"
 
 
 
@@ -45,6 +46,7 @@ void init_ball(struct BallData *b) {
 	b->vel.y = BALL_INIT_SPEED;
 	b->vel.x = 0;
 	b->speed = BALL_INIT_SPEED;
+	b->state = BS_NORMAL;
 }
 
 void init_pong_state(struct PongState *g) {
@@ -130,6 +132,8 @@ int main(void)
     }
 
     CloseWindow();
+
+	printf("%f", get_angle_distance(-65.11, 90));
 
     return 0;
 }

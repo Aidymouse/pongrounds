@@ -4,6 +4,9 @@
 double to_degrees(double radians) {
     return radians * (180.0 / M_PI);
 }
+double to_radians(double degrees) {
+	return degrees / (180.0 / M_PI);
+}
 
 Vector2 Vec2Add(Vector2 v1, Vector2 v2) {
 	Vector2 added;
@@ -25,3 +28,22 @@ float Vec2GetAngle(Vector2 v) {
 	return to_degrees(a);
 }
 
+float Vec2GetMagnitude(Vector2 v) {
+	return sqrt(v.x*v.x + v.y*v.y);
+}
+
+Vector2 Vec2Normalize(Vector2 v) {
+	float mag = Vec2GetMagnitude(v);
+	Vector2 norm;
+	norm.x = v.x / mag;
+	norm.y = v.y / mag;
+	return norm;
+}
+
+Vector2 Vec2Rotate(Vector2 v, float degrees) {
+	Vector2 rotated;
+	float rad = to_radians(degrees);
+	rotated.x = v.x * cos(rad) - v.y * sin(rad);
+	rotated.y = v.x * sin(rad) + v.y * cos(rad);
+	return rotated;
+}

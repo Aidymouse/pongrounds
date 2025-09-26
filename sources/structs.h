@@ -40,8 +40,8 @@ struct PlayerData {
 };
 
 enum BallState {
-	BS_NORMAL=0,
-	BS_KNUCKLEBALL=0,
+	BS_NORMAL,
+	BS_KNUCKLEBALL,
 };
 
 struct BallData {
@@ -52,8 +52,8 @@ struct BallData {
 
 	enum BallState state;
 
-	int kb_dir; // Angle direction when knuckleball
-	int kb_desired_dir; // Desired angle
+	Vector2 kb_dir; // Angle direction when knuckleball
+	int kb_desired_dir; // Desired side of the screen: -1 is top, 1 is bottom
 	
 
 	

@@ -67,19 +67,28 @@ void ball_reflect(struct BallData *b) {
 		b->vel.y = b->speed;
 	}
 
+	b->kb_dir.y = -b->kb_dir.y;
+
 }
 
 void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 	ball_reflect(b);
 
+	b->vel.x = randInt(-300, 300);
+
+	// TODO: start ball knuckleball
+	b->state = BS_KNUCKLEBALL;
+	b->kb_dir = Vec2Normalize(b->vel);
+	
+	printf("vel %f, %f\n", b->vel.x, b->vel.y);
+	printf("kb dir %f, %f\n", b->kb_dir.x, b->kb_dir.y);
+
 	if (p->items[ITEM_NIEKRO_CARD] > 0) {
 		int knuckleball_chance = 20 + p->items[ITEM_NIEKRO_CARD]-1 * 5;
 		if (randInt(1, 100) < knuckleball_chance) {
- 			// TODO: start ball knuckleball
 		}
 	}
 
-	b->vel.x = randInt(-300, 300);
 }
 
 void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct PlayerData *opponent) {
@@ -92,9 +101,39 @@ void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct Player
 }
 
 void ball_move(float dt, struct BallData *ball) {
-	ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, dt));
 
-	// TODO: knuckleball
+
+	if (ball->state == BS_NORMAL) {
+		// If this occurs alongside knuckleball, the ball sways around all drunk its really fun
+		ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, dt));
+	} else if (ball->state == BS_KNUCKLEBALL) {
+		// Weight toward direction side depending on how far i am.
+
+		/*
+		Vector2 dir_vec; 
+		dir_vec.x = 0;
+		dir_vec.y = ball->kb_desired_dir; // Pointing straight up
+		float desired_angle = Vec2GetAngle(dir_vec);
+		*/
+
+		// This code is equiv to the above commented out block
+		float desired_angle;
+		if (ball->kb_desired_dir == -1) {
+			desired_angle = -90;
+		} else {
+			desired_angle = 90;
+		}
+
+		float dist_to_desired = get_angle_distance(Vec2GetAngle(ball->kb_dir), desired_angle);
+
+		ball->kb_dir = Vec2Rotate(ball->kb_dir, 2);
+
+		ball->pos = Vec2Add(ball->pos, Vec2MultScalar(Vec2MultScalar(ball->kb_dir, ball->speed), dt));
+
+
+
+		// IDEA: If we're far enough toward one side just commit to a loop
+	}
 }
 
 
@@ -208,6 +247,8 @@ void draw_pong(struct GameState *state) {
 	
 		// BALL
 		DrawCircle(ball->pos.x, ball->pos.y, ball->radius, WHITE);
+		// Draw line of balls knuckleball facing
+		DrawLine(ball->pos.x, ball->pos.y, ball->pos.x + ball->kb_dir.x*10, ball->pos.y + ball->kb_dir.y*10, RED);
 
 		// Score
 		display_items(p1, 20, 20);
