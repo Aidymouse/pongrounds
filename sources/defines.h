@@ -8,7 +8,7 @@
 #define POINTS_PER_ROUND (2)
 #define NUM_ROUNDS (7)
 
-#define NUM_ITEMS 4
+#define NUM_ITEMS 5
 
 #define BALL_INIT_SPEED (200)
 #define DEFAULT_PADDLE_WIDTH (100)
