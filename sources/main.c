@@ -18,13 +18,14 @@ void init_gamestate(struct GameState *gs) {
 }
 
 void init_paddle(struct PaddleData *p) {
-	p->pos.x = SCREEN_WIDTH/2 - 50;
-	p->pos.y = 40;
+	p->pos.x = SCREEN_WIDTH/2 - DEFAULT_PADDLE_WIDTH/2;
 	p->paddle_width = DEFAULT_PADDLE_WIDTH;
 	p->paddle_thickness = 10;
 	p->color = WHITE;
 	p->hp = DEFAULT_PADDLE_HP;
 	p->max_hp = DEFAULT_PADDLE_HP;
+	p->vel.x = 0;
+	p->vel.y = 0;
 
 	for (int i=0; i<16; i++) {
 		p->items[i] = 0;
@@ -47,6 +48,8 @@ void init_ball(struct BallData *b) {
 	b->vel.x = 0;
 	b->speed = BALL_INIT_SPEED;
 	b->state = BS_NORMAL;
+	b->score_damage = BALL_SCORE_DAMAGE;
+	b->destroyed = false;
 
 	b->kb_turn_speed = 100;
 
@@ -54,6 +57,11 @@ void init_ball(struct BallData *b) {
 
 void init_pong_state(struct PongState *g) {
 	g->current_round = 0;
+	g->num_balls = 1;
+	init_ball(&(g->balls[0]));
+	//init_ball(&(g->balls[1]));
+	g->ball_respawn_timer = 0;
+	
 }
 
 void init_pick_items_state(struct PickItemsState *s) {
@@ -93,17 +101,19 @@ int main(void)
 
 	//refresh_paddle(&p2);
 
+	p1.pos.y = 40;
 	p1.color = BLUE;
+	p1.id = 1;
 
 	p2.pos.y = SCREEN_HEIGHT - p2.paddle_thickness - 40;
 	p2.color = ORANGE;
+	p2.id = 2;
 
 	struct BallData ball;
 	init_ball(&ball);
 
 	state.player1 = &player1;
 	state.player2 = &player2;
-	state.ball = &ball;
 	state.pong_state = &pong_state;
 	state.pick_items_state = &pick_items_state;
 
@@ -135,14 +145,6 @@ int main(void)
     }
 
     CloseWindow();
-
-	printf("%f\n", get_angle_distance(-65.11, 90));
-
-	Vector2 a = GetVec2FromAngle(120);
-	printf("(%f, %f)\n", a.x, a.y);
-	float angle = Vec2GetAngle(a);
-	printf("%f\n", angle);
-
 
     return 0;
 }

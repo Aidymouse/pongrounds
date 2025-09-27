@@ -14,11 +14,9 @@ void roll_items(struct PickItemsState *state) {
 	int items_remaining = NUM_ITEMS;
 	
 	// Pick item from swap back array, removing it from the array
-	printf("num item choices %d\n", state->num_item_choices);
 	for (int i=0; i<state->num_item_choices; i++) {
 		int item_idx = randInt(0, items_remaining-1);
 		state->item_choices[i] = items[item_idx];
-		printf("Picked %s\n",item_labels[items[item_idx]]);
 		items[item_idx] = items[items_remaining-1];
 		items_remaining--;
 	}

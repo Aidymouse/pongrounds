@@ -14,7 +14,9 @@
 #define DEFAULT_PADDLE_WIDTH (100)
 #define DEFAULT_PADDLE_HP (100)
 
-#define SCORE_DAMAGE (50) // Damage against opponent when you score against them
+// Pong
+#define BALL_SCORE_DAMAGE (50) // Damage against opponent when you score against them
+#define BALL_RESPAWN_DELAY (1) // seconds after score that the ball respawns
 
 // TODO: these should be user defined somewhere
 #define P1_LEFT_KEY 65 // A Key

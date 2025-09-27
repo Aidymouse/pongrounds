@@ -8,7 +8,15 @@ const char *item_labels[] = {
 	"Cherry Blossom Cloak",
 	"Hyper Gonadism",
 	"Chastity Cage",
+	"Nerd Glasses",
+	"Ceremonial Sword",
+	"Time Wizards Chronometer",
+	"Bachelor of Psychology (Hons)",
+	"Russian Secrets",
+	"Legally Distinct Golden Snotch",
 	"Niekro Trading Card",
+	"Antique Game Console",
+
 };
 
 const char *item_descriptions[] = {
@@ -16,7 +24,13 @@ const char *item_descriptions[] = {
 	"Lets you dash", // Cherry Blossom Cloak
 	"Makes your paddle wider",
 	"Makes your opponents paddle shorter", // Chastity Cage
+	"", // Nerd Glasses
+	"", // Ceremonial Sword
+	"", // Time Wizards Chronometer
+	"", // Bachelor of psychology (hons)
+	"", // Snotch
 	"Chance to launch a knuckeball on bounce",
+	"", // Snotch
 };
 
 #endif

@@ -58,36 +58,9 @@ void ball_respawn(struct BallData *b) {
 	b->vel.y = -b->vel.y;
 	//if (b->vel.y < 0) { b->vel.y = -BALL_INIT_SPEED; } else { b->vel.y = BALL_INIT_SPEED; }
 	b->speed = BALL_INIT_SPEED;
+	b->destroyed = false;
 }
 
-void ball_reflect(struct BallData *b) {
-	//b->speed += 20; // TODO:
-	if (b->vel.y > 0) {
-		b->vel.y = -b->speed;
-	} else {
-		b->vel.y = b->speed;
-	}
-
-	/*
-	if (b->state == BS_KNUCKLEBALL) {
-		// Reflect desired Y
-		b->kb_dir.y = -b->kb_dir.y;
-
-		printf("desired side: %d\n", b->kb_desired_side);
-		b->kb_desired_side = -b->kb_desired_side;
-
-		Vector2 d = GetVec2FromAngle(b->kb_desired_angle);
-		if (b->kb_desired_side == -1) { // Top
-			if (d.y > 0) { d.y = -d.y; }
-		} else {
-			if (d.y < 0) { d.y = -d.y; }
-		}
-		b->kb_desired_angle = Vec2GetAngle(d);
-	}
-	*/
-
-
-}
 
 void ball_reflect_wall(struct BallData *b) {
 	b->vel.x = -b->vel.x;
@@ -118,6 +91,10 @@ void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 
 	//TODO: push the ball OUT of the paddle back the way it came first. We could probably be lazy and make it a linear push to the closest side but thats risky if the ball is going very fast
 
+	if (b->state == BS_KNUCKLEBALL) {
+		b->state = BS_NORMAL;
+	}
+
 	if (p->items[ITEM_NIEKRO_CARD] > 0) {
 		int knuckleball_chance = 20 + p->items[ITEM_NIEKRO_CARD]-1 * 5; if (randInt(1, 100) < knuckleball_chance) {
 			b->state = BS_KNUCKLEBALL;
@@ -134,8 +111,9 @@ void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct Player
 	struct PaddleData *paddle = scorer->paddle;
 
 	//scorer->score +=1;
-	opponent->paddle->hp -= SCORE_DAMAGE;
-	ball_respawn(b);
+	opponent->paddle->hp -= b->score_damage;
+	//ball_respawn(b);
+	b->destroyed = true;
 }
 
 void ball_move(float dt, struct BallData *ball) {
@@ -164,8 +142,7 @@ void ball_move(float dt, struct BallData *ball) {
 			ball->kb_dir = Vec2Rotate(ball->kb_dir, ball->kb_turn_speed * dt);
 		}
 
-		ball->vel = Vec2MultScalar(ball->kb_dir, ball->speed);
-		ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, dt));
+		ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*0.8*dt));
 
 		ball->kb_dir_timer -= dt;
 
@@ -188,8 +165,10 @@ void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls)
 
 		if (p->vel.x > 300) {
 			p->vel.x -= 500;
+
 		} else if (p->vel.x < -300) {
 			p->vel.x += 500;
+
 		} else if (IsKeyDown(controls.left)) {
 				p->vel.x = -300;
 
@@ -217,15 +196,20 @@ void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls)
 
 void state_pong(float dt, struct GameState *state) {
 
+		struct PongState *pong_state = state->pong_state;
+
+
 		struct PlayerData *player1 = state->player1;
 		struct PlayerData *player2 = state->player2;
 		struct PaddleData *p1 = player1->paddle;
 		struct PaddleData *p2 = player2->paddle;
 
-		struct BallData *ball = state->ball;
-
 		// Update //
-		ball_move(dt, ball);
+		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
+			struct BallData *ball = &(state->pong_state->balls[b_idx]);
+			if (ball->destroyed) continue;
+			ball_move(dt, ball);
+		}
 
 		/** Player control **/
 		struct PaddleControls p1_controls = { P1_LEFT_KEY, P1_RIGHT_KEY, P1_DASH_KEY };
@@ -234,52 +218,79 @@ void state_pong(float dt, struct GameState *state) {
 		paddle_move(dt, p2, p2_controls);
 
 		/** Collisions **/
+		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
+			// Left and right of screen
+			struct BallData *ball = &(state->pong_state->balls[b_idx]);
 
-		// Left and right of screen
-		if (ball->pos.x - ball->radius <= 0) {
-			ball->pos.x = ball->radius;
-			ball_reflect_wall(ball);
-		} else if (ball->pos.x + ball->radius >= SCREEN_WIDTH) {
-			ball->pos.x = SCREEN_WIDTH - ball->radius;
-			ball_reflect_wall(ball);
+			if (ball->destroyed) { continue; }
+
+			if (ball->pos.x - ball->radius <= 0) {
+				ball->pos.x = ball->radius;
+				ball_reflect_wall(ball);
+			} else if (ball->pos.x + ball->radius >= SCREEN_WIDTH) {
+				ball->pos.x = SCREEN_WIDTH - ball->radius;
+				ball_reflect_wall(ball);
+			}
+
+			// Paddle Ball Collisions
+			struct Rectangle p1Rect = {p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness};
+			if (CheckCollisionCircleRec(ball->pos, ball->radius, p1Rect)) {
+				ball_paddle_hit(ball, p1);
+			}
+			struct Rectangle p2Rect = {p2->pos.x, p2->pos.y, p2->paddle_width, p2->paddle_thickness};
+			if (CheckCollisionCircleRec(ball->pos, ball->radius, p2Rect)) {
+				ball_paddle_hit(ball, p2);
+			}
+		
+			// Expired panadol edge of screen collision
+			if (ball->pos.y - ball->radius < 0 && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
+				p1->items[ITEM_EXPIRED_PANADOL] -= 1;
+				ball->vel.y = -ball->vel.y; // TODO: better reflection fn
+			} else if (ball->pos.y + ball->radius > SCREEN_HEIGHT && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
+				p2->items[ITEM_EXPIRED_PANADOL] -= 1;
+				ball->vel.y = -ball->vel.y; // TODO: better reflection fn
+			}
+		
+			// Scoring
+			if (ball->pos.y - ball->radius > SCREEN_HEIGHT+10) {
+				ball_score_hit(ball, player1, player2);
+			} else if (ball->pos.y + ball->radius + 10 < 0) {
+				ball_score_hit(ball, player2, player1);
+			}
 		}
 
-		// Paddle Ball Collisions
-		struct Rectangle p1Rect = {p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness};
-		if (CheckCollisionCircleRec(ball->pos, ball->radius, p1Rect)) {
-			ball_paddle_hit(ball, p1);
-		}
-		struct Rectangle p2Rect = {p2->pos.x, p2->pos.y, p2->paddle_width, p2->paddle_thickness};
-		if (CheckCollisionCircleRec(ball->pos, ball->radius, p2Rect)) {
-			ball_paddle_hit(ball, p2);
-		}
 
-		// Expired panadol edge of screen collision
-		if (ball->pos.y - ball->radius < 0 && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
-			p1->items[ITEM_EXPIRED_PANADOL] -= 1;
-			ball->vel.y = -ball->vel.y; // TODO: better reflection fn
-			//ball_reflect(ball);
-		} else if (ball->pos.y + ball->radius > SCREEN_HEIGHT && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
-			p2->items[ITEM_EXPIRED_PANADOL] -= 1;
-			ball->vel.y = -ball->vel.y; // TODO: better reflection fn
-			//ball_reflect(ball);
+		// If all balls are destroyed, set the timer to respawn the ball
+		bool all_destroyed = true;
+		for (int b_idx = 0; b_idx < pong_state->num_balls; b_idx++) {
+			struct BallData *ball = &(pong_state->balls[b_idx]);
+			if (ball->destroyed == false) {
+				all_destroyed = false;
+				break;
+			}
 		}
 
-		// Scoring
-		if (ball->pos.y - ball->radius > SCREEN_HEIGHT+10) {
-			ball_score_hit(ball, player1, player2);
-		} else if (ball->pos.y + ball->radius + 10 < 0) {
-			ball_score_hit(ball, player2, player1);
+		if (all_destroyed && pong_state->ball_respawn_timer <= 0) {
+			state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
+		}
+		
+		// Respawn ball if timer's up
+		if (pong_state->ball_respawn_timer > 0) {
+			pong_state->ball_respawn_timer -= dt;
+			if (pong_state->ball_respawn_timer <= 0) {
+				pong_state->num_balls = 1;
+				ball_respawn(&(state->pong_state->balls[0]));
+				
+				// Detect end of round (after respawn delay for game feel)
+				if (player1->paddle->hp <= 0) {
+					change_state_to_pick_items(state, player1->paddle);
+				} else if (player2->paddle->hp <= 0) {
+					change_state_to_pick_items(state, player2->paddle);
+				}
+
+			}
 		}
 
-
-
-		// Detect end of round
-		if (player1->paddle->hp <= 0) {
-			change_state_to_pick_items(state, player1->paddle);
-		} else if (player2->paddle->hp <= 0) {
-			change_state_to_pick_items(state, player2->paddle);
-		}
 }
 
 void draw_pong(struct GameState *state) {
@@ -290,8 +301,6 @@ void draw_pong(struct GameState *state) {
 		struct PaddleData *p1 = player1->paddle;
 		struct PaddleData *p2 = player2->paddle;
 
-		struct  BallData *ball = state->ball;
-
 		// Draw Paddle One
 		DrawRectangle(p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness, p1->color);
 
@@ -299,7 +308,10 @@ void draw_pong(struct GameState *state) {
 		DrawRectangle(p2->pos.x, p2->pos.y, p2->paddle_width, p2->paddle_thickness, p2->color);
 	
 		// BALL
-		display_ball(ball, false);
+		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
+			struct BallData *ball = &(state->pong_state->balls[b_idx]);
+			display_ball(ball, false);
+		}
 
 		// Score
 		display_items(p1, 20, 20);

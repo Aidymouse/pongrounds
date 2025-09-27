@@ -41,18 +41,25 @@ struct PlayerData {
 };
 
 enum BallState {
-	BS_NORMAL,
-	BS_KNUCKLEBALL,
+	BS_NORMAL, // Bounces and moves as normal
+	BS_KNUCKLEBALL, // Moves funny
+	BS_DESTROYED, // Doesn't update at all
 };
 
 struct BallData {
 	Vector2 pos;
 	int radius;
-	Vector2 vel;
-	int speed; // Usually just the y component of speed, but sometimes applied in ball direction (e.g. knuckleball)
+	// Actually the unit vector direction of velocity
+	Vector2 vel; 
+	int speed; 
+	bool destroyed;
+
+	// How much damage to inflict when a point is scored with this ball
+	int score_damage; 
 
 	enum BallState state;
 
+	// KB state vars //
 	// Angle direction when knuckleball
 	Vector2 kb_dir; 
 	// The dir we try to move towards
@@ -60,7 +67,9 @@ struct BallData {
 	float kb_turn_speed;
 	// Desired side of the screen: -1 is top, 1 is bottom
 	int kb_desired_side; 
-	float kb_dir_timer; // When this timer hit's 0 we pick a new desired dir. Time varies from like .2s to .8s
+	// When this timer hit's 0 we pick a new desired dir. Time varies from like .2s to .8s
+	float kb_dir_timer; 
+
 	
 
 	
@@ -68,6 +77,9 @@ struct BallData {
 
 struct PongState {
 	int current_round;
+	float ball_respawn_timer; // Time that delays the ball respawn
+	int num_balls;
+	struct BallData balls[16]; // Up to 16 balls!
 };
 
 struct PickItemsState {
@@ -82,7 +94,6 @@ struct GameState {
 
 	struct PlayerData *player1;
 	struct PlayerData *player2;
-	struct BallData *ball;
 	struct PongState *pong_state;
 	struct PickItemsState *pick_items_state;
 };
