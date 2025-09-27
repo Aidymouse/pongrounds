@@ -10,7 +10,7 @@
 
 #define NUM_ITEMS 5
 
-#define BALL_INIT_SPEED (200)
+#define BALL_INIT_SPEED (200) // usually 200
 #define DEFAULT_PADDLE_WIDTH (100)
 #define DEFAULT_PADDLE_HP (100)
 

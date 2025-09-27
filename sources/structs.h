@@ -21,6 +21,7 @@ enum GAME_STATES {
 struct PaddleData {
 	Vector2 pos;
 	Vector2 vel;
+	int id; // 1 is player 1, 2 is player 2. Player 2 owns the bottom side of the screen
 
 	int paddle_width;
 	int paddle_thickness;
@@ -52,8 +53,14 @@ struct BallData {
 
 	enum BallState state;
 
-	Vector2 kb_dir; // Angle direction when knuckleball
-	int kb_desired_dir; // Desired side of the screen: -1 is top, 1 is bottom
+	// Angle direction when knuckleball
+	Vector2 kb_dir; 
+	// The dir we try to move towards
+	float kb_desired_angle; 
+	float kb_turn_speed;
+	// Desired side of the screen: -1 is top, 1 is bottom
+	int kb_desired_side; 
+	float kb_dir_timer; // When this timer hit's 0 we pick a new desired dir. Time varies from like .2s to .8s
 	
 
 	

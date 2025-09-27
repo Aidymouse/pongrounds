@@ -21,7 +21,7 @@ void init_paddle(struct PaddleData *p) {
 	p->pos.x = SCREEN_WIDTH/2 - 50;
 	p->pos.y = 40;
 	p->paddle_width = DEFAULT_PADDLE_WIDTH;
-	p->paddle_thickness = 20;
+	p->paddle_thickness = 10;
 	p->color = WHITE;
 	p->hp = DEFAULT_PADDLE_HP;
 	p->max_hp = DEFAULT_PADDLE_HP;
@@ -43,10 +43,13 @@ void init_ball(struct BallData *b) {
 	b->pos.x = SCREEN_WIDTH/2;
 	b->pos.y = SCREEN_HEIGHT/2;
 	b->radius = 6;
-	b->vel.y = BALL_INIT_SPEED;
+	b->vel.y = 1;
 	b->vel.x = 0;
 	b->speed = BALL_INIT_SPEED;
 	b->state = BS_NORMAL;
+
+	b->kb_turn_speed = 100;
+
 }
 
 void init_pong_state(struct PongState *g) {
@@ -133,7 +136,13 @@ int main(void)
 
     CloseWindow();
 
-	printf("%f", get_angle_distance(-65.11, 90));
+	printf("%f\n", get_angle_distance(-65.11, 90));
+
+	Vector2 a = GetVec2FromAngle(120);
+	printf("(%f, %f)\n", a.x, a.y);
+	float angle = Vec2GetAngle(a);
+	printf("%f\n", angle);
+
 
     return 0;
 }
