@@ -53,11 +53,11 @@ void state_pong(float dt, struct GameState *state) {
 		struct PaddleControls p2_controls = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY };
 		paddle_move(dt, p2, p2_controls, state);
 
-		if (IsKeyPressed(P1_SWORD_KEY) && p1->sword_cooldown_timer <= 0) {
-			paddle_swing_sword(p1);
+		if (IsKeyPressed(P1_ITEM_KEY)) {
+			paddle_activate_items(dt, p1);
 		}
-		if (IsKeyPressed(P2_SWORD_KEY) && p2->sword_cooldown_timer <= 0) {
-			paddle_swing_sword(p2);
+		if (IsKeyPressed(P2_ITEM_KEY)) {
+			paddle_activate_items(dt, p2);
 		}
 		
 		// Update sword + items
@@ -77,7 +77,7 @@ void state_pong(float dt, struct GameState *state) {
 			for (int p=0; p<2; p++) {
 				struct PaddleData *paddle = paddles[p];
 				if (paddle->items[ITEM_CEREMONIAL_SWORD] > 0 && paddle->sword_timer > 0) {
-					if (CheckCollisionCircleRec(ball->pos, ball->radius, (Rectangle){paddle->pos.x, paddle->pos.y-50, paddle->paddle_width, 50})) {
+					if (CheckCollisionCircleRec(ball->pos, ball->radius, sword_get_hitbox(paddle))) {
 						ball_sword_hit(ball, pong_state);
 						paddle->sword_timer = 0;
 					}

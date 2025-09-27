@@ -85,11 +85,11 @@ void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls,
 		}
 }
 
-void paddle_activate_item(float dt, struct PaddleData *p) {
-}
+void paddle_activate_items(float dt, struct PaddleData *p) {
 
-void paddle_swing_sword(struct PaddleData *p) {
-	if (p->items[ITEM_CEREMONIAL_SWORD] > 0) {
+	if (p->items[ITEM_CEREMONIAL_SWORD] > 0 && p->sword_cooldown_timer <= 0 && p->sword_timer <= 0) {
 		p->sword_timer = SWORD_DURATION;
 	}
+
 }
+

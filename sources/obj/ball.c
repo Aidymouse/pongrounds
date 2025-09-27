@@ -112,10 +112,12 @@ void ball_sword_hit(struct BallData *ball, struct PongState *pong_state) {
 	// Split into two balls!
 	// Make this ball half, duplicate self
 	ball->radius = ball->radius/2;
+	if (ball->radius < 1) { ball->radius = 1; }
 	ball->score_damage /= 2;
+	if (ball->score_damage < 5) { ball->score_damage = 5; }
 
 	struct BallData copy = *ball;
-	Vec2Rotate(copy.vel, randInt(-20, 20));
+	copy.vel = Vec2Rotate(copy.vel, randInt(-20, 20));
 	
 	pong_state->balls[pong_state->num_balls] = copy;
 	pong_state->num_balls += 1;

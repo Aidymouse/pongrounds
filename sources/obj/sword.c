@@ -17,16 +17,26 @@ void sword_swing(float dt, struct PaddleData *p) {
 
 }
 
+Rectangle sword_get_hitbox(struct PaddleData *p) {
+	Rectangle r = (Rectangle){p->pos.x, 0, p->paddle_width, 50};
+	if (p->id == 1) {
+		r.y = p->pos.y + p->paddle_thickness;
+	} else {
+		r.y = p->pos.y - r.height;
+	}
+	return r;
+}
 
 void sword_draw(struct PaddleData *p, bool debug) {
 	
+	Rectangle r = sword_get_hitbox(p);
 	if (debug) {
 		if (p->sword_timer > 0) {
-			DrawRectangleLines(p->pos.x, p->pos.y-50, p->paddle_width, 50, RED);
+			DrawRectangleLines(r.x, r.y, r.width, r.height, RED);
 		} else if (p->sword_cooldown_timer > 0) {
-			DrawRectangleLines(p->pos.x, p->pos.y-50, p->paddle_width, 50, BLUE);
+			DrawRectangleLines(r.x, r.y, r.width, r.height, BLUE);
 		} else {
-			DrawRectangleLines(p->pos.x, p->pos.y-50, p->paddle_width, 50, GRAY);
+			DrawRectangleLines(r.x, r.y, r.width, r.height, GRAY);
 		}
 		
 	}

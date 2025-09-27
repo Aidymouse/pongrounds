@@ -5,7 +5,7 @@
 /** Paddle **/
 void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state);
 void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state);
-void paddle_swing_sword(struct PaddleData *p);
+void paddle_activate_items(float dt, struct PaddleData *p);
 
 /** Ball **/
 void ball_move(float dt, struct BallData *ball);
@@ -20,3 +20,4 @@ void ball_refresh(struct BallData *ball);
 /** Sword **/
 void sword_swing(float dt, struct PaddleData *p);
 void sword_draw(struct PaddleData *p, bool debug);
+Rectangle sword_get_hitbox(struct PaddleData *p);
