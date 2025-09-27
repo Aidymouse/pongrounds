@@ -26,6 +26,8 @@ void init_paddle(struct PaddleData *p) {
 	p->max_hp = PADDLE_DEFAULT_HP;
 	p->vel.x = 0;
 	p->vel.y = 0;
+	p->speed = 300;
+	p->max_speed = 300;
 
 	for (int i=0; i<16; i++) {
 		p->items[i] = 0;

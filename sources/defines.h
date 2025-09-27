@@ -19,6 +19,7 @@
 
 #define PADDLE_DEFAULT_WIDTH (100)
 #define PADDLE_DEFAULT_HP (100)
+#define PADDLE_SPEED (300)
 
 #define SWORD_DURATION (0.1)
 #define SWORD_COOLDOWN (2)

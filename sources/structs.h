@@ -27,7 +27,10 @@ enum GAME_STATES {
 
 struct PaddleData {
 	Vector2 pos;
-	Vector2 vel;
+	Vector2 vel; // Unit vector velocity direction
+	float speed;
+	// Max normal speed while not dashing
+	float max_speed; 
 	int id; // 1 is player 1, 2 is player 2. Player 2 owns the bottom side of the screen
 
 	int paddle_width;
@@ -115,6 +118,8 @@ struct PaddleControls {
 	int left;
 	int right;
 	int dash;
+	int up;
+	int down;
 };
 
 #endif

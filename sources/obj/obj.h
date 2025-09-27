@@ -8,7 +8,7 @@ void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls,
 void paddle_activate_items(float dt, struct PaddleData *p);
 
 /** Ball **/
-void ball_move(float dt, struct BallData *ball);
+void ball_move(float dt, struct BallData *ball, struct GameState *state);
 void ball_respawn(struct BallData *b);
 void ball_reflect_wall(struct BallData *b);
 void ball_paddle_hit(struct BallData *b, struct PaddleData *p);

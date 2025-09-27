@@ -39,41 +39,55 @@ void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct Ga
 
 	p->paddle_width = PADDLE_DEFAULT_WIDTH + width_bonus - width_penalty;
 
-	// Update Y Position (in case screen zoom has changed via nerd glasses)
-	float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
-	float world_bottom = GetScreenToWorld2D((Vector2){0, SCREEN_HEIGHT}, *state->camera).y;
-	if (p->id == 1) {
-		p->pos.y = world_top + 40;
-	} else {
-		p->pos.y = world_bottom - p->paddle_thickness - 40;
+	// Update Y Position (in case screen zoom has changed via nerd glasses). But only if you don't have omnidirectional movement
+	if (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS] == 0) {
+		float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
+		float world_bottom = GetScreenToWorld2D((Vector2){0, SCREEN_HEIGHT}, *state->camera).y;
+		if (p->id == 1) {
+			p->pos.y = world_top + 40;
+		} else {
+			p->pos.y = world_bottom - p->paddle_thickness - 40;
+		}
 	}
 }
 
 void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state) {
 
-		if (p->vel.x > 300) {
-			p->vel.x -= 500;
 
-		} else if (p->vel.x < -300) {
-			p->vel.x += 500;
+		// Higher than max speed and we're dashing - no control allowed
+		if (p->speed <= p->max_speed) { 
+			if (IsKeyDown(controls.left)) {
+				p->vel.x = -1;
+			} else if (IsKeyDown(controls.right)) {
+				p->vel.x = 1;
+			} else {
+				p->vel.x = 0;
+			}
 
-		} else if (IsKeyDown(controls.left)) {
-				p->vel.x = -300;
-
-				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
-					p->vel.x = -3000 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*-100;
+			if (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS] > 0) {
+				if (IsKeyDown(controls.up)) {
+					p->vel.y = -1;
+				} else if (IsKeyDown(controls.down)) {
+					p->vel.y = 1;
+				} else {
+					p->vel.y = 0;
 				}
-		} else if (IsKeyDown(controls.right)) {
-				p->vel.x = 300;
-
-				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
-					p->vel.x = 3000 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*100;
-				}
-		} else {
-			p->vel.x = 0;
+			}
 		}
 
-		p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, dt));
+		if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyPressed(controls.dash)) {
+			p->speed = 2200 + 200*p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1;
+		}
+
+		// Decelerate dash
+		if (p->speed > p->max_speed) {
+			p->speed -= 250;
+			if (p->speed < p->max_speed) {
+				p->speed = p->max_speed;
+			}
+		}
+
+		p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, p->speed*dt));
 
 		float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
 		float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;

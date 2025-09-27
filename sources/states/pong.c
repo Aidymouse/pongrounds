@@ -44,13 +44,13 @@ void state_pong(float dt, struct GameState *state) {
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
 			if (ball->destroyed) continue;
-			ball_move(dt, ball);
+			ball_move(dt, ball, state);
 		}
 
 		/** Player control **/
-		struct PaddleControls p1_controls = { P1_LEFT_KEY, P1_RIGHT_KEY, P1_DASH_KEY };
+		struct PaddleControls p1_controls = { P1_LEFT_KEY, P1_RIGHT_KEY, P1_DASH_KEY, P1_UP_KEY, P1_DOWN_KEY };
 		paddle_move(dt, p1, p1_controls, state);
-		struct PaddleControls p2_controls = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY };
+		struct PaddleControls p2_controls = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY, P2_UP_KEY, P2_DOWN_KEY };
 		paddle_move(dt, p2, p2_controls, state);
 
 		if (IsKeyPressed(P1_ITEM_KEY)) {

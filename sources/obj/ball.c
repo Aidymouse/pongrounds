@@ -4,10 +4,9 @@
 #include "helper.h"
 #include "defines.h"
 
-void ball_move(float dt, struct BallData *ball) {
+void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 
 	if (ball->state == BS_NORMAL) {
-		ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*dt));
 
 	} else if (ball->state == BS_KNUCKLEBALL) {
 
@@ -30,12 +29,18 @@ void ball_move(float dt, struct BallData *ball) {
 			ball->kb_dir = Vec2Rotate(ball->kb_dir, ball->kb_turn_speed * dt);
 		}
 
-		ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*0.8*dt));
 
 		ball->kb_dir_timer -= dt;
 
 		// IDEA: If we're far enough toward one side just commit to a loop
 	}
+	
+	float speed_multiplier = 1;
+	if (ball->state == BS_KNUCKLEBALL) {
+		speed_multiplier *= 0.8;
+	}
+
+	ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*0.8*dt));
 }
 
 void ball_respawn(struct BallData *b) {
