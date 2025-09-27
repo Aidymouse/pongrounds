@@ -45,6 +45,7 @@ void ball_respawn(struct BallData *b) {
 	//if (b->vel.y < 0) { b->vel.y = -BALL_INIT_SPEED; } else { b->vel.y = BALL_INIT_SPEED; }
 	b->speed = BALL_INIT_SPEED;
 	b->destroyed = false;
+	b->radius = BALL_RADIUS;
 }
 
 
@@ -106,6 +107,19 @@ void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct Player
 	b->destroyed = true;
 }
 
+
+void ball_sword_hit(struct BallData *ball, struct PongState *pong_state) {
+	// Split into two balls!
+	// Make this ball half, duplicate self
+	ball->radius = ball->radius/2;
+	ball->score_damage /= 2;
+
+	struct BallData copy = *ball;
+	Vec2Rotate(copy.vel, randInt(-20, 20));
+	
+	pong_state->balls[pong_state->num_balls] = copy;
+	pong_state->num_balls += 1;
+}
 
 void ball_draw(struct BallData *ball, bool debug) {
 	DrawCircle(ball->pos.x, ball->pos.y, ball->radius, WHITE);

@@ -66,11 +66,24 @@ void state_pong(float dt, struct GameState *state) {
 
 
 		/** Collisions **/
+		struct PaddleData *paddles[2] = { p1, p2 };
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			// Left and right of screen
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
 
 			if (ball->destroyed) { continue; }
+
+			// Sword collision
+			for (int p=0; p<2; p++) {
+				struct PaddleData *paddle = paddles[p];
+				if (paddle->items[ITEM_CEREMONIAL_SWORD] > 0 && paddle->sword_timer > 0) {
+					if (CheckCollisionCircleRec(ball->pos, ball->radius, (Rectangle){paddle->pos.x, paddle->pos.y-50, paddle->paddle_width, 50})) {
+						ball_sword_hit(ball, pong_state);
+						paddle->sword_timer = 0;
+					}
+				}
+			}
+			
 
 
 			// Get the X of the walls

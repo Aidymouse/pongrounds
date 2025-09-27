@@ -33,6 +33,7 @@ void change_state_to_pong(struct GameState *state) {
 
 	paddle_refresh(state->player1->paddle, state->player2->paddle, state);
 	paddle_refresh(state->player2->paddle, state->player1->paddle, state);
+	//ball_refresh(&(state->pong_state->balls[0])); // No ball refresh cos pongs ball respawn handles it. Also it didnt work? idk why
 
 	state->state = PONG;
 }
