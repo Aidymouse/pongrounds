@@ -24,9 +24,14 @@ void change_state_to_pick_items(struct GameState *state, struct PaddleData *choo
 }
 
 void change_state_to_pong(struct GameState *state) {
+	int nerd_glasses = state->player1->paddle->items[ITEM_NERD_GLASSES] + state->player2->paddle->items[ITEM_NERD_GLASSES];
+	if (nerd_glasses > 0) {
+		state->camera->zoom = 0.8 - 0.05 * (nerd_glasses-1);
+	}
 
-	refresh_paddle(state->player1->paddle, state->player2->paddle);
-	refresh_paddle(state->player2->paddle, state->player1->paddle);
+
+	refresh_paddle(state->player1->paddle, state->player2->paddle, state);
+	refresh_paddle(state->player2->paddle, state->player1->paddle, state);
 
 	state->state = PONG;
 }

@@ -69,6 +69,12 @@ void init_pick_items_state(struct PickItemsState *s) {
 	s->num_item_choices = 3;
 }
 
+void init_camera(Camera2D *camera) {
+	camera->target = (Vector2){ SCREEN_WIDTH/2, SCREEN_HEIGHT/2 };
+	camera->offset = (Vector2){ SCREEN_WIDTH/2, SCREEN_HEIGHT/2 };
+	camera->zoom = 1.0f;
+	camera->rotation = 0.0;
+}
 
 
 // MAIN //
@@ -80,6 +86,9 @@ int main(void)
     Texture2D texture = LoadTexture(ASSETS_PATH"test.png"); // Check README.md for how this works
 
 	enum GAME_STATES game_state = PONG;
+
+	Camera2D camera;
+	init_camera(&camera);
 
 	struct GameState state;
 	init_gamestate(&state);
@@ -117,6 +126,7 @@ int main(void)
 	state.player2 = &player2;
 	state.pong_state = &pong_state;
 	state.pick_items_state = &pick_items_state;
+	state.camera = &camera;
 
 	float dt = 0;
 
@@ -134,6 +144,7 @@ int main(void)
 		// Draw
         BeginDrawing();
         ClearBackground(BLACK);
+
 
 		if (state.state == PONG) {
 			draw_pong(&state);

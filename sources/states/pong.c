@@ -10,7 +10,7 @@
 #include "helper.h"
 
 // Called on point score
-void refresh_paddle(struct PaddleData *p, struct PaddleData *opponent) {
+void refresh_paddle(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state) {
 
 	p->hp = p->max_hp;
 
@@ -44,6 +44,15 @@ void refresh_paddle(struct PaddleData *p, struct PaddleData *opponent) {
 	}
 
 	p->paddle_width = DEFAULT_PADDLE_WIDTH + width_bonus - width_penalty;
+
+	// Position
+	float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
+	float world_bottom = GetScreenToWorld2D((Vector2){0, SCREEN_HEIGHT}, *state->camera).y;
+	if (p->id == 1) {
+		p->pos.y = world_top + 40;
+	} else {
+		p->pos.y = world_bottom - p->paddle_thickness - 40;
+	}
 }
 
 void display_items(struct PaddleData *p, int x, int y) {
@@ -179,7 +188,7 @@ void display_ball(struct BallData *ball, bool debug) {
 }
 
 // PADDLE //
-void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls) {
+void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state) {
 
 		if (p->vel.x > 300) {
 			p->vel.x -= 500;
@@ -205,17 +214,19 @@ void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls)
 
 		p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, dt));
 
-		if (p->pos.x + p->paddle_width > SCREEN_WIDTH) {
-			p->pos.x = SCREEN_WIDTH - p->paddle_width;
-		} else if (p->pos.x < 0) {
-			p->pos.x = 0;
+		float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
+		float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
+
+		if (p->pos.x + p->paddle_width > world_right) {
+			p->pos.x = world_right - p->paddle_width;
+		} else if (p->pos.x < world_left) {
+			p->pos.x = world_left;
 		}
 }
 
 void state_pong(float dt, struct GameState *state) {
 
 		struct PongState *pong_state = state->pong_state;
-
 
 		struct PlayerData *player1 = state->player1;
 		struct PlayerData *player2 = state->player2;
@@ -231,9 +242,9 @@ void state_pong(float dt, struct GameState *state) {
 
 		/** Player control **/
 		struct PaddleControls p1_controls = { P1_LEFT_KEY, P1_RIGHT_KEY, P1_DASH_KEY };
-		paddle_move(dt, p1, p1_controls);
+		paddle_move(dt, p1, p1_controls, state);
 		struct PaddleControls p2_controls = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY };
-		paddle_move(dt, p2, p2_controls);
+		paddle_move(dt, p2, p2_controls, state);
 
 		/** Collisions **/
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
@@ -242,11 +253,17 @@ void state_pong(float dt, struct GameState *state) {
 
 			if (ball->destroyed) { continue; }
 
-			if (ball->pos.x - ball->radius <= 0) {
-				ball->pos.x = ball->radius;
+
+			// Get the X of the walls
+			//Vector2 left = (Vector2) {0, 0};
+			float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
+			float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
+
+			if (ball->pos.x - ball->radius <= world_left) {
+				ball->pos.x = world_left + ball->radius;
 				ball_reflect_wall(ball);
-			} else if (ball->pos.x + ball->radius >= SCREEN_WIDTH) {
-				ball->pos.x = SCREEN_WIDTH - ball->radius;
+			} else if (ball->pos.x + ball->radius >= world_right) {
+				ball->pos.x = world_right - ball->radius;
 				ball_reflect_wall(ball);
 			}
 
@@ -261,18 +278,21 @@ void state_pong(float dt, struct GameState *state) {
 			}
 		
 			// Expired panadol edge of screen collision
-			if (ball->pos.y - ball->radius < 0 && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
+			float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
+			float world_bottom = GetScreenToWorld2D((Vector2){0, SCREEN_HEIGHT}, *state->camera).y;
+
+			if (ball->pos.y - ball->radius < world_top && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
 				p1->items[ITEM_EXPIRED_PANADOL] -= 1;
 				ball->vel.y = -ball->vel.y; // TODO: better reflection fn
-			} else if (ball->pos.y + ball->radius > SCREEN_HEIGHT && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
+			} else if (ball->pos.y + ball->radius > world_bottom && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
 				p2->items[ITEM_EXPIRED_PANADOL] -= 1;
 				ball->vel.y = -ball->vel.y; // TODO: better reflection fn
 			}
 		
 			// Scoring
-			if (ball->pos.y - ball->radius > SCREEN_HEIGHT+10) {
+			if (ball->pos.y - ball->radius > world_bottom+10) {
 				ball_score_hit(ball, player1, player2);
-			} else if (ball->pos.y + ball->radius + 10 < 0) {
+			} else if (ball->pos.y + ball->radius + 10 < world_top) {
 				ball_score_hit(ball, player2, player1);
 			}
 		}
@@ -320,6 +340,7 @@ void draw_pong(struct GameState *state) {
 		struct PaddleData *p2 = player2->paddle;
 
 		// Draw Paddle One
+		BeginMode2D(*state->camera);
 		DrawRectangle(p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness, p1->color);
 
 		// Draw Paddle Two
@@ -330,6 +351,7 @@ void draw_pong(struct GameState *state) {
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
 			display_ball(ball, false);
 		}
+		EndMode2D();
 
 		// UI (health, items)
 		display_items(p1, 20, 20);

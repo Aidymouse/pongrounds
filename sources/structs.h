@@ -102,6 +102,7 @@ struct GameState {
 	struct PlayerData *player2;
 	struct PongState *pong_state;
 	struct PickItemsState *pick_items_state;
+	Camera2D *camera;
 };
 
 struct PaddleControls {
