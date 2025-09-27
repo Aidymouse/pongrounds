@@ -1,5 +1,4 @@
 #include "pong.h"
-
 #include <stdio.h>
 #include "defines.h"
 #include "controls.h"
@@ -53,6 +52,18 @@ void state_pong(float dt, struct GameState *state) {
 		paddle_move(dt, p1, p1_controls, state);
 		struct PaddleControls p2_controls = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY };
 		paddle_move(dt, p2, p2_controls, state);
+
+		if (IsKeyPressed(P1_SWORD_KEY) && p1->sword_cooldown_timer <= 0) {
+			paddle_swing_sword(p1);
+		}
+		if (IsKeyPressed(P2_SWORD_KEY) && p2->sword_cooldown_timer <= 0) {
+			paddle_swing_sword(p2);
+		}
+		
+		// Update sword + items
+		if (p1->items[ITEM_CEREMONIAL_SWORD] > 0) { sword_swing(dt, p1); }
+		if (p2->items[ITEM_CEREMONIAL_SWORD] > 0) { sword_swing(dt, p2); }
+
 
 		/** Collisions **/
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
@@ -147,12 +158,19 @@ void draw_pong(struct GameState *state) {
 		struct PaddleData *p1 = player1->paddle;
 		struct PaddleData *p2 = player2->paddle;
 
-		// Draw Paddle One
 		BeginMode2D(*state->camera);
+
+		// Draw Paddle One
 		DrawRectangle(p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness, p1->color);
+		if (p1->items[ITEM_CEREMONIAL_SWORD] > 0) {
+			sword_draw(p1, true);
+		}
 
 		// Draw Paddle Two
 		DrawRectangle(p2->pos.x, p2->pos.y, p2->paddle_width, p2->paddle_thickness, p2->color);
+		if (p2->items[ITEM_CEREMONIAL_SWORD] > 0) {
+			sword_draw(p2, true);
+		}
 	
 		// BALL
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {

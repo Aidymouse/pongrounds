@@ -36,9 +36,15 @@ struct PaddleData {
 	int max_hp;
 	Color color;
 	
-	int items[16]; // Current items. Idx of arr is equal to item enum
-	int items_total[16]; // Total held items, used to replenish above arr
+	// Current items. Idx of arr is equal to item enum
+	int items[16]; 
+	// Total held items, used to replenish above arr
+	int items_total[16]; 
 
+	// How long the sword hitbox lasts
+	float sword_timer;
+	// Cooldown before you can use the sword again
+	float sword_cooldown_timer;
 
 };
 

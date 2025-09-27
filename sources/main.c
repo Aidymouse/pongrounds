@@ -18,12 +18,12 @@ void init_gamestate(struct GameState *gs) {
 }
 
 void init_paddle(struct PaddleData *p) {
-	p->pos.x = SCREEN_WIDTH/2 - DEFAULT_PADDLE_WIDTH/2;
-	p->paddle_width = DEFAULT_PADDLE_WIDTH;
+	p->pos.x = SCREEN_WIDTH/2 - PADDLE_DEFAULT_WIDTH/2;
+	p->paddle_width = PADDLE_DEFAULT_WIDTH;
 	p->paddle_thickness = 10;
 	p->color = WHITE;
-	p->hp = DEFAULT_PADDLE_HP;
-	p->max_hp = DEFAULT_PADDLE_HP;
+	p->hp = PADDLE_DEFAULT_HP;
+	p->max_hp = PADDLE_DEFAULT_HP;
 	p->vel.x = 0;
 	p->vel.y = 0;
 

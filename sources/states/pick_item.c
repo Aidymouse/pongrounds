@@ -20,6 +20,8 @@ void roll_items(struct PickItemsState *state) {
 		items[item_idx] = items[items_remaining-1];
 		items_remaining--;
 	}
+
+	state->item_choices[0] = ITEM_CEREMONIAL_SWORD;
 }
 
 Rectangle get_rect_for_item_idx(int idx, int num_cards) {
@@ -46,6 +48,13 @@ void state_pick_items(struct PickItemsState *state, struct GameState *gamestate)
 		int item_idx = state->item_choices[state->hovered_item];
 		state->choosing_paddle->items[item_idx] += 1;
 		state->choosing_paddle->items_total[item_idx] += 1;
+
+		// Do any init of items
+		if (item_idx == ITEM_CEREMONIAL_SWORD) {
+			state->choosing_paddle->sword_timer = 0;
+			state->choosing_paddle->sword_cooldown_timer = 0;
+		}
+
 		change_state_to_pong(gamestate);
 	}
 }

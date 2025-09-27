@@ -2,6 +2,7 @@
 #include "obj.h"
 #include "defines.h"
 #include "Vec2.h"
+#include <stdio.h>
 
 void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state) {
 
@@ -15,28 +16,28 @@ void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct Ga
 	float width_bonus = 0;
 	if (p->items[ITEM_HYPERGONADISM] > 0) {
 
-		float new_width = DEFAULT_PADDLE_WIDTH + 20;
+		float new_width = PADDLE_DEFAULT_WIDTH + 20;
 
 		for (int b=p->items[ITEM_HYPERGONADISM]-1; b>0; b--) {
 			new_width *= 1.05;
 		}
 
-		width_bonus = new_width - DEFAULT_PADDLE_WIDTH;
+		width_bonus = new_width - PADDLE_DEFAULT_WIDTH;
 	}
 
 	float width_penalty = 0;
 	if (opponent->items[ITEM_CHASTITY_CAGE] > 0) {
 
-		float new_width = DEFAULT_PADDLE_WIDTH + 20;
+		float new_width = PADDLE_DEFAULT_WIDTH + 20;
 
 		for (int b=opponent->items[ITEM_CHASTITY_CAGE]-1; b>0; b--) {
 			new_width *= 1.05;
 		}
 
-		width_penalty = new_width - DEFAULT_PADDLE_WIDTH;
+		width_penalty = new_width - PADDLE_DEFAULT_WIDTH;
 	}
 
-	p->paddle_width = DEFAULT_PADDLE_WIDTH + width_bonus - width_penalty;
+	p->paddle_width = PADDLE_DEFAULT_WIDTH + width_bonus - width_penalty;
 
 	// Update Y Position (in case screen zoom has changed via nerd glasses)
 	float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
@@ -82,4 +83,13 @@ void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls,
 		} else if (p->pos.x < world_left) {
 			p->pos.x = world_left;
 		}
+}
+
+void paddle_activate_item(float dt, struct PaddleData *p) {
+}
+
+void paddle_swing_sword(struct PaddleData *p) {
+	if (p->items[ITEM_CEREMONIAL_SWORD] > 0) {
+		p->sword_timer = SWORD_DURATION;
+	}
 }
