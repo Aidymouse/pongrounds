@@ -3,6 +3,7 @@
 #include "Vec2.h"
 #include "helper.h"
 #include "defines.h"
+#include <stdio.h>
 
 void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 
@@ -32,6 +33,7 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 
 		ball->kb_dir_timer -= dt;
 
+		ball->vel = ball->kb_dir;
 		// IDEA: If we're far enough toward one side just commit to a loop
 	}
 	
@@ -40,7 +42,7 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 		speed_multiplier *= 0.8;
 	}
 
-	ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*0.8*dt));
+	ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*speed_multiplier*dt));
 }
 
 void ball_respawn(struct BallData *b) {
@@ -50,7 +52,9 @@ void ball_respawn(struct BallData *b) {
 	//if (b->vel.y < 0) { b->vel.y = -BALL_INIT_SPEED; } else { b->vel.y = BALL_INIT_SPEED; }
 	b->speed = BALL_INIT_SPEED;
 	b->destroyed = false;
+
 	b->radius = BALL_RADIUS;
+	b->score_damage = BALL_SCORE_DAMAGE;
 }
 
 
@@ -69,14 +73,23 @@ void ball_reflect_wall(struct BallData *b) {
 
 void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 
-
 	// Get away from the paddle!
 	Vector2 paddle_center;
 	paddle_center.x = p->pos.x + p->paddle_width/2;
 	paddle_center.y = p->pos.y + p->paddle_thickness/2;
 
 	Vector2 away = Vec2Sub(b->pos, paddle_center);	
-	Vector2 new_dir = Vec2Rotate(away, randInt(-20, 20));
+	Vector2 new_dir; //= Vec2Rotate(away, randInt(-20, 20));
+
+	if (b->pos.x > p->pos.x && b->pos.x < p->pos.x + p->paddle_width) {
+		float dir_angle = Vec2GetAngle(new_dir);
+		if (b->pos.y > paddle_center.y) {
+			new_dir = GetVec2FromAngle(randInt(10, 170));
+		} else {
+			new_dir = GetVec2FromAngle(randInt(190, 350));
+		}
+	}
+
 	b->vel = Vec2Normalize(new_dir);
 
 	if (b->last_hit_by != 0 && b->last_hit_by->id != p->id) {
@@ -92,7 +105,9 @@ void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 	}
 
 	if (p->items[ITEM_NIEKRO_CARD] > 0) {
-		int knuckleball_chance = 20 + p->items[ITEM_NIEKRO_CARD]-1 * 5; if (randInt(1, 100) < knuckleball_chance) {
+		int knuckleball_chance = 100 + 20 + 5 * p->items[ITEM_NIEKRO_CARD]-1;
+		if (randInt(1, 100) < knuckleball_chance) {
+			printf("Knuckleball!\n");
 			b->state = BS_KNUCKLEBALL;
 			b->kb_dir = Vec2Normalize(b->vel);
 			b->kb_desired_angle = Vec2GetAngle(b->kb_dir);
