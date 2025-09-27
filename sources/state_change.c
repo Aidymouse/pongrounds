@@ -2,6 +2,7 @@
 
 #include "states/pick_item.h"
 #include "states/pong.h"
+#include "obj/obj.h"
 
 #include <stdio.h>
 
@@ -30,8 +31,8 @@ void change_state_to_pong(struct GameState *state) {
 	}
 
 
-	refresh_paddle(state->player1->paddle, state->player2->paddle, state);
-	refresh_paddle(state->player2->paddle, state->player1->paddle, state);
+	paddle_refresh(state->player1->paddle, state->player2->paddle, state);
+	paddle_refresh(state->player2->paddle, state->player1->paddle, state);
 
 	state->state = PONG;
 }

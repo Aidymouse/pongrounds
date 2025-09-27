@@ -1,0 +1,85 @@
+#include "structs.h"
+#include "obj.h"
+#include "defines.h"
+#include "Vec2.h"
+
+void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state) {
+
+	p->hp = p->max_hp;
+
+	for (int i=0; i<16; i++) {
+		p->items[i] = p->items_total[i];
+	}
+
+	// Width changes have a flat bonus of 30, then a 5% width increase for every hypergonadism. It's 5% of the prior width so there's diminishing returns
+	float width_bonus = 0;
+	if (p->items[ITEM_HYPERGONADISM] > 0) {
+
+		float new_width = DEFAULT_PADDLE_WIDTH + 20;
+
+		for (int b=p->items[ITEM_HYPERGONADISM]-1; b>0; b--) {
+			new_width *= 1.05;
+		}
+
+		width_bonus = new_width - DEFAULT_PADDLE_WIDTH;
+	}
+
+	float width_penalty = 0;
+	if (opponent->items[ITEM_CHASTITY_CAGE] > 0) {
+
+		float new_width = DEFAULT_PADDLE_WIDTH + 20;
+
+		for (int b=opponent->items[ITEM_CHASTITY_CAGE]-1; b>0; b--) {
+			new_width *= 1.05;
+		}
+
+		width_penalty = new_width - DEFAULT_PADDLE_WIDTH;
+	}
+
+	p->paddle_width = DEFAULT_PADDLE_WIDTH + width_bonus - width_penalty;
+
+	// Update Y Position (in case screen zoom has changed via nerd glasses)
+	float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
+	float world_bottom = GetScreenToWorld2D((Vector2){0, SCREEN_HEIGHT}, *state->camera).y;
+	if (p->id == 1) {
+		p->pos.y = world_top + 40;
+	} else {
+		p->pos.y = world_bottom - p->paddle_thickness - 40;
+	}
+}
+
+void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state) {
+
+		if (p->vel.x > 300) {
+			p->vel.x -= 500;
+
+		} else if (p->vel.x < -300) {
+			p->vel.x += 500;
+
+		} else if (IsKeyDown(controls.left)) {
+				p->vel.x = -300;
+
+				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
+					p->vel.x = -3000 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*-100;
+				}
+		} else if (IsKeyDown(controls.right)) {
+				p->vel.x = 300;
+
+				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
+					p->vel.x = 3000 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*100;
+				}
+		} else {
+			p->vel.x = 0;
+		}
+
+		p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, dt));
+
+		float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
+		float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
+
+		if (p->pos.x + p->paddle_width > world_right) {
+			p->pos.x = world_right - p->paddle_width;
+		} else if (p->pos.x < world_left) {
+			p->pos.x = world_left;
+		}
+}

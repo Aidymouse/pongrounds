@@ -5,55 +5,12 @@
 #include "controls.h"
 #include "structs.h"
 #include "state_change.h"
+#include "obj/obj.h"
 
 #include "Vec2.h"
 #include "helper.h"
 
 // Called on point score
-void refresh_paddle(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state) {
-
-	p->hp = p->max_hp;
-
-	for (int i=0; i<16; i++) {
-		p->items[i] = p->items_total[i];
-	}
-
-	// Width changes have a flat bonus of 30, then a 5% width increase for every hypergonadism. It's 5% of the prior width so there's diminishing returns
-	float width_bonus = 0;
-	if (p->items[ITEM_HYPERGONADISM] > 0) {
-
-		float new_width = DEFAULT_PADDLE_WIDTH + 20;
-
-		for (int b=p->items[ITEM_HYPERGONADISM]-1; b>0; b--) {
-			new_width *= 1.05;
-		}
-
-		width_bonus = new_width - DEFAULT_PADDLE_WIDTH;
-	}
-
-	float width_penalty = 0;
-	if (opponent->items[ITEM_CHASTITY_CAGE] > 0) {
-
-		float new_width = DEFAULT_PADDLE_WIDTH + 20;
-
-		for (int b=opponent->items[ITEM_CHASTITY_CAGE]-1; b>0; b--) {
-			new_width *= 1.05;
-		}
-
-		width_penalty = new_width - DEFAULT_PADDLE_WIDTH;
-	}
-
-	p->paddle_width = DEFAULT_PADDLE_WIDTH + width_bonus - width_penalty;
-
-	// Position
-	float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
-	float world_bottom = GetScreenToWorld2D((Vector2){0, SCREEN_HEIGHT}, *state->camera).y;
-	if (p->id == 1) {
-		p->pos.y = world_top + 40;
-	} else {
-		p->pos.y = world_bottom - p->paddle_thickness - 40;
-	}
-}
 
 void display_items(struct PaddleData *p, int x, int y) {
 	for (int i=0; i<16; i++) {
@@ -74,155 +31,6 @@ void display_health(struct PlayerData *p, int x, int y) {
 	DrawRectangle(x - width/2, y, paddle->hp, 10, WHITE);
 }
 
-// BALL //
-void ball_respawn(struct BallData *b) {
-	b->pos.x = SCREEN_WIDTH/2;
-	b->pos.y = SCREEN_HEIGHT/2;
-	b->vel.y = -b->vel.y;
-	//if (b->vel.y < 0) { b->vel.y = -BALL_INIT_SPEED; } else { b->vel.y = BALL_INIT_SPEED; }
-	b->speed = BALL_INIT_SPEED;
-	b->destroyed = false;
-}
-
-
-void ball_reflect_wall(struct BallData *b) {
-	b->vel.x = -b->vel.x;
-
-	if (b->state == BS_KNUCKLEBALL) {
-		b->kb_dir.x = -b->kb_dir.x;
-
-		Vector2 d = GetVec2FromAngle(b->kb_desired_angle);
-		d.x = -d.x;
-		b->kb_desired_angle = Vec2GetAngle(d);
-		
-	}
-}
-
-void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
-
-
-	// Get away from the paddle!
-	Vector2 paddle_center;
-	paddle_center.x = p->pos.x + p->paddle_width/2;
-	paddle_center.y = p->pos.y + p->paddle_thickness/2;
-
-	Vector2 away = Vec2Sub(b->pos, paddle_center);	
-	Vector2 new_dir = Vec2Rotate(away, randInt(-20, 20));
-	b->vel = Vec2Normalize(new_dir);
-
-	if (b->last_hit_by != NULL && b->last_hit_by->id != p->id) {
-		b->speed += 20;
-	}
-
-	b->last_hit_by = p;
-
-	//TODO: push the ball OUT of the paddle back the way it came first. We could probably be lazy and make it a linear push to the closest side but thats risky if the ball is going very fast
-
-	if (b->state == BS_KNUCKLEBALL) {
-		b->state = BS_NORMAL;
-	}
-
-	if (p->items[ITEM_NIEKRO_CARD] > 0) {
-		int knuckleball_chance = 20 + p->items[ITEM_NIEKRO_CARD]-1 * 5; if (randInt(1, 100) < knuckleball_chance) {
-			b->state = BS_KNUCKLEBALL;
-			b->kb_dir = Vec2Normalize(b->vel);
-			b->kb_desired_angle = Vec2GetAngle(b->kb_dir);
-			b->kb_dir_timer = 0.3;
-		}
-	}
-
-}
-
-void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct PlayerData *opponent) {
-
-	struct PaddleData *paddle = scorer->paddle;
-
-	//scorer->score +=1;
-	opponent->paddle->hp -= b->score_damage;
-	//ball_respawn(b);
-	b->destroyed = true;
-}
-
-void ball_move(float dt, struct BallData *ball) {
-
-
-	if (ball->state == BS_NORMAL) {
-		ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*dt));
-	} else if (ball->state == BS_KNUCKLEBALL) {
-
-
-		if (ball->kb_dir_timer <= 0) {
-			// Pick new dir (weighted)
-			// TODO: weight based on desired side
-			int delta = randInt(-60, 60);
-			ball->kb_desired_angle += delta;
-
-			ball->kb_dir_timer = (float)randInt(2, 8) / 10;
-		}
-
-		float dist_to_desired = get_angle_distance(Vec2GetAngle(ball->kb_dir), ball->kb_desired_angle);
-
-		// Rotate toward desired angle
-		if (dist_to_desired <= 0) {
-			ball->kb_dir = Vec2Rotate(ball->kb_dir, -ball->kb_turn_speed * dt);
-		} else {
-			ball->kb_dir = Vec2Rotate(ball->kb_dir, ball->kb_turn_speed * dt);
-		}
-
-		ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*0.8*dt));
-
-		ball->kb_dir_timer -= dt;
-
-		// IDEA: If we're far enough toward one side just commit to a loop
-	}
-}
-
-void display_ball(struct BallData *ball, bool debug) {
-	DrawCircle(ball->pos.x, ball->pos.y, ball->radius, WHITE);
-	if (debug) {
-		// Draw line of balls knuckleball facing
-		DrawLineEx(ball->pos, Vec2Add(ball->pos, Vec2MultScalar(ball->kb_dir, 50)), 3, RED); 
-		Vector2 kb_desired = GetVec2FromAngle(ball->kb_desired_angle);
-		DrawLineEx(ball->pos, Vec2Add(ball->pos, Vec2MultScalar(kb_desired, 50)), 5, BLUE); 
-	}
-}
-
-// PADDLE //
-void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state) {
-
-		if (p->vel.x > 300) {
-			p->vel.x -= 500;
-
-		} else if (p->vel.x < -300) {
-			p->vel.x += 500;
-
-		} else if (IsKeyDown(controls.left)) {
-				p->vel.x = -300;
-
-				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
-					p->vel.x = -3000 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*-100;
-				}
-		} else if (IsKeyDown(controls.right)) {
-				p->vel.x = 300;
-
-				if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyDown(controls.dash)) {
-					p->vel.x = 3000 + (p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1)*100;
-				}
-		} else {
-			p->vel.x = 0;
-		}
-
-		p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, dt));
-
-		float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
-		float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
-
-		if (p->pos.x + p->paddle_width > world_right) {
-			p->pos.x = world_right - p->paddle_width;
-		} else if (p->pos.x < world_left) {
-			p->pos.x = world_left;
-		}
-}
 
 void state_pong(float dt, struct GameState *state) {
 
@@ -349,7 +157,7 @@ void draw_pong(struct GameState *state) {
 		// BALL
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
-			display_ball(ball, false);
+			ball_draw(ball, false);
 		}
 		EndMode2D();
 
