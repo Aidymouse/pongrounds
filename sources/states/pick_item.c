@@ -21,8 +21,7 @@ void roll_items(struct PickItemsState *state) {
 		items_remaining--;
 	}
 
-	//state->item_choices[0] = ITEM_TIME_WIZARDS_CHRONOMETER;
-	state->item_choices[0] = ITEM_BACHELOR_OF_PSYCHOLOGY_HONS;
+	//state->item_choices[0] = ITEM_RUSSIAN_SECRETS;
 }
 
 Rectangle get_rect_for_item_idx(int idx, int num_cards) {

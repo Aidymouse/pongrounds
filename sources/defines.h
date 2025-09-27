@@ -24,3 +24,5 @@
 #define SWORD_DURATION (0.1)
 #define SWORD_COOLDOWN (2)
 
+#define CHRONOMETER_SIZE (200)
+
