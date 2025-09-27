@@ -52,6 +52,7 @@ void init_ball(struct BallData *b) {
 	b->destroyed = false;
 
 	b->kb_turn_speed = 100;
+	b->last_hit_by = NULL;
 
 }
 

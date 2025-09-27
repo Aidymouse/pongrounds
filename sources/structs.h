@@ -8,7 +8,14 @@ enum Items {
 	ITEM_CHERRY_BLOSSOM_CLOAK=1, // Let's the paddle dash
 	ITEM_HYPERGONADISM=2, // 
 	ITEM_CHASTITY_CAGE=3, // Make opponents paddle shorter
-	ITEM_NIEKRO_CARD=4, // Chance of knuckleball on hit
+	ITEM_NERD_GLASSES=4,
+	ITEM_CEREMONIAL_SWORD=5,
+	ITEM_TIME_WIZARDS_CHRONOMETER=6,
+	ITEM_BACHELOR_OF_PSYCHOLOGY_HONS=7,
+	ITEM_RUSSIAN_SECRETS=8,
+	ITEM_LEGALLY_DISTINCT_GOLDEN_SNOTCH=9,
+	ITEM_NIEKRO_CARD=10, // Chance of knuckleball on hit
+	ITEM_ANTIQUE_GAME_CONSOLE=11
 };
  
 enum GAME_STATES {
@@ -53,7 +60,8 @@ struct BallData {
 	Vector2 vel; 
 	int speed; 
 	bool destroyed;
-
+	// Pointer to paddle that last hit the ball. WARN: will be -1 if the ball has not been hit yet
+	struct PaddleData *last_hit_by;
 	// How much damage to inflict when a point is scored with this ball
 	int score_damage; 
 
@@ -65,8 +73,6 @@ struct BallData {
 	// The dir we try to move towards
 	float kb_desired_angle; 
 	float kb_turn_speed;
-	// Desired side of the screen: -1 is top, 1 is bottom
-	int kb_desired_side; 
 	// When this timer hit's 0 we pick a new desired dir. Time varies from like .2s to .8s
 	float kb_dir_timer; 
 

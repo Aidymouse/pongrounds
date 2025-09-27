@@ -16,7 +16,6 @@ const char *item_labels[] = {
 	"Legally Distinct Golden Snotch",
 	"Niekro Trading Card",
 	"Antique Game Console",
-
 };
 
 const char *item_descriptions[] = {
@@ -29,7 +28,7 @@ const char *item_descriptions[] = {
 	"", // Time Wizards Chronometer
 	"", // Bachelor of psychology (hons)
 	"", // Snotch
-	"Chance to launch a knuckeball on bounce",
+	"Chance to launch a knuckeball on bounce", // Niekro Trading Card
 	"", // Snotch
 };
 

@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include "defines.h"
+#include "controls.h"
 #include "structs.h"
 #include "state_change.h"
 
@@ -17,7 +18,32 @@ void refresh_paddle(struct PaddleData *p, struct PaddleData *opponent) {
 		p->items[i] = p->items_total[i];
 	}
 
-	p->paddle_width = DEFAULT_PADDLE_WIDTH + 20 * (p->items[ITEM_HYPERGONADISM]) - 20 * (opponent->items[ITEM_CHASTITY_CAGE]);
+	// Width changes have a flat bonus of 30, then a 5% width increase for every hypergonadism. It's 5% of the prior width so there's diminishing returns
+	float width_bonus = 0;
+	if (p->items[ITEM_HYPERGONADISM] > 0) {
+
+		float new_width = DEFAULT_PADDLE_WIDTH + 20;
+
+		for (int b=p->items[ITEM_HYPERGONADISM]-1; b>0; b--) {
+			new_width *= 1.05;
+		}
+
+		width_bonus = new_width - DEFAULT_PADDLE_WIDTH;
+	}
+
+	float width_penalty = 0;
+	if (opponent->items[ITEM_CHASTITY_CAGE] > 0) {
+
+		float new_width = DEFAULT_PADDLE_WIDTH + 20;
+
+		for (int b=opponent->items[ITEM_CHASTITY_CAGE]-1; b>0; b--) {
+			new_width *= 1.05;
+		}
+
+		width_penalty = new_width - DEFAULT_PADDLE_WIDTH;
+	}
+
+	p->paddle_width = DEFAULT_PADDLE_WIDTH + width_bonus - width_penalty;
 }
 
 void display_items(struct PaddleData *p, int x, int y) {
@@ -29,18 +55,6 @@ void display_items(struct PaddleData *p, int x, int y) {
 		
 	}
 }
-
-/*
-void display_round_score(struct PlayerData *p, int x, int y) {
-	for (int i=0; i<POINTS_PER_ROUND; i++) {
-		if (p->score >= (i+1)) {
-			DrawCircle(x + i*15, y, 5, WHITE);	
-		} else {
-			DrawCircleLines(x+i*15, y, 5, WHITE);	
-		}
-	}
-}
-*/
 
 void display_health(struct PlayerData *p, int x, int y) {
 	struct PaddleData *paddle = p->paddle;
@@ -87,7 +101,11 @@ void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 	Vector2 new_dir = Vec2Rotate(away, randInt(-20, 20));
 	b->vel = Vec2Normalize(new_dir);
 
-	b->speed += 20;
+	if (b->last_hit_by != NULL && b->last_hit_by->id != p->id) {
+		b->speed += 20;
+	}
+
+	b->last_hit_by = p;
 
 	//TODO: push the ball OUT of the paddle back the way it came first. We could probably be lazy and make it a linear push to the closest side but thats risky if the ball is going very fast
 
@@ -313,7 +331,7 @@ void draw_pong(struct GameState *state) {
 			display_ball(ball, false);
 		}
 
-		// Score
+		// UI (health, items)
 		display_items(p1, 20, 20);
 		display_health(player1, SCREEN_WIDTH/2, 10);
 
