@@ -119,7 +119,7 @@ void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 	}
 
 	if (p->items[ITEM_NIEKRO_CARD] > 0) {
-		int knuckleball_chance = 100 + 20 + 5 * p->items[ITEM_NIEKRO_CARD]-1;
+		int knuckleball_chance = 20 + 5 * p->items[ITEM_NIEKRO_CARD]-1;
 		if (randInt(1, 100) < knuckleball_chance) {
 			printf("Knuckleball!\n");
 			b->state = BS_KNUCKLEBALL;
