@@ -11,7 +11,7 @@
 #define NUM_ITEMS 11
 
 // Ball
-#define BALL_INIT_SPEED (200) // usually 200
+#define BALL_INIT_SPEED (300) 
 #define BALL_SCORE_DAMAGE (50) // Damage against opponent when you score against them
 #define BALL_RESPAWN_DELAY (1) // seconds after score that the ball respawns
 #define BALL_RADIUS (6)
