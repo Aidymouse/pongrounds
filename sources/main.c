@@ -92,7 +92,8 @@ int main(void)
     Texture2D textures[11];
 	for (int i=0; i<NUM_ITEMS; i++) {
 		if (strcmp(item_filenames[i], "") != 0) {
-			textures[i] = LoadTexture(ASSETS_PATH"time.png");
+			// TODO: make this dynamic item name
+			textures[i] = LoadTexture(ASSETS_PATH"cards/time.png");
 			printf("Would load %s (%d)\n", item_filenames[i], i);
 		}
 	}
@@ -169,8 +170,8 @@ int main(void)
 		/*
 		DrawTexturePro(
 			textures[ITEM_TIME_WIZARDS_CHRONOMETER], 
-			(Rectangle){c, 0, 96, 96},
-			(Rectangle){0, 0, 96, 96},
+			(Rectangle){144*25, 0, 144, 144},
+			(Rectangle){110, 190, 144, 144},
 			(Vector2){0, 0}, 
 			0,
 			WHITE
