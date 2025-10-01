@@ -1,9 +1,11 @@
 #include <stdio.h>
 
+#include "string.h"
 #include "states/pong.h"
 #include "states/pick_item.h"
 
 #include "defines.h"
+#include "items.h"
 
 #include "raylib.h"
 #include "structs.h"
@@ -85,7 +87,16 @@ int main(void)
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
     SetTargetFPS(60);
 
-    Texture2D texture = LoadTexture(ASSETS_PATH"test.png"); // Check README.md for how this works
+	// Load Textures
+    //Texture2D texture = LoadTexture(ASSETS_PATH"test.png"); // Check README.md for how this works
+    Texture2D textures[11];
+	for (int i=0; i<NUM_ITEMS; i++) {
+		if (strcmp(item_filenames[i], "") != 0) {
+			textures[i] = LoadTexture(ASSETS_PATH"time.png");
+			printf("Would load %s (%d)\n", item_filenames[i], i);
+		}
+	}
+
 
 	enum GAME_STATES game_state = PONG;
 
@@ -155,8 +166,29 @@ int main(void)
 			draw_pick_items(state.pick_items_state);
 		}
 
+		/*
+		DrawTexturePro(
+			textures[ITEM_TIME_WIZARDS_CHRONOMETER], 
+			(Rectangle){c, 0, 96, 96},
+			(Rectangle){0, 0, 96, 96},
+			(Vector2){0, 0}, 
+			0,
+			WHITE
+		);
+		*/
+
+
         EndDrawing();
     }
+
+	// Unload texture
+	for (int i=0; i<NUM_ITEMS; i++) {
+		if (strcmp(item_filenames[i], "") != 0) {
+			//textures[i] = LoadTexture(ASSETS_PATH"time.png");
+			UnloadTexture(textures[i]);
+			printf("Unloading %s\n", item_filenames[i]);
+		}
+	}
 
     CloseWindow();
 
