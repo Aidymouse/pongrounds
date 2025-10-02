@@ -26,20 +26,29 @@ void display_items(struct PaddleData *p, int x, int y, int dir, Texture2D *textu
 	int item_type_count = 0;
 	if (dir == -1) { item_type_count = 1; }
 	for (int i=0; i<NUM_ITEMS; i++) {
+		int item_x = x;
+		int item_y = y+item_type_count*50*dir;
+
+		Color item_color = WHITE;
+		if (p->items[i] <= 0) { item_color = RED; }
+
 		if (p->items_total[i] > 0) {
-			Color item_color = WHITE;
-			if (p->items[i] <= 0) { item_color = RED; }
 			DrawTexturePro(
 				textures[i], 
 				(Rectangle){0, 0, SMALL_ITEM_DIMS_PX, SMALL_ITEM_DIMS_PX},
-				(Rectangle){x, y+item_type_count*50*dir, 50, 50},
+				(Rectangle){item_x, item_y, 50, 50},
 				(Vector2){0, 0},
 				0,
 				item_color
 			);
 			item_type_count += 1;
 		}
-		
+
+		if (p->items_total[i] > 1 || (p->items_total[i] != 0 && p->items[i] != 1)) {
+			char s[16];
+			sprintf(s, "x%d", p->items[i]);
+			DrawText(s, item_x, item_y, 9, item_color);
+		}
 	}
 }
 
