@@ -49,7 +49,7 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 			Rectangle time_influence = (Rectangle){ paddle->pos.x - CHRONOMETER_SIZE/2, paddle->pos.y - CHRONOMETER_SIZE/2, CHRONOMETER_SIZE+paddle->paddle_width, CHRONOMETER_SIZE+paddle->paddle_thickness };
 			if (CheckCollisionCircleRec(ball->pos, ball->radius, time_influence)) {
 				speed_multiplier *= 0.7;
-				for (int t = state->player1->paddle->items[ITEM_TIME_WIZARDS_CHRONOMETER]-1; t>0; t++) {
+				for (int t = state->player1->paddle->items[ITEM_TIME_WIZARDS_CHRONOMETER]-1; t>0; t--) {
 					speed_multiplier *= 0.95;
 				}
 			}	
