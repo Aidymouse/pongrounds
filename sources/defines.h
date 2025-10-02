@@ -8,11 +8,12 @@
 #define POINTS_PER_ROUND (2)
 #define NUM_ROUNDS (7)
 
-#define NUM_ITEMS 11
+#define NUM_ITEMS 8
 
 // Animations
 #define CARD_ANIM_FRAMES 43
 #define FRAME_TIME 0.016
+#define SMALL_ITEM_DIMS_PX 85
 
 // Ball
 #define BALL_INIT_SPEED (300) 

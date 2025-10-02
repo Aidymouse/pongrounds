@@ -48,12 +48,6 @@ void state_pick_items(float dt, struct PickItemsState *state, struct GameState *
 			break;
 		}
 
-		// Update animations
-		state->item_anim_timers[i] -= dt;
-		if (state->item_anim_timers[i] <= 0 && state->item_anim_frames[i] < CARD_ANIM_FRAMES-1) {
-			state->item_anim_frames[i] += 1;
-			state->item_anim_timers[i] = FRAME_TIME;
-		}
 	}
 
 	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && state->hovered_item != -1) {
@@ -68,6 +62,15 @@ void state_pick_items(float dt, struct PickItemsState *state, struct GameState *
 		}
 
 		change_state_to_pong(gamestate);
+	}
+	
+	// Update animations
+	for (int i=0; i<state->num_item_choices; i++) {
+		state->item_anim_timers[i] -= dt;
+		if (state->item_anim_timers[i] <= 0 && state->item_anim_frames[i] < CARD_ANIM_FRAMES-1) {
+			state->item_anim_frames[i] += 1;
+			state->item_anim_timers[i] = FRAME_TIME;
+		}
 	}
 }
 
@@ -86,8 +89,8 @@ void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 
 		//draw_from_animation(textures[ITEM_TIME_WIZARDS_CHRONOMETER], state->item_animations[i], item_rect);
 		DrawTexturePro(
-			textures[ITEM_HYPERGONADISM],
-			(Rectangle){state->item_anim_frames[i]*150, 0, 150, 144},
+			textures[state->item_choices[i]],
+			(Rectangle){state->item_anim_frames[i]*150, 0, 150, 150},
 			(Rectangle){item_rect.x+margin, item_rect.y+margin, 150, 150},
 			(Vector2){0, 0},
 			0,

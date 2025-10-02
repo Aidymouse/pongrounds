@@ -1,3 +1,4 @@
+
 #ifndef _STRUCTSH_
 #define _STRUCTSH_
 
@@ -12,10 +13,7 @@ enum Items {
 	ITEM_CEREMONIAL_SWORD=5,
 	ITEM_TIME_WIZARDS_CHRONOMETER=6,
 	ITEM_BACHELOR_OF_PSYCHOLOGY_HONS=7,
-	ITEM_RUSSIAN_SECRETS=8,
-	ITEM_LEGALLY_DISTINCT_GOLDEN_SNOTCH=9,
-	ITEM_NIEKRO_CARD=10, // Chance of knuckleball on hit
-	ITEM_ANTIQUE_GAME_CONSOLE=11
+	ITEM_NIEKRO_CARD=8, // Chance of knuckleball on hit
 };
  
 struct Animation {

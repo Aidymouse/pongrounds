@@ -10,8 +10,7 @@ const char *item_labels[] = {
 	"Ceremonial Sword",
 	"Time Wizards Chronometer",
 	"Bachelor of Psychology (Hons)",
-	"Russian Secrets",
-	"Legally Distinct Golden Snotch",
+	//"Russian Secrets",
 	"Niekro Trading Card",
 //	"Antique Game Console",
 };
@@ -25,21 +24,31 @@ const char *item_descriptions[] = {
 	"", // Ceremonial Sword
 	"", // Time Wizards Chronometer
 	"", // Bachelor of psychology (hons)
-	"", // Snotch
 	"Chance to launch a knuckeball on bounce", // Niekro Trading Card
 //	"", // Antique Game Console
 };
 
 const char *item_filenames[] = {
-	"", // Expired Panadol
-	"", // Cherry Blossom Cloak
+	"cards/panadol.png", // Expired Panadol
+	"cards/cloak.png", // Cherry Blossom Cloak
 	"cards/gonads.png", // Hypergonadism
-	"", // Chastity Cage
-	"", // Nerd Glasses
-	"", // Ceremonial Sword
+	"cards/cage.png", // Chastity Cage
+	"cards/glasses.png", // Nerd Glasses
+	"cards/sword.png", // Ceremonial Sword
 	"cards/time.png", // Time Wizards Chronometer
-	"", // Bachelor of psychology (hons)
-	"", // Snotch
-	"", // Niekro Trading Card
-	"", // Antique Game Console
+	"cards/bachelor of psychology.png", // Bachelor of psychology (hons)
+	"cards/niekro.png", // Niekro Trading Card
+};
+
+const char *small_item_filenames[] = {
+	"small/panadol.png", // Expired Panadol
+	"small/cloak.png", // Cherry Blossom Cloak
+	"small/gonads.png", // Hypergonadism
+	"small/cage.png", // Chastity Cage
+	"small/glasses.png", // Nerd Glasses
+	"small/nuclearlaunchcodes.png", // Ceremonial Sword
+	"small/time.png", // Time Wizards Chronometer
+	"small/bachelor.png", // Bachelor of psychology (hons)
+	"small/niekrotradingcard.png", // Niekro Trading Card
+	//"", // Antique Game Console
 };

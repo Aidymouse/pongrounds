@@ -5,18 +5,40 @@
 #include "structs.h"
 #include "state_change.h"
 #include "obj/obj.h"
+#include "raylib.h"
 
 #include "Vec2.h"
 #include "helper.h"
 
 // Called on point score
 
-void display_items(struct PaddleData *p, int x, int y) {
+void display_items(struct PaddleData *p, int x, int y, int dir, Texture2D *textures) {
+	/*
 	for (int i=0; i<16; i++) {
 		char s[16];
 		//sprintf(p1score, "%d", player1.score);
 		sprintf(s, "%d", p->items[i]);
 		DrawText(s, x, y+i*10, 10, WHITE);
+		
+	}
+	*/
+
+	int item_type_count = 0;
+	if (dir == -1) { item_type_count = 1; }
+	for (int i=0; i<NUM_ITEMS; i++) {
+		if (p->items_total[i] > 0) {
+			Color item_color = WHITE;
+			if (p->items[i] <= 0) { item_color = RED; }
+			DrawTexturePro(
+				textures[i], 
+				(Rectangle){0, 0, SMALL_ITEM_DIMS_PX, SMALL_ITEM_DIMS_PX},
+				(Rectangle){x, y+item_type_count*50*dir, 50, 50},
+				(Vector2){0, 0},
+				0,
+				item_color
+			);
+			item_type_count += 1;
+		}
 		
 	}
 }
@@ -163,7 +185,7 @@ void state_pong(float dt, struct GameState *state) {
 
 }
 
-void draw_pong(struct GameState *state) {
+void draw_pong(struct GameState *state, Texture2D *small_textures) {
 
 		struct PlayerData *player1 = state->player1;
 		struct PlayerData *player2 = state->player2;
@@ -193,10 +215,10 @@ void draw_pong(struct GameState *state) {
 		EndMode2D();
 
 		// UI (health, items)
-		display_items(p1, 20, 20);
+		display_items(p1, 0, 0, 1, small_textures);
 		display_health(player1, SCREEN_WIDTH/2, 10);
 
-		display_items(p2, SCREEN_WIDTH-20-10, 20);
+		display_items(p2, SCREEN_WIDTH-50, SCREEN_HEIGHT, -1, small_textures);
 		display_health(player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-10-10);
 
 }

@@ -6,7 +6,6 @@
 
 #include "anim.h"
 
-
 #include "defines.h"
 #include "items.h"
 
@@ -90,14 +89,24 @@ int main(void)
     SetTargetFPS(60);
 
 	// Load Textures
-    //Texture2D texture = LoadTexture(ASSETS_PATH"test.png"); // Check README.md for how this works
-    Texture2D textures[11];
+    Texture2D item_textures[11];
+    Texture2D small_textures[11];
+
 	for (int i=0; i<NUM_ITEMS; i++) {
 		if (strcmp(item_filenames[i], "") != 0) {
 			char b[100];
 			sprintf(b,"%s%s", ASSETS_PATH, item_filenames[i]);
-			textures[i] = LoadTexture(b);
+			item_textures[i] = LoadTexture(b);
 			printf("Would load %s (%d)\n", b, i);
+		}
+
+		/*
+		*/
+		if (strcmp(small_item_filenames[i], "") != 0) {
+			char b[100];
+			sprintf(b,"%s%s", ASSETS_PATH, small_item_filenames[i]);
+			small_textures[i] = LoadTexture(b);
+			printf("Would load small %s (%d)\n", b, i);
 		}
 	}
 
@@ -163,24 +172,20 @@ int main(void)
         BeginDrawing();
         ClearBackground(BLACK);
 
-
 		if (state.state == PONG) {
-			draw_pong(&state);
+			draw_pong(&state, small_textures);
 		} else if (state.state == PICK_ITEM) {
-			draw_pong(&state); // Still in background
-			draw_pick_items(state.pick_items_state, textures);
+			draw_pong(&state, small_textures); // Still in background
+			draw_pick_items(state.pick_items_state, item_textures);
 		}
 
         EndDrawing();
     }
 
-	// Unload texture
+	// Unload textures
 	for (int i=0; i<NUM_ITEMS; i++) {
-		if (strcmp(item_filenames[i], "") != 0) {
-			//textures[i] = LoadTexture(ASSETS_PATH"time.png");
-			UnloadTexture(textures[i]);
-			printf("Unloading %s\n", item_filenames[i]);
-		}
+		UnloadTexture(item_textures[i]);
+		UnloadTexture(small_textures[i]);
 	}
 
     CloseWindow();
