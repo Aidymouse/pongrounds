@@ -4,6 +4,9 @@
 #include "states/pong.h"
 #include "states/pick_item.h"
 
+#include "anim.h"
+
+
 #include "defines.h"
 #include "items.h"
 
@@ -80,7 +83,6 @@ void init_camera(Camera2D *camera) {
 	camera->rotation = 0.0;
 }
 
-
 // MAIN //
 int main(void)
 {
@@ -92,12 +94,14 @@ int main(void)
     Texture2D textures[11];
 	for (int i=0; i<NUM_ITEMS; i++) {
 		if (strcmp(item_filenames[i], "") != 0) {
-			// TODO: make this dynamic item name
-			textures[i] = LoadTexture(ASSETS_PATH"cards/time.png");
-			printf("Would load %s (%d)\n", item_filenames[i], i);
+			char b[100];
+			sprintf(b,"%s%s", ASSETS_PATH, item_filenames[i]);
+			textures[i] = LoadTexture(b);
+			printf("Would load %s (%d)\n", b, i);
 		}
 	}
 
+	//init_animations(textures, NUM_ITEMS);
 
 	enum GAME_STATES game_state = PONG;
 
@@ -152,7 +156,7 @@ int main(void)
 		if (state.state == PONG) {
 			state_pong(dt, &state);
 		} else if (state.state == PICK_ITEM) {
-			state_pick_items(state.pick_items_state, &state);
+			state_pick_items(dt, state.pick_items_state, &state);
 		}
 
 		// Draw
@@ -164,20 +168,8 @@ int main(void)
 			draw_pong(&state);
 		} else if (state.state == PICK_ITEM) {
 			draw_pong(&state); // Still in background
-			draw_pick_items(state.pick_items_state);
+			draw_pick_items(state.pick_items_state, textures);
 		}
-
-		/*
-		DrawTexturePro(
-			textures[ITEM_TIME_WIZARDS_CHRONOMETER], 
-			(Rectangle){144*25, 0, 144, 144},
-			(Rectangle){110, 190, 144, 144},
-			(Vector2){0, 0}, 
-			0,
-			WHITE
-		);
-		*/
-
 
         EndDrawing();
     }

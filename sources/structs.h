@@ -18,6 +18,12 @@ enum Items {
 	ITEM_ANTIQUE_GAME_CONSOLE=11
 };
  
+struct Animation {
+	Rectangle rect;
+	float duration;
+	struct Animation *next_frame;
+};
+
 enum GAME_STATES {
 	PONG=0,
 	PICK_ITEM=1,
@@ -98,8 +104,11 @@ struct PongState {
 };
 
 struct PickItemsState {
-	int item_choices[8]; // 4 by default but can do up
-	int num_item_choices; // 4 by default
+	float item_anim_timers[8];
+	int item_anim_frames[8];
+	//struct Animation item_animations[8];
+	int item_choices[8]; // 3 by default but can do up
+	int num_item_choices; // 3 by default
 	int hovered_item; // Idx of the hovered item
 	struct PaddleData *choosing_paddle;
 };
@@ -122,4 +131,6 @@ struct PaddleControls {
 	int down;
 };
 
+
 #endif
+

@@ -10,6 +10,10 @@
 
 #define NUM_ITEMS 11
 
+// Animations
+#define CARD_ANIM_FRAMES 43
+#define FRAME_TIME 0.016
+
 // Ball
 #define BALL_INIT_SPEED (300) 
 #define BALL_SCORE_DAMAGE (50) // Damage against opponent when you score against them

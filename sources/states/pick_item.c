@@ -3,6 +3,7 @@
 #include "helper.h"
 #include "items.h"
 #include "state_change.h"
+#include "anim.h"
 #include <stdio.h>
 
 void roll_items(struct PickItemsState *state) {
@@ -19,7 +20,11 @@ void roll_items(struct PickItemsState *state) {
 		state->item_choices[i] = items[item_idx];
 		items[item_idx] = items[items_remaining-1];
 		items_remaining--;
+		state->item_anim_timers[i] = FRAME_TIME;
+		state->item_anim_frames[i] = 0;
 	}
+
+	
 
 	//state->item_choices[0] = ITEM_RUSSIAN_SECRETS;
 }
@@ -31,16 +36,23 @@ Rectangle get_rect_for_item_idx(int idx, int num_cards) {
 	return r;
 }
 
-void state_pick_items(struct PickItemsState *state, struct GameState *gamestate) {
+void state_pick_items(float dt, struct PickItemsState *state, struct GameState *gamestate) {
 
 	state->hovered_item = -1;
 	for (int i=0; i<state->num_item_choices; i++) {
+		// Mouse hovering
 		Rectangle item_rect = get_rect_for_item_idx(i, state->num_item_choices);
 		Rectangle mouse_rect = { GetMouseX(), GetMouseY(), 1, 1 };
-		//printf("Mouse pos: %d, %d\n", GetMouseX(), GetMouse
 		if (CheckCollisionRecs(item_rect, mouse_rect)) {
 			state->hovered_item = i;
 			break;
+		}
+
+		// Update animations
+		state->item_anim_timers[i] -= dt;
+		if (state->item_anim_timers[i] <= 0 && state->item_anim_frames[i] < CARD_ANIM_FRAMES-1) {
+			state->item_anim_frames[i] += 1;
+			state->item_anim_timers[i] = FRAME_TIME;
 		}
 	}
 
@@ -59,7 +71,7 @@ void state_pick_items(struct PickItemsState *state, struct GameState *gamestate)
 	}
 }
 
-void draw_pick_items(struct PickItemsState *state) {
+void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 
 	for (int i=0; i<state->num_item_choices; i++) {
 		Rectangle item_rect = get_rect_for_item_idx(i, state->num_item_choices);
@@ -69,6 +81,18 @@ void draw_pick_items(struct PickItemsState *state) {
 		} else {
 			DrawRectangleLines(item_rect.x, item_rect.y, item_rect.width, item_rect.height, WHITE);
 		}
+
+		float margin = (item_rect.width-150)/2;
+
+		//draw_from_animation(textures[ITEM_TIME_WIZARDS_CHRONOMETER], state->item_animations[i], item_rect);
+		DrawTexturePro(
+			textures[ITEM_HYPERGONADISM],
+			(Rectangle){state->item_anim_frames[i]*150, 0, 150, 144},
+			(Rectangle){item_rect.x+margin, item_rect.y+margin, 150, 150},
+			(Vector2){0, 0},
+			0,
+			WHITE
+		);
 
 		DrawTextCentered( item_labels[state->item_choices[i]], item_rect.x+item_rect.width/2, item_rect.y+item_rect.height-25, 15, WHITE);
 

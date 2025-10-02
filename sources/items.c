@@ -33,11 +33,11 @@ const char *item_descriptions[] = {
 const char *item_filenames[] = {
 	"", // Expired Panadol
 	"", // Cherry Blossom Cloak
-	"",
+	"cards/gonads.png", // Hypergonadism
 	"", // Chastity Cage
 	"", // Nerd Glasses
 	"", // Ceremonial Sword
-	"time.png", // Time Wizards Chronometer
+	"cards/time.png", // Time Wizards Chronometer
 	"", // Bachelor of psychology (hons)
 	"", // Snotch
 	"", // Niekro Trading Card
