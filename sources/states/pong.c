@@ -31,6 +31,7 @@ void display_items(struct PaddleData *p, int x, int y, int dir, Texture2D *textu
 
 		Color item_color = WHITE;
 		if (p->items[i] <= 0) { item_color = RED; }
+		if (p->item_use_timers[i] > 0) { item_color = BLUE; }
 
 		if (p->items_total[i] > 0) {
 			DrawTexturePro(
@@ -149,9 +150,11 @@ void state_pong(float dt, struct GameState *state) {
 
 			if (ball->pos.y - ball->radius < world_top && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
 				p1->items[ITEM_EXPIRED_PANADOL] -= 1;
+				p1->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
 				ball->vel.y = -ball->vel.y; // TODO: better reflection fn
 			} else if (ball->pos.y + ball->radius > world_bottom && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
 				p2->items[ITEM_EXPIRED_PANADOL] -= 1;
+				p2->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
 				ball->vel.y = -ball->vel.y; // TODO: better reflection fn
 			}
 		

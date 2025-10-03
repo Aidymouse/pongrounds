@@ -33,9 +33,11 @@ void init_paddle(struct PaddleData *p) {
 	p->speed = 300;
 	p->max_speed = 300;
 
-	for (int i=0; i<16; i++) {
+	for (int i=0; i<NUM_ITEMS; i++) {
 		p->items[i] = 0;
 		p->items_total[i] = 0;
+		p->item_cooldown_timers[i] = 0;
+		p->item_use_timers[i] = 0;
 	} 
 
 }
@@ -145,6 +147,10 @@ int main(void)
 	p2.pos.y = SCREEN_HEIGHT - p2.paddle_thickness - 40;
 	p2.color = ORANGE;
 	p2.id = 2;
+
+	// DEBUG: hard code in some items
+	//p1.items[ITEM_CEREMONIAL_SWORD] += 1;
+	//p1.items_total[ITEM_CEREMONIAL_SWORD] += 1;
 
 	struct BallData ball;
 	init_ball(&ball);

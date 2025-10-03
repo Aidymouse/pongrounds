@@ -14,6 +14,7 @@
 #define CARD_ANIM_FRAMES 43
 #define FRAME_TIME 0.016
 #define SMALL_ITEM_DIMS_PX 85
+#define ITEM_USE_BUMP_TIME (0.3) // Time an item is highlighted for if it is used once
 
 // Ball
 #define BALL_INIT_SPEED (300) 

@@ -56,6 +56,7 @@ void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct Ga
 void paddle_update(float dt, struct PaddleData *p) {
 	for (int i=0; i<NUM_ITEMS; i++) {
 		p->item_cooldown_timers[i] -= dt;
+		p->item_use_timers[i] -= dt;
 	}
 }
 
