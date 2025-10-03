@@ -3,6 +3,7 @@
 #define _STRUCTSH_
 
 #include "raylib.h"
+#include "defines.h"
 
 enum Items {
 	ITEM_EXPIRED_PANADOL=0, // Higher than 0 and the ball will respawn on score, decrementing this number
@@ -46,14 +47,17 @@ struct PaddleData {
 	Color color;
 	
 	// Current items. Idx of arr is equal to item enum
-	int items[16]; 
+	int items[NUM_ITEMS]; 
 	// Total held items, used to replenish above arr
-	int items_total[16]; 
+	int items_total[NUM_ITEMS]; 
+	// If these timers are greater than 0, the item is lit up on the item display
+	float item_use_timers[NUM_ITEMS];
+	// Not every item has a timer but i'm gonna keep this around anyway
+	float item_cooldown_timers[NUM_ITEMS]; 
 
 	// How long the sword hitbox lasts
 	float sword_timer;
-	// Cooldown before you can use the sword again
-	float sword_cooldown_timer;
+
 
 };
 

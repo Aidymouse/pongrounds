@@ -58,7 +58,6 @@ void state_pick_items(float dt, struct PickItemsState *state, struct GameState *
 		// Do any init of items
 		if (item_idx == ITEM_CEREMONIAL_SWORD) {
 			state->choosing_paddle->sword_timer = 0;
-			state->choosing_paddle->sword_cooldown_timer = 0;
 		}
 
 		change_state_to_pong(gamestate);

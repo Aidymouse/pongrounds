@@ -8,8 +8,10 @@ void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct Ga
 
 	p->hp = p->max_hp;
 
-	for (int i=0; i<16; i++) {
+	for (int i=0; i<NUM_ITEMS; i++) {
 		p->items[i] = p->items_total[i];
+		p->item_cooldown_timers[i] = 0;
+		p->item_use_timers[i] = 0;
 	}
 
 	// Width changes have a flat bonus of 30, then a 5% width increase for every hypergonadism. It's 5% of the prior width so there's diminishing returns
@@ -48,6 +50,12 @@ void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct Ga
 		} else {
 			p->pos.y = world_bottom - p->paddle_thickness - 40;
 		}
+	}
+}
+
+void paddle_update(float dt, struct PaddleData *p) {
+	for (int i=0; i<NUM_ITEMS; i++) {
+		p->item_cooldown_timers[i] -= dt;
 	}
 }
 
@@ -101,7 +109,7 @@ void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls,
 
 void paddle_activate_items(float dt, struct PaddleData *p) {
 
-	if (p->items[ITEM_CEREMONIAL_SWORD] > 0 && p->sword_cooldown_timer <= 0 && p->sword_timer <= 0) {
+	if (p->items[ITEM_CEREMONIAL_SWORD] > 0 && p->item_cooldown_timers[ITEM_CEREMONIAL_SWORD] <= 0 && p->sword_timer <= 0) {
 		p->sword_timer = SWORD_DURATION;
 	}
 

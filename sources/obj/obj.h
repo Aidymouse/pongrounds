@@ -6,6 +6,7 @@
 void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state);
 void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state);
 void paddle_activate_items(float dt, struct PaddleData *p);
+void paddle_update(float dt, struct PaddleData *p);
 
 /** Ball **/
 void ball_move(float dt, struct BallData *ball, struct GameState *state);

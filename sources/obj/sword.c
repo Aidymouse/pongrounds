@@ -7,11 +7,10 @@
 
 
 void sword_swing(float dt, struct PaddleData *p) {
-	if (p->sword_cooldown_timer > 0) { p->sword_cooldown_timer -= dt; }
 	if (p->sword_timer > 0) { 
 		p->sword_timer -= dt; 
 		if (p->sword_timer <= 0) {
- 			p->sword_cooldown_timer = SWORD_COOLDOWN - 0.2 * p->items[ITEM_CEREMONIAL_SWORD];
+ 			p->item_cooldown_timers[ITEM_CEREMONIAL_SWORD] = SWORD_COOLDOWN - 0.2 * p->items[ITEM_CEREMONIAL_SWORD];
 		}
 	}
 
@@ -33,7 +32,7 @@ void sword_draw(struct PaddleData *p, bool debug) {
 	if (debug) {
 		if (p->sword_timer > 0) {
 			DrawRectangleLines(r.x, r.y, r.width, r.height, RED);
-		} else if (p->sword_cooldown_timer > 0) {
+		} else if (p->item_cooldown_timers[ITEM_CEREMONIAL_SWORD] > 0) {
 			DrawRectangleLines(r.x, r.y, r.width, r.height, BLUE);
 		} else {
 			DrawRectangleLines(r.x, r.y, r.width, r.height, GRAY);

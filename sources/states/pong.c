@@ -78,6 +78,9 @@ void state_pong(float dt, struct GameState *state) {
 			ball_move(dt, ball, state);
 		}
 
+		paddle_update(dt, p1);
+		paddle_update(dt, p2);
+
 		/** Player control **/
 		struct PaddleControls p1_controls = { P1_LEFT_KEY, P1_RIGHT_KEY, P1_DASH_KEY, P1_UP_KEY, P1_DOWN_KEY };
 		paddle_move(dt, p1, p1_controls, state);
