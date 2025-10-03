@@ -8,7 +8,7 @@
 #define POINTS_PER_ROUND (2)
 #define NUM_ROUNDS (7)
 
-#define NUM_ITEMS 8
+#define NUM_ITEMS 10
 
 // Animations
 #define CARD_ANIM_FRAMES 43
@@ -21,13 +21,18 @@
 #define BALL_RESPAWN_DELAY (1) // seconds after score that the ball respawns
 #define BALL_RADIUS (6)
 
-
+// Paddles
 #define PADDLE_DEFAULT_WIDTH (100)
 #define PADDLE_DEFAULT_HP (100)
 #define PADDLE_SPEED (300)
 
+// Sword
 #define SWORD_DURATION (0.1)
 #define SWORD_COOLDOWN (2)
 
+// Time Wizards Chronometer
 #define CHRONOMETER_SIZE (200)
+
+// Rockets
+#define HANG_TIME (0.3)
 

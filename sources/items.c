@@ -10,9 +10,8 @@ const char *item_labels[] = {
 	"Ceremonial Sword",
 	"Time Wizards Chronometer",
 	"Bachelor of Psychology (Hons)",
-	//"Russian Secrets",
 	"Niekro Trading Card",
-//	"Antique Game Console",
+	"Nuclear Launch Codes",
 };
 
 const char *item_descriptions[] = {
@@ -25,7 +24,7 @@ const char *item_descriptions[] = {
 	"", // Time Wizards Chronometer
 	"", // Bachelor of psychology (hons)
 	"Chance to launch a knuckeball on bounce", // Niekro Trading Card
-//	"", // Antique Game Console
+	"", // Nuclear Launch Codes
 };
 
 const char *item_filenames[] = {
@@ -38,6 +37,7 @@ const char *item_filenames[] = {
 	"cards/time.png", // Time Wizards Chronometer
 	"cards/bachelor of psychology.png", // Bachelor of psychology (hons)
 	"cards/niekro.png", // Niekro Trading Card
+	"cards/missile.png", // Nuclear Launch Codes
 };
 
 const char *small_item_filenames[] = {
@@ -46,9 +46,9 @@ const char *small_item_filenames[] = {
 	"small/gonads.png", // Hypergonadism
 	"small/cage.png", // Chastity Cage
 	"small/glasses.png", // Nerd Glasses
-	"small/nuclearlaunchcodes.png", // Ceremonial Sword
+	"small/nuclearlaunchcodes.png", // Ceremonial Sword TODO
 	"small/time.png", // Time Wizards Chronometer
 	"small/bachelor.png", // Bachelor of psychology (hons)
 	"small/niekrotradingcard.png", // Niekro Trading Card
-	//"", // Antique Game Console
+	"small/nuclearlaunchcodes.png", // Nuclear Launch Codes
 };

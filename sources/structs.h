@@ -14,7 +14,9 @@ enum Items {
 	ITEM_TIME_WIZARDS_CHRONOMETER=6,
 	ITEM_BACHELOR_OF_PSYCHOLOGY_HONS=7,
 	ITEM_NIEKRO_CARD=8, // Chance of knuckleball on hit
+	ITEM_NUCLEAR_LAUNCH_CODES=9
 };
+
  
 struct Animation {
 	Rectangle rect;
@@ -130,5 +132,14 @@ struct PaddleControls {
 };
 
 
+typedef struct RocketData {
+	Vector2 pos;
+	Vector2 dir;	
+	float speed;
+	
+	float fall_time; // the timer to track how long the rocket falls after the initial burst
+} RocketData;
+
 #endif
+
 

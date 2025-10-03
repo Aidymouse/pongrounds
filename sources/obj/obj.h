@@ -21,3 +21,7 @@ void ball_refresh(struct BallData *ball);
 void sword_swing(float dt, struct PaddleData *p);
 void sword_draw(struct PaddleData *p, bool debug);
 Rectangle sword_get_hitbox(struct PaddleData *p);
+
+/** Rocket **/
+void rocket_move(float df, struct RocketData *r);
+void rocket_draw(RocketData *r);

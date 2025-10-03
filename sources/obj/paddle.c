@@ -105,5 +105,9 @@ void paddle_activate_items(float dt, struct PaddleData *p) {
 		p->sword_timer = SWORD_DURATION;
 	}
 
+	if (p->items[ITEM_NUCLEAR_LAUNCH_CODES] > 0) {
+		// TODO
+	}
+
 }
 
