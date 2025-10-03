@@ -121,7 +121,8 @@ void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 	if (p->items[ITEM_NIEKRO_CARD] > 0) {
 		int knuckleball_chance = 20 + 5 * p->items[ITEM_NIEKRO_CARD]-1;
 		if (randInt(1, 100) < knuckleball_chance) {
-			printf("Knuckleball!\n");
+			//printf("Knuckleball!\n");
+			p->item_use_timers[ITEM_NIEKRO_CARD] = ITEM_USE_BUMP_TIME;
 			b->state = BS_KNUCKLEBALL;
 			b->kb_dir = Vec2Normalize(b->vel);
 			b->kb_desired_angle = Vec2GetAngle(b->kb_dir);

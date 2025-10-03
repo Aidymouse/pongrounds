@@ -89,15 +89,20 @@ void state_pong(float dt, struct GameState *state) {
 		paddle_move(dt, p2, p2_controls, state);
 
 		if (IsKeyPressed(P1_ITEM_KEY)) {
-			paddle_activate_items(dt, p1);
+			paddle_activate_items(dt, p1, state->pong_state);
 		}
 		if (IsKeyPressed(P2_ITEM_KEY)) {
-			paddle_activate_items(dt, p2);
+			paddle_activate_items(dt, p2, state->pong_state);
 		}
 		
 		// Update sword + items
 		if (p1->items[ITEM_CEREMONIAL_SWORD] > 0) { sword_swing(dt, p1); }
 		if (p2->items[ITEM_CEREMONIAL_SWORD] > 0) { sword_swing(dt, p2); }
+
+		// Rockets
+		for (int i=0; i<pong_state->num_rockets; i++) {
+			RocketData *r = &pong_state->rockets[i];	
+		}
 
 
 		/** Collisions **/

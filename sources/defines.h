@@ -35,5 +35,6 @@
 #define CHRONOMETER_SIZE (200)
 
 // Rockets
-#define HANG_TIME (0.3)
+#define HANG_TIME (0.5)
+#define GRAVITY (9.8) // Missile falls due to gravity while it's hanging
 

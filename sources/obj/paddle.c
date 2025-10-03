@@ -108,14 +108,30 @@ void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls,
 		}
 }
 
-void paddle_activate_items(float dt, struct PaddleData *p) {
+void paddle_activate_items(float dt, struct PaddleData *p, struct PongState *pong_state) {
 
 	if (p->items[ITEM_CEREMONIAL_SWORD] > 0 && p->item_cooldown_timers[ITEM_CEREMONIAL_SWORD] <= 0 && p->sword_timer <= 0) {
 		p->sword_timer = SWORD_DURATION;
 	}
 
-	if (p->items[ITEM_NUCLEAR_LAUNCH_CODES] > 0) {
-		// TODO
+	if (p->items[ITEM_NUCLEAR_LAUNCH_CODES] > 0 && p->item_cooldown_timers[ITEM_NUCLEAR_LAUNCH_CODES] <= 0) {
+		printf("Rocket Spawn\n");
+		Vector2 rocket_dir = {
+			.x = 0;
+			.y = 1;
+		};
+		if (p->id == 2) { rocket_dir.y = -1; }
+
+		RocketData r = {
+			.pos = p->pos,
+			.dir = rocket_dir,
+			.speed = 300,
+			.fall_timer = 0, // TODO: from define
+		};
+
+		pong_state->rockets[pong_state->num_rockets] = r;
+		pong_state->num_rockets += 1;
+
 	}
 
 }

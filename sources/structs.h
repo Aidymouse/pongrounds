@@ -100,11 +100,21 @@ struct BallData {
 	
 };
 
+typedef struct RocketData {
+	Vector2 pos;
+	Vector2 dir;	
+	float speed;
+	
+	float fall_timer; // the timer to track how long the rocket falls after the initial burst
+} RocketData;
+
 struct PongState {
 	int current_round;
 	float ball_respawn_timer; // Time that delays the ball respawn
 	int num_balls;
 	struct BallData balls[16]; // Up to 16 balls!
+	RocketData rockets[8]; // Swapback array of rockets
+	int num_rockets;
 };
 
 struct PickItemsState {
@@ -136,13 +146,6 @@ struct PaddleControls {
 };
 
 
-typedef struct RocketData {
-	Vector2 pos;
-	Vector2 dir;	
-	float speed;
-	
-	float fall_time; // the timer to track how long the rocket falls after the initial burst
-} RocketData;
 
 #endif
 

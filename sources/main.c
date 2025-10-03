@@ -70,6 +70,7 @@ void init_pong_state(struct PongState *g) {
 	init_ball(&(g->balls[0]));
 	//init_ball(&(g->balls[1]));
 	g->ball_respawn_timer = 0;
+	g->num_rockets = 0;
 	
 }
 
@@ -90,7 +91,7 @@ int main(void)
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
     SetTargetFPS(60);
 
-	// Load Textures
+	// Load Textures //
     Texture2D item_textures[11];
     Texture2D small_textures[11];
 
@@ -102,8 +103,6 @@ int main(void)
 			printf("Would load %s (%d)\n", b, i);
 		}
 
-		/*
-		*/
 		if (strcmp(small_item_filenames[i], "") != 0) {
 			char b[100];
 			sprintf(b,"%s%s", ASSETS_PATH, small_item_filenames[i]);
@@ -112,8 +111,10 @@ int main(void)
 		}
 	}
 
+	Texture2D scanlines = LoadTexture(ASSETS_PATH"scan lines.png");
 	//init_animations(textures, NUM_ITEMS);
 
+	// Init State //
 	enum GAME_STATES game_state = PONG;
 
 	Camera2D camera;
@@ -149,8 +150,9 @@ int main(void)
 	p2.id = 2;
 
 	// DEBUG: hard code in some items
-	//p1.items[ITEM_CEREMONIAL_SWORD] += 1;
-	//p1.items_total[ITEM_CEREMONIAL_SWORD] += 1;
+	int debug = ITEM_NUCLEAR_LAUNCH_CODES;
+	p1.items[debug] += 1;
+	p1.items_total[debug] += 1;
 
 	struct BallData ball;
 	init_ball(&ball);
@@ -163,6 +165,7 @@ int main(void)
 
 	float dt = 0;
 
+	// Game loop //
     while (!WindowShouldClose())
     {
 		dt = GetFrameTime();
@@ -185,10 +188,13 @@ int main(void)
 			draw_pick_items(state.pick_items_state, item_textures);
 		}
 
+		// Not sure bout this
+		//DrawTexture(scanlines, 0, 0, ColorAlpha(WHITE, 0.2));
+
         EndDrawing();
     }
 
-	// Unload textures
+	// Unload textures //
 	for (int i=0; i<NUM_ITEMS; i++) {
 		UnloadTexture(item_textures[i]);
 		UnloadTexture(small_textures[i]);

@@ -5,7 +5,7 @@
 /** Paddle **/
 void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state);
 void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state);
-void paddle_activate_items(float dt, struct PaddleData *p);
+void paddle_activate_items(float dt, struct PaddleData *p, struct PongState *pong_state);
 void paddle_update(float dt, struct PaddleData *p);
 
 /** Ball **/
@@ -24,5 +24,6 @@ void sword_draw(struct PaddleData *p, bool debug);
 Rectangle sword_get_hitbox(struct PaddleData *p);
 
 /** Rocket **/
-void rocket_move(float df, struct RocketData *r);
+void rocket_fly(float df, RocketData *r);
+void rocket_check_collisions(RocketData *r);
 void rocket_draw(RocketData *r);
