@@ -10,13 +10,16 @@
 
 void rocket_fly(float dt, RocketData *r) {
 	if (r->fall_timer > 0) {
-		r->fall_timer -= dt;
 		int m = 1;
 		if (r->dir.y < 0) { m = -1; }
 		r->pos = Vec2Add(r->pos, Vec2MultScalar((Vector2){0, r->fall_vel*m}, dt));
 		r->fall_vel -= GRAVITY;
 		r->speed = r->fall_vel;
 		r->dir = Vec2Rotate(r->dir, r->rot_force*dt);
+		r->fall_timer -= dt;
+		if (r->fall_timer < 0) {
+			r->speed = ROCKET_FLY_INIT_SPEED;
+		}
 	} else {
 		r->pos = Vec2Add(r->pos, Vec2MultScalar(r->dir, r->speed*dt));
 		//const angle = 
@@ -34,7 +37,7 @@ void rocket_fly(float dt, RocketData *r) {
 			r->dir = Vec2Rotate(r->dir, ROCKET_TURN_SPEED*ang_dir*dt);
 		}
 
-		r->speed += 20;
+		r->speed += ROCKET_ACCELERATION;
 	}
 	//r->dir = Vec2Rotate(r->dir, 0.1);
 }

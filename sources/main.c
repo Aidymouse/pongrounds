@@ -122,10 +122,6 @@ int main(void)
 	init_player(&player1, &p1);
 	init_player(&player2, &p2);
 
-	//p2.items_total[0] += 2;
-
-	//refresh_paddle(&p2);
-
 	p1.pos.y = 40;
 	p1.color = BLUE;
 	p1.id = 1;
@@ -135,13 +131,11 @@ int main(void)
 	p2.id = 2;
 
 	// DEBUG: hard code in some items
-	/*
-	int debug = ITEM_CEREMONIAL_SWORD;
+	int debug = ITEM_NUCLEAR_LAUNCH_CODES;
 	p2.items[debug] += 1;
 	p2.items_total[debug] += 1;
 	p1.items[debug] += 1;
 	p1.items_total[debug] += 1;
-	*/
 
 	struct BallData ball;
 	init_ball(&ball);
