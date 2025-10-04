@@ -19,11 +19,11 @@ enum Items {
 };
 
  
-struct Animation {
+typedef struct Animation {
 	Rectangle rect;
 	float duration;
 	struct Animation *next_frame;
-};
+} Animation;
 
 enum GAME_STATES {
 	PONG=0,
@@ -104,8 +104,12 @@ typedef struct RocketData {
 	Vector2 pos;
 	Vector2 dir;	
 	float speed;
-	
+
+	float fall_vel; // Speed applied to missiles Y when its falling initially
 	float fall_timer; // the timer to track how long the rocket falls after the initial burst
+	float rot_force; // Rotational force on initial hang time
+
+	bool delete_me; // If true, this rocket will be deleted this frame
 } RocketData;
 
 struct PongState {
@@ -126,6 +130,13 @@ struct PickItemsState {
 	int hovered_item; // Idx of the hovered item
 	struct PaddleData *choosing_paddle;
 };
+
+typedef struct WorldBorders {
+	float top;
+	float bottom;
+	float left;
+	float right;
+} WorldBorders;
 
 struct GameState {
 	int state; // GAME_STATE

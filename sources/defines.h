@@ -36,5 +36,9 @@
 
 // Rockets
 #define HANG_TIME (0.5)
+#define ROCKET_INIT_SPEED (200)
 #define GRAVITY (9.8) // Missile falls due to gravity while it's hanging
+#define MISSILE_TEX_DIMS_PX (128)
+#define MAX_ROCKETS (8)
+#define ROCKET_TURN_SPEED (5) // Speed at which rocket tries to correct to going straight up
 

@@ -2,6 +2,7 @@
 #include "obj.h"
 #include "defines.h"
 #include "Vec2.h"
+#include "helper.h"
 #include <stdio.h>
 
 void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state) {
@@ -114,23 +115,26 @@ void paddle_activate_items(float dt, struct PaddleData *p, struct PongState *pon
 		p->sword_timer = SWORD_DURATION;
 	}
 
-	if (p->items[ITEM_NUCLEAR_LAUNCH_CODES] > 0 && p->item_cooldown_timers[ITEM_NUCLEAR_LAUNCH_CODES] <= 0) {
+	if (p->items[ITEM_NUCLEAR_LAUNCH_CODES] > 0 && p->item_cooldown_timers[ITEM_NUCLEAR_LAUNCH_CODES] <= 0 && pong_state->num_rockets < MAX_ROCKETS) {
 		printf("Rocket Spawn\n");
 		Vector2 rocket_dir = {
-			.x = 0;
-			.y = 1;
+			.x = 0,
+			.y = 1,
 		};
 		if (p->id == 2) { rocket_dir.y = -1; }
 
 		RocketData r = {
 			.pos = p->pos,
 			.dir = rocket_dir,
-			.speed = 300,
-			.fall_timer = 0, // TODO: from define
+			.speed = ROCKET_INIT_SPEED,
+			.fall_timer = HANG_TIME, 
+			.fall_vel = ROCKET_INIT_SPEED,
+			.rot_force = randInt(-20, 20),
 		};
 
 		pong_state->rockets[pong_state->num_rockets] = r;
 		pong_state->num_rockets += 1;
+		p->item_cooldown_timers[ITEM_NUCLEAR_LAUNCH_CODES] = 0.5;
 
 	}
 

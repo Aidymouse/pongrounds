@@ -112,6 +112,7 @@ int main(void)
 	}
 
 	Texture2D scanlines = LoadTexture(ASSETS_PATH"scan lines.png");
+	Texture2D missile = LoadTexture(ASSETS_PATH"missile shoot.png");
 	//init_animations(textures, NUM_ITEMS);
 
 	// Init State //
@@ -151,6 +152,8 @@ int main(void)
 
 	// DEBUG: hard code in some items
 	int debug = ITEM_NUCLEAR_LAUNCH_CODES;
+	p2.items[debug] += 1;
+	p2.items_total[debug] += 1;
 	p1.items[debug] += 1;
 	p1.items_total[debug] += 1;
 
@@ -182,9 +185,9 @@ int main(void)
         ClearBackground(BLACK);
 
 		if (state.state == PONG) {
-			draw_pong(&state, small_textures);
+			draw_pong(&state, small_textures, &missile);
 		} else if (state.state == PICK_ITEM) {
-			draw_pong(&state, small_textures); // Still in background
+			draw_pong(&state, small_textures, &missile); // Still in background
 			draw_pick_items(state.pick_items_state, item_textures);
 		}
 

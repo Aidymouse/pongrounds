@@ -72,6 +72,17 @@ void state_pong(float dt, struct GameState *state) {
 		struct PaddleData *p1 = player1->paddle;
 		struct PaddleData *p2 = player2->paddle;
 
+		float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
+		float world_bottom = GetScreenToWorld2D((Vector2){0, SCREEN_HEIGHT}, *state->camera).y;
+		float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
+		float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
+		WorldBorders world_borders = {
+			.top = world_top,
+			.bottom = world_bottom,
+			.left = world_left,
+			.right = world_right
+		};
+
 		// Update //
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
@@ -95,14 +106,25 @@ void state_pong(float dt, struct GameState *state) {
 			paddle_activate_items(dt, p2, state->pong_state);
 		}
 		
-		// Update sword + items
+		// Sword //
 		if (p1->items[ITEM_CEREMONIAL_SWORD] > 0) { sword_swing(dt, p1); }
 		if (p2->items[ITEM_CEREMONIAL_SWORD] > 0) { sword_swing(dt, p2); }
 
-		// Rockets
+		// Rockets //
 		for (int i=0; i<pong_state->num_rockets; i++) {
 			RocketData *r = &pong_state->rockets[i];	
+			if (r->delete_me) {
+				pong_state->rockets[i] = pong_state->rockets[pong_state->num_rockets-1];
+				pong_state->num_rockets -= 1;
+				i -= 1;
+			}
 		}
+
+		for (int i=0; i<pong_state->num_rockets; i++) {
+			RocketData *r = &pong_state->rockets[i];	
+			rocket_fly(dt, r);
+		}
+
 
 
 		/** Collisions **/
@@ -123,13 +145,15 @@ void state_pong(float dt, struct GameState *state) {
 					}
 				}
 			}
+
+			// Rockets
+			for (int i=0; i<pong_state->num_rockets; i++) {
+				RocketData *r = &pong_state->rockets[i];	
+				rocket_check_collisions(r, world_borders);
+			}
 			
 
 
-			// Get the X of the walls
-			//Vector2 left = (Vector2) {0, 0};
-			float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
-			float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
 
 			if (ball->pos.x - ball->radius <= world_left) {
 				ball->pos.x = world_left + ball->radius;
@@ -150,8 +174,6 @@ void state_pong(float dt, struct GameState *state) {
 			}
 		
 			// Expired panadol edge of screen collision
-			float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
-			float world_bottom = GetScreenToWorld2D((Vector2){0, SCREEN_HEIGHT}, *state->camera).y;
 
 			if (ball->pos.y - ball->radius < world_top && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
 				p1->items[ITEM_EXPIRED_PANADOL] -= 1;
@@ -205,7 +227,7 @@ void state_pong(float dt, struct GameState *state) {
 
 }
 
-void draw_pong(struct GameState *state, Texture2D *small_textures) {
+void draw_pong(struct GameState *state, Texture2D *small_textures, Texture2D *missile_texture) {
 
 		struct PlayerData *player1 = state->player1;
 		struct PlayerData *player2 = state->player2;
@@ -232,9 +254,15 @@ void draw_pong(struct GameState *state, Texture2D *small_textures) {
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
 			ball_draw(ball, false);
 		}
+
+		// Items //
+		for (int i=0; i<state->pong_state->num_rockets; i++) {
+			rocket_draw(&state->pong_state->rockets[i], missile_texture);
+		}
+
 		EndMode2D();
 
-		// UI (health, items)
+		// UI (health, items) //
 		display_items(p1, 0, 0, 1, small_textures);
 		display_health(player1, SCREEN_WIDTH/2, 10);
 
