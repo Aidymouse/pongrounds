@@ -17,7 +17,7 @@
 #define ITEM_USE_BUMP_TIME (0.3) // Time an item is highlighted for if it is used once
 
 // Ball
-#define BALL_INIT_SPEED (300) 
+#define BALL_INIT_SPEED (400) 
 #define BALL_SCORE_DAMAGE (50) // Damage against opponent when you score against them
 #define BALL_RESPAWN_DELAY (1) // seconds after score that the ball respawns
 #define BALL_RADIUS (6)
@@ -25,11 +25,12 @@
 // Paddles
 #define PADDLE_DEFAULT_WIDTH (100)
 #define PADDLE_DEFAULT_HP (100)
-#define PADDLE_SPEED (300)
+#define PADDLE_SPEED (400)
 
 // Sword
 #define SWORD_DURATION (0.1)
 #define SWORD_COOLDOWN (2)
+#define SWORD_TEX_DIMS_PX (128)
 
 // Time Wizards Chronometer
 #define CHRONOMETER_SIZE (200)

@@ -27,7 +27,7 @@ Rectangle sword_get_hitbox(struct PaddleData *p) {
 }
 
 void sword_draw(struct PaddleData *p, bool debug) {
-	
+
 	Rectangle r = sword_get_hitbox(p);
 	if (debug) {
 		if (p->sword_timer > 0) {

@@ -5,6 +5,7 @@
 #include "states/pick_item.h"
 
 #include "anim.h"
+#include "textures.h"
 
 #include "defines.h"
 #include "items.h"
@@ -30,8 +31,8 @@ void init_paddle(struct PaddleData *p) {
 	p->max_hp = PADDLE_DEFAULT_HP;
 	p->vel.x = 0;
 	p->vel.y = 0;
-	p->speed = 300;
-	p->max_speed = 300;
+	p->speed = PADDLE_SPEED;
+	p->max_speed = PADDLE_SPEED;
 
 	for (int i=0; i<NUM_ITEMS; i++) {
 		p->items[i] = 0;
@@ -91,29 +92,9 @@ int main(void)
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
     SetTargetFPS(60);
 
+
 	// Load Textures //
-    Texture2D item_textures[11];
-    Texture2D small_textures[11];
-
-	for (int i=0; i<NUM_ITEMS; i++) {
-		if (strcmp(item_filenames[i], "") != 0) {
-			char b[100];
-			sprintf(b,"%s%s", ASSETS_PATH, item_filenames[i]);
-			item_textures[i] = LoadTexture(b);
-			printf("Would load %s (%d)\n", b, i);
-		}
-
-		if (strcmp(small_item_filenames[i], "") != 0) {
-			char b[100];
-			sprintf(b,"%s%s", ASSETS_PATH, small_item_filenames[i]);
-			small_textures[i] = LoadTexture(b);
-			printf("Would load small %s (%d)\n", b, i);
-		}
-	}
-
-	Texture2D scanlines = LoadTexture(ASSETS_PATH"scan lines.png");
-	Texture2D missile = LoadTexture(ASSETS_PATH"missile shoot.png");
-	//init_animations(textures, NUM_ITEMS);
+	load_textures();
 
 	// Init State //
 	enum GAME_STATES game_state = PONG;
@@ -187,10 +168,10 @@ int main(void)
         ClearBackground(BLACK);
 
 		if (state.state == PONG) {
-			draw_pong(&state, small_textures, &missile);
+			draw_pong(&state);
 		} else if (state.state == PICK_ITEM) {
-			draw_pong(&state, small_textures, &missile); // Still in background
-			draw_pick_items(state.pick_items_state, item_textures);
+			draw_pong(&state); // Still in background
+			draw_pick_items(state.pick_items_state, tex_item_cards);
 		}
 
 		// Not sure bout this
@@ -200,10 +181,7 @@ int main(void)
     }
 
 	// Unload textures //
-	for (int i=0; i<NUM_ITEMS; i++) {
-		UnloadTexture(item_textures[i]);
-		UnloadTexture(small_textures[i]);
-	}
+	unload_textures();
 
     CloseWindow();
 

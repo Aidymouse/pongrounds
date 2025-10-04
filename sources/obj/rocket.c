@@ -5,6 +5,7 @@
 #include "helper.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "textures.h"
 
 
 void rocket_fly(float dt, RocketData *r) {
@@ -49,11 +50,11 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders) {
 	// if rocket collides with paddle, damage it (destroy it for momentary respawn?)
 }
 
-void rocket_draw(RocketData *r, Texture2D *missile) {
+void rocket_draw(RocketData *r) {
 	float angle = Vec2GetAngle(r->dir);
 
 	DrawTexturePro(
-		*missile,
+		tex_missile,
  		missile_0.rect, 
 		(Rectangle){r->pos.x, r->pos.y, MISSILE_TEX_DIMS_PX, MISSILE_TEX_DIMS_PX}, 
 		(Vector2){MISSILE_TEX_DIMS_PX/2, MISSILE_TEX_DIMS_PX-40},

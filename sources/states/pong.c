@@ -6,6 +6,7 @@
 #include "state_change.h"
 #include "obj/obj.h"
 #include "raylib.h"
+#include "textures.h"
 
 #include "Vec2.h"
 #include "helper.h"
@@ -227,7 +228,7 @@ void state_pong(float dt, struct GameState *state) {
 
 }
 
-void draw_pong(struct GameState *state, Texture2D *small_textures, Texture2D *missile_texture) {
+void draw_pong(struct GameState *state) {
 
 		struct PlayerData *player1 = state->player1;
 		struct PlayerData *player2 = state->player2;
@@ -257,16 +258,16 @@ void draw_pong(struct GameState *state, Texture2D *small_textures, Texture2D *mi
 
 		// Items //
 		for (int i=0; i<state->pong_state->num_rockets; i++) {
-			rocket_draw(&state->pong_state->rockets[i], missile_texture);
+			rocket_draw(&state->pong_state->rockets[i]);
 		}
 
 		EndMode2D();
 
 		// UI (health, items) //
-		display_items(p1, 0, 0, 1, small_textures);
+		display_items(p1, 0, 0, 1, tex_small_items);
 		display_health(player1, SCREEN_WIDTH/2, 10);
 
-		display_items(p2, SCREEN_WIDTH-50, SCREEN_HEIGHT, -1, small_textures);
+		display_items(p2, SCREEN_WIDTH-50, SCREEN_HEIGHT, -1, tex_small_items);
 		display_health(player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-10-10);
 
 }
