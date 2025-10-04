@@ -16,6 +16,13 @@ Animation missile_1 = {
 	.next_frame = NULL, // TODO
 };
 
+// Sword //
+Animation sword_0 = {
+	.duration = 1/60,
+	.rect = (Rectangle) {SWORD_TEX_DIMS_PX*0, 0, SWORD_TEX_DIMS_PX, SWORD_TEX_DIMS_PX},
+	.next_frame = NULL, // TODO
+};
+
  
 void init_animations(Texture2D *textures, int texture_count) { }
 

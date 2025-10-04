@@ -13,6 +13,8 @@ extern struct Animation card_item_2;
 extern Animation missile_0;
 extern Animation missile_1;
 
+extern Animation sword_0;
+
 void init_animations(Texture2D *textures, int texture_count);
 void draw_from_animation(Texture2D texture, Animation anim, Rectangle target);
 

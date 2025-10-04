@@ -4,6 +4,9 @@
 #include "defines.h"
 #include "helper.h"
 #include "raylib.h"
+#include "textures.h"
+#include "anim.h"
+
 
 
 void sword_swing(float dt, struct PaddleData *p) {
@@ -28,8 +31,17 @@ Rectangle sword_get_hitbox(struct PaddleData *p) {
 
 void sword_draw(struct PaddleData *p, bool debug) {
 
-	Rectangle r = sword_get_hitbox(p);
+	DrawTexturePro(
+		tex_sword,
+		sword_0.rect,
+		(Rectangle){p->pos.x, p->pos.y, SWORD_TEX_DIMS_PX, SWORD_TEX_DIMS_PX},
+		(Vector2){0, 0},
+		0,
+		WHITE
+	);
+
 	if (debug) {
+		Rectangle r = sword_get_hitbox(p);
 		if (p->sword_timer > 0) {
 			DrawRectangleLines(r.x, r.y, r.width, r.height, RED);
 		} else if (p->item_cooldown_timers[ITEM_CEREMONIAL_SWORD] > 0) {
