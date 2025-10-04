@@ -151,11 +151,13 @@ int main(void)
 	p2.id = 2;
 
 	// DEBUG: hard code in some items
+	/*
 	int debug = ITEM_NUCLEAR_LAUNCH_CODES;
 	p2.items[debug] += 1;
 	p2.items_total[debug] += 1;
 	p1.items[debug] += 1;
 	p1.items_total[debug] += 1;
+	*/
 
 	struct BallData ball;
 	init_ball(&ball);
