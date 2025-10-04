@@ -113,6 +113,7 @@ void paddle_activate_items(float dt, struct PaddleData *p, struct PongState *pon
 
 	if (p->items[ITEM_CEREMONIAL_SWORD] > 0 && p->item_cooldown_timers[ITEM_CEREMONIAL_SWORD] <= 0 && p->sword_timer <= 0) {
 		p->sword_timer = SWORD_DURATION;
+		p->sword_anim_timer = SWORD_FRAME_TIME;
 	}
 
 	if (p->items[ITEM_NUCLEAR_LAUNCH_CODES] > 0 && p->item_cooldown_timers[ITEM_NUCLEAR_LAUNCH_CODES] <= 0 && pong_state->num_rockets < MAX_ROCKETS) {

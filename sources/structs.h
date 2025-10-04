@@ -57,6 +57,9 @@ struct PaddleData {
 
 	// How long the sword hitbox lasts
 	float sword_timer;
+	float sword_anim_timer;
+	int sword_frame;
+	int sword_anim_dir; // -1 if back, 1 if forward
 
 
 };

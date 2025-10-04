@@ -28,9 +28,11 @@
 #define PADDLE_SPEED (400)
 
 // Sword
-#define SWORD_DURATION (0.1)
+#define SWORD_DURATION (0.2)
 #define SWORD_COOLDOWN (2)
 #define SWORD_TEX_DIMS_PX (128)
+#define NUM_SWORD_FRAMES (31)
+#define SWORD_FRAME_TIME 0.016
 
 // Time Wizards Chronometer
 #define CHRONOMETER_SIZE (200)

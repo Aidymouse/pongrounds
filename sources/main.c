@@ -33,6 +33,9 @@ void init_paddle(struct PaddleData *p) {
 	p->vel.y = 0;
 	p->speed = PADDLE_SPEED;
 	p->max_speed = PADDLE_SPEED;
+	p->sword_frame = 0;
+	p->sword_anim_timer = 0;
+	p->sword_anim_dir = 1;
 
 	for (int i=0; i<NUM_ITEMS; i++) {
 		p->items[i] = 0;
@@ -132,11 +135,13 @@ int main(void)
 	p2.id = 2;
 
 	// DEBUG: hard code in some items
+	/*
 	int debug = ITEM_CEREMONIAL_SWORD;
 	p2.items[debug] += 1;
 	p2.items_total[debug] += 1;
 	p1.items[debug] += 1;
 	p1.items_total[debug] += 1;
+	*/
 
 	struct BallData ball;
 	init_ball(&ball);

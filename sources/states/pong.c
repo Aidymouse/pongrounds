@@ -241,13 +241,13 @@ void draw_pong(struct GameState *state) {
 		// Draw Paddle One
 		DrawRectangle(p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness, p1->color);
 		if (p1->items[ITEM_CEREMONIAL_SWORD] > 0) {
-			sword_draw(p1, true);
+			sword_draw(p1, false);
 		}
 
 		// Draw Paddle Two
 		DrawRectangle(p2->pos.x, p2->pos.y, p2->paddle_width, p2->paddle_thickness, p2->color);
 		if (p2->items[ITEM_CEREMONIAL_SWORD] > 0) {
-			sword_draw(p2, true);
+			sword_draw(p2, false);
 		}
 	
 		// BALL
