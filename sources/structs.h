@@ -30,7 +30,9 @@ typedef struct FrameAnimation {
 	float tex_height;
 	int frames_width;
 	int frames_height;
-
+	int frame_start_x; // offset
+	int frame_start_y; // offset from top left in frames
+	float frame_duration;
 } FrameAnimation;
 
 enum GAME_STATES {
@@ -119,6 +121,10 @@ typedef struct RocketData {
 	float fall_vel; // Speed applied to missiles Y when its falling initially
 	float fall_timer; // the timer to track how long the rocket falls after the initial burst
 	float rot_force; // Rotational force on initial hang time
+
+	int anim_frame;
+	float anim_timer;
+	FrameAnimation *animation;
 
 	bool delete_me; // If true, this rocket will be deleted this frame
 } RocketData;

@@ -24,6 +24,7 @@ void sword_draw(struct PaddleData *p, bool debug);
 Rectangle sword_get_hitbox(struct PaddleData *p);
 
 /** Rocket **/
+void rocket_init(RocketData *r, struct PaddleData *spawner);
 void rocket_fly(float df, RocketData *r);
-void rocket_check_collisions(RocketData *r, WorldBorders borders);
+void rocket_check_collisions(RocketData *r, WorldBorders borders, struct PaddleData **paddles);
 void rocket_draw(RocketData *r);

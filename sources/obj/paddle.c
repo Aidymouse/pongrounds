@@ -118,20 +118,9 @@ void paddle_activate_items(float dt, struct PaddleData *p, struct PongState *pon
 
 	if (p->items[ITEM_NUCLEAR_LAUNCH_CODES] > 0 && p->item_cooldown_timers[ITEM_NUCLEAR_LAUNCH_CODES] <= 0 && pong_state->num_rockets < MAX_ROCKETS) {
 		printf("Rocket Spawn\n");
-		Vector2 rocket_dir = {
-			.x = 0,
-			.y = 1,
-		};
-		if (p->id == 2) { rocket_dir.y = -1; }
 
-		RocketData r = {
-			.pos = p->pos,
-			.dir = rocket_dir,
-			.speed = ROCKET_INIT_SPEED,
-			.fall_timer = HANG_TIME, 
-			.fall_vel = ROCKET_INIT_SPEED,
-			.rot_force = randInt(-20, 20),
-		};
+		RocketData r;
+		rocket_init(&r, p);
 
 		pong_state->rockets[pong_state->num_rockets] = r;
 		pong_state->num_rockets += 1;

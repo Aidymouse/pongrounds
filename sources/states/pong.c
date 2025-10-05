@@ -150,7 +150,7 @@ void state_pong(float dt, struct GameState *state) {
 			// Rockets
 			for (int i=0; i<pong_state->num_rockets; i++) {
 				RocketData *r = &pong_state->rockets[i];	
-				rocket_check_collisions(r, world_borders);
+				rocket_check_collisions(r, world_borders, paddles);
 			}
 			
 

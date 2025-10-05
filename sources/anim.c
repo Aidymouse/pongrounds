@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "structs.h"
 #include <stddef.h>
+#include <stdio.h>
 
 // Rocket //
 Animation missile_0 = {
@@ -23,13 +24,6 @@ Animation sword_0 = {
 	.next_frame = NULL, // TODO
 };
 
-FrameAnimation missile = {
-	.tex_width = MISSILE_TEX_DIMS_PX,
-	.tex_height = MISSILE_TEX_DIMS_PX,
-	.frames_width = 3,
-	.frames_height = 1,
-};
-
  
 void init_animations(Texture2D *textures, int texture_count) { }
 
@@ -42,9 +36,22 @@ Rectangle get_rect_from_animation(FrameAnimation anim, int frame) {
 	int frames_across = frame % anim.frames_width;
 
 	return (Rectangle){
-		frames_across*anim.tex_width,
-		frames_down*anim.tex_height,
+		(frames_across+anim.frame_start_x)*anim.tex_width,
+		(frames_down+anim.frame_start_y)*anim.tex_height,
 		anim.tex_width,
 		anim.tex_height
 	};
+}
+
+// Updates predefined animation data for some obj
+void update_animation(float dt, FrameAnimation anim, int *frame, float *anim_timer) {
+	*anim_timer -= dt;
+	if (*anim_timer <= 0) {
+		*anim_timer = anim.frame_duration;
+		*frame += 1;
+		if (*frame >= (anim.frames_width) * (anim.frames_height)) {
+			*frame = 0; // TODO: maybe we dont only loop?
+		}
+	}
+		
 }
