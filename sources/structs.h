@@ -25,6 +25,14 @@ typedef struct Animation {
 	struct Animation *next_frame;
 } Animation;
 
+typedef struct FrameAnimation {
+	float tex_width;
+	float tex_height;
+	int frames_width;
+	int frames_height;
+
+} FrameAnimation;
+
 enum GAME_STATES {
 	PONG=0,
 	PICK_ITEM=1,

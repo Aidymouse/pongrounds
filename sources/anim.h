@@ -18,4 +18,7 @@ extern Animation sword_0;
 void init_animations(Texture2D *textures, int texture_count);
 void draw_from_animation(Texture2D texture, Animation anim, Rectangle target);
 
+void update_animation(float dt, FrameAnimation anim, int *anim_timer, int *anim_frame);
+Rectangle get_rect_from_animation(FrameAnimation anim, int frame);
+
 #endif
