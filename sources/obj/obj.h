@@ -21,6 +21,7 @@ void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct Player
 void ball_draw(struct BallData *ball, bool debug);
 void ball_sword_hit(struct BallData *b, struct PongState *pong_state);
 void ball_refresh(struct BallData *ball);
+void ball_check_collisions(struct BallData *ball, struct GameState *state, WorldBorders world_borders);
 
 /** Sword **/
 void sword_swing(float dt, struct PaddleData *p);

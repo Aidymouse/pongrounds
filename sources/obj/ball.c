@@ -155,6 +155,66 @@ void ball_sword_hit(struct BallData *ball, struct PongState *pong_state) {
 	pong_state->num_balls += 1;
 }
 
+
+void ball_check_collisions(struct BallData *ball, struct GameState *state, WorldBorders world_borders) {
+	if (ball->destroyed) { return; }
+
+	// Missiles
+	for (int p=0; p<state->pong_state->num_explosions; p++) {
+		
+	}
+
+	if (ball->pos.x - ball->radius <= world_borders.left) {
+		ball->pos.x = world_borders.left + ball->radius;
+		ball_reflect_wall(ball);
+	} else if (ball->pos.x + ball->radius >= world_borders.right) {
+		ball->pos.x = world_borders.right - ball->radius;
+		ball_reflect_wall(ball);
+	}
+
+	// Collisions per paddle
+	struct PaddleData *paddles[2] = { state->player1->paddle, state->player2->paddle };
+	for (int p=0; p<2; p++) {
+		struct PaddleData *paddle = paddles[p];
+		// Paddle Ball Collisions
+		struct Rectangle pRect = {paddle->pos.x, paddle->pos.y, paddle->paddle_width, paddle->paddle_thickness};
+		if (CheckCollisionCircleRec(ball->pos, ball->radius, pRect)) {
+			ball_paddle_hit(ball, paddle);
+		}
+
+		// Sword
+		if (paddle->items[ITEM_CEREMONIAL_SWORD] > 0 && paddle->sword_timer > 0) {
+			if (CheckCollisionCircleRec(ball->pos, ball->radius, sword_get_hitbox(paddle))) {
+				ball_sword_hit(ball, state->pong_state);
+				paddle->sword_timer = 0;
+			}
+		}
+	} // /paddle collisions
+
+
+
+	// Expired panadol edge of screen collision
+	struct PaddleData *p1 = state->player1->paddle;
+	struct PaddleData *p2 = state->player2->paddle;
+	// TODO: make it get the item from the paddle currently on that side
+	if (ball->pos.y - ball->radius < world_borders.top && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
+		p1->items[ITEM_EXPIRED_PANADOL] -= 1;
+		p1->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
+		ball->vel.y = -ball->vel.y; // TODO: better reflection fn
+	} else if (ball->pos.y + ball->radius > world_borders.bottom && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
+		p2->items[ITEM_EXPIRED_PANADOL] -= 1;
+		p2->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
+		ball->vel.y = -ball->vel.y; // TODO: better reflection fn
+	}
+
+	// Scoring
+	if (ball->pos.y - ball->radius > world_borders.bottom+10) {
+		ball_score_hit(ball, state->player1, state->player2);
+	} else if (ball->pos.y + ball->radius + 10 < world_borders.top) {
+		ball_score_hit(ball, state->player2, state->player1);
+	}
+}
+
 void ball_draw(struct BallData *ball, bool debug) {
 	DrawCircle(ball->pos.x, ball->pos.y, ball->radius, WHITE);
 	if (debug) {

@@ -140,69 +140,24 @@ void state_pong(float dt, struct GameState *state) {
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			// Left and right of screen
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
+	
+			ball_check_collisions(ball, state, world_borders);
 
-			if (ball->destroyed) { continue; }
-
-			if (ball->pos.x - ball->radius <= world_left) {
-				ball->pos.x = world_left + ball->radius;
-				ball_reflect_wall(ball);
-			} else if (ball->pos.x + ball->radius >= world_right) {
-				ball->pos.x = world_right - ball->radius;
-				ball_reflect_wall(ball);
-			}
-
-			// Collisions per paddle
-			for (int p=0; p<2; p++) {
-				struct PaddleData *paddle = paddles[p];
-				// Paddle Ball Collisions
-				struct Rectangle pRect = {paddle->pos.x, paddle->pos.y, paddle->paddle_width, paddle->paddle_thickness};
-				if (CheckCollisionCircleRec(ball->pos, ball->radius, pRect)) {
-					ball_paddle_hit(ball, paddle);
-				}
-
-				// Sword
-				if (paddle->items[ITEM_CEREMONIAL_SWORD] > 0 && paddle->sword_timer > 0) {
-					if (CheckCollisionCircleRec(ball->pos, ball->radius, sword_get_hitbox(paddle))) {
-						ball_sword_hit(ball, pong_state);
-						paddle->sword_timer = 0;
-					}
-				}
-			} // /paddle collisions
-
-
-		
-			// Expired panadol edge of screen collision
-			if (ball->pos.y - ball->radius < world_top && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
-				p1->items[ITEM_EXPIRED_PANADOL] -= 1;
-				p1->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
-				ball->vel.y = -ball->vel.y; // TODO: better reflection fn
-			} else if (ball->pos.y + ball->radius > world_bottom && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
-				p2->items[ITEM_EXPIRED_PANADOL] -= 1;
-				p2->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
-				ball->vel.y = -ball->vel.y; // TODO: better reflection fn
-			}
-		
-			// Scoring
-			if (ball->pos.y - ball->radius > world_bottom+10) {
-				ball_score_hit(ball, player1, player2);
-			} else if (ball->pos.y + ball->radius + 10 < world_top) {
-				ball_score_hit(ball, player2, player1);
-			}
 		}
 
 		/** /COLLISIONS **/		
 
 		// If all balls are destroyed, set the timer to respawn the ball
 		bool all_destroyed = true;
-		for (int b_idx = 0; b_idx < pong_state->num_balls; b_idx++) {
-			struct BallData *ball = &(pong_state->balls[b_idx]);
+		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
+			struct BallData *ball = &(state->pong_state->balls[b_idx]);
 			if (ball->destroyed == false) {
 				all_destroyed = false;
 				break;
 			}
 		}
 
-		if (all_destroyed && pong_state->ball_respawn_timer <= 0) {
+		if (all_destroyed && state->pong_state->ball_respawn_timer <= 0) {
 			state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
 		}
 		
