@@ -120,7 +120,11 @@ void state_pong(float dt, struct GameState *state) {
 		}
 
 		// Explosions //
-		// TODO:
+		explosion_cleanup(pong_state);
+		for (int i=0; i<pong_state->num_explosions; i++) {
+			Explosion *e = &pong_state->explosions[i];	
+			explosion_update(dt, e);
+		}
 
 
 
@@ -139,17 +143,6 @@ void state_pong(float dt, struct GameState *state) {
 
 			if (ball->destroyed) { continue; }
 
-			// Sword collision
-			for (int p=0; p<2; p++) {
-				struct PaddleData *paddle = paddles[p];
-				if (paddle->items[ITEM_CEREMONIAL_SWORD] > 0 && paddle->sword_timer > 0) {
-					if (CheckCollisionCircleRec(ball->pos, ball->radius, sword_get_hitbox(paddle))) {
-						ball_sword_hit(ball, pong_state);
-						paddle->sword_timer = 0;
-					}
-				}
-			}
-
 			if (ball->pos.x - ball->radius <= world_left) {
 				ball->pos.x = world_left + ball->radius;
 				ball_reflect_wall(ball);
@@ -158,18 +151,27 @@ void state_pong(float dt, struct GameState *state) {
 				ball_reflect_wall(ball);
 			}
 
-			// Paddle Ball Collisions
-			struct Rectangle p1Rect = {p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness};
-			if (CheckCollisionCircleRec(ball->pos, ball->radius, p1Rect)) {
-				ball_paddle_hit(ball, p1);
-			}
-			struct Rectangle p2Rect = {p2->pos.x, p2->pos.y, p2->paddle_width, p2->paddle_thickness};
-			if (CheckCollisionCircleRec(ball->pos, ball->radius, p2Rect)) {
-				ball_paddle_hit(ball, p2);
-			}
+			// Collisions per paddle
+			for (int p=0; p<2; p++) {
+				struct PaddleData *paddle = paddles[p];
+				// Paddle Ball Collisions
+				struct Rectangle pRect = {paddle->pos.x, paddle->pos.y, paddle->paddle_width, paddle->paddle_thickness};
+				if (CheckCollisionCircleRec(ball->pos, ball->radius, pRect)) {
+					ball_paddle_hit(ball, paddle);
+				}
+
+				// Sword
+				if (paddle->items[ITEM_CEREMONIAL_SWORD] > 0 && paddle->sword_timer > 0) {
+					if (CheckCollisionCircleRec(ball->pos, ball->radius, sword_get_hitbox(paddle))) {
+						ball_sword_hit(ball, pong_state);
+						paddle->sword_timer = 0;
+					}
+				}
+			} // /paddle collisions
+
+
 		
 			// Expired panadol edge of screen collision
-
 			if (ball->pos.y - ball->radius < world_top && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
 				p1->items[ITEM_EXPIRED_PANADOL] -= 1;
 				p1->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
@@ -233,16 +235,14 @@ void draw_pong(struct GameState *state) {
 
 		BeginMode2D(*state->camera);
 
-		// Draw Paddle One
-		DrawRectangle(p1->pos.x, p1->pos.y, p1->paddle_width, p1->paddle_thickness, p1->color);
-		if (p1->items[ITEM_CEREMONIAL_SWORD] > 0) {
-			sword_draw(p1, false);
-		}
-
-		// Draw Paddle Two
-		DrawRectangle(p2->pos.x, p2->pos.y, p2->paddle_width, p2->paddle_thickness, p2->color);
-		if (p2->items[ITEM_CEREMONIAL_SWORD] > 0) {
-			sword_draw(p2, false);
+		// PADDLES
+		struct PaddleData *paddles[2] = { p1, p2 };
+		for (int p_idx=0; p_idx<2; p_idx++) {
+			struct PaddleData *p = paddles[p_idx];
+			DrawRectangle(p->pos.x, p->pos.y, p->paddle_width, p->paddle_thickness, p->color);
+			if (p->items[ITEM_CEREMONIAL_SWORD] > 0) {
+				sword_draw(p1, false);
+			}
 		}
 	
 		// BALL

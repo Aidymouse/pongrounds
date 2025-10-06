@@ -36,6 +36,7 @@ void rocket_cleanup(struct PongState *pong_state);
 
 /** Explosion **/
 void explosion_init(Explosion *e);
+void explosion_update(float dt, Explosion *e);
 void explosion_spawn(Vector2 pos, struct PongState *pong_state);
 void explosion_draw(Explosion *e);
 void explosion_cleanup(struct PongState *pong_state);

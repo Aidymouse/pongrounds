@@ -11,6 +11,15 @@ void explosion_spawn(Vector2 pos, struct PongState *pong_state) {
 	pong_state->num_explosions += 1;
 }
 
+void explosion_update(float dt, Explosion *e) {
+	if (e->delete_me) { return; }
+
+	e->life_timer -= dt;
+	if (e->life_timer <= 0) {
+		e->delete_me = true;
+	}
+}
+
 void explosion_draw(Explosion *e) {
 }
 
