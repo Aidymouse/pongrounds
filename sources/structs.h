@@ -42,6 +42,7 @@ enum GAME_STATES {
 	MENU=3
 };
 
+/** Objects **/
 struct PaddleData {
 	Vector2 pos;
 	Vector2 vel; // Unit vector velocity direction
@@ -74,10 +75,6 @@ struct PaddleData {
 
 };
 
-struct PlayerData {
-	int rounds_won;
-	struct PaddleData *paddle;
-};
 
 enum BallState {
 	BS_NORMAL, // Bounces and moves as normal
@@ -121,6 +118,7 @@ typedef struct RocketData {
 	float fall_vel; // Speed applied to missiles Y when its falling initially
 	float fall_timer; // the timer to track how long the rocket falls after the initial burst
 	float rot_force; // Rotational force on initial hang time
+	float speed_multiplier;
 
 	int anim_frame;
 	float anim_timer;
@@ -129,6 +127,26 @@ typedef struct RocketData {
 	bool delete_me; // If true, this rocket will be deleted this frame
 } RocketData;
 
+typedef struct Explosion {
+	Vector2 pos;
+	float radius;
+	float life_timer; // the clock is always ticking
+	bool delete_me;
+} Explosion;
+
+struct PlayerData {
+	int rounds_won;
+	struct PaddleData *paddle;
+};
+
+/** Util **/
+typedef struct Circle {
+	float x;
+	float y;
+	float radius;
+} Circle;
+
+/** States **/
 struct PongState {
 	int current_round;
 	float ball_respawn_timer; // Time that delays the ball respawn
@@ -136,6 +154,8 @@ struct PongState {
 	struct BallData balls[16]; // Up to 16 balls!
 	RocketData rockets[8]; // Swapback array of rockets
 	int num_rockets;
+	Explosion explosions[MAX_EXPLOSIONS];
+	int num_explosions;
 };
 
 struct PickItemsState {

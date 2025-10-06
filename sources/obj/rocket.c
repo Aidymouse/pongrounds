@@ -16,7 +16,7 @@ FrameAnimation missile_init = {
 	.frames_height = 1,
 	.frame_start_x = 0,
 	.frame_start_y = 0,
-	.frame_duration = 0.016,
+	.frame_duration = 0.016*2,
 };
 
 FrameAnimation missile_loop = {
@@ -50,6 +50,7 @@ void rocket_init(RocketData *r, struct PaddleData *spawner) {
 		r->animation = &missile_init;
 		r->anim_timer = r->animation->frame_duration;
 		r->delete_me = false;
+		r->speed_multiplier = 1;
 }
 
 void rocket_fly(float dt, RocketData *r) {
@@ -88,22 +89,67 @@ void rocket_fly(float dt, RocketData *r) {
 	update_animation(dt, *r->animation, &r->anim_frame, &r->anim_timer);
 }
 
-void rocket_check_collisions(RocketData *r, WorldBorders borders, struct PaddleData **paddles) {
+// returns hitbox points by reference
+void get_rocket_hitbox(RocketData *r, Vector2 *hitbox_points) {
+	float HB_WIDTH=16;
+	float HB_HEIGHT=80;
+
+	float rocket_angle = Vec2GetAngle(r->dir);
+	hitbox_points[0] = Vec2Add(r->pos, Vec2MultScalar(Vec2Rotate(r->dir, 90), HB_WIDTH/2));
+	hitbox_points[1] = Vec2Add(hitbox_points[0], Vec2MultScalar(r->dir, HB_HEIGHT));
+	hitbox_points[2] = Vec2Add(hitbox_points[1], Vec2MultScalar(Vec2Rotate(r->dir, -90), HB_WIDTH));
+	hitbox_points[3] = Vec2Add(hitbox_points[2], Vec2MultScalar(r->dir, -HB_HEIGHT));
+}
+
+Circle get_missile_head_hitbox(RocketData *r) {
+	float HB_DIST=70;
+	Vector2 circle_pos = Vec2Add(r->pos, Vec2MultScalar(r->dir, HB_DIST));
+	Circle c = {
+		.x = circle_pos.x,
+		.y = circle_pos.y,
+		.radius = 7,
+	};
+	return c;
+}
+
+void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameState *state) {
 	// if rocket is off screen, delete
 	if (r->pos.y > borders.bottom + 20 || r->pos.y < borders.top - 20) {
 		printf("Rocket Delete\n");
 		r->delete_me = true;
 		return;
 	}
+	
+	Vector2 hitbox[4];
+	get_rocket_hitbox(r, hitbox);
+
+	Circle c = get_missile_head_hitbox(r);
+	Vector2 c_pos = {
+		.x = c.x,
+		.y = c.y
+	};
+
+	struct PongState *pong_state = state->pong_state;
+
 	// if rocket collides with ball, destroy it and spawn explosion
+	for (int i=0; i<pong_state->num_balls; i++) {
+		struct BallData *ball = &pong_state->balls[i];
+		if (CheckCollisionCircles(ball->pos, ball->radius, c_pos, c.radius)) {
+			r->delete_me = true;
+			explosion_spawn(c_pos, pong_state);
+			return;
+		}
+	}
 	
 	// if rocket collides with paddle, damage it (destroy it for momentary respawn?)
+	// if the rocket is in a time wizards zone, slow it down
 }
 
 
-void rocket_draw(RocketData *r) {
+void rocket_draw(RocketData *r, bool debug) {
 	float angle = Vec2GetAngle(r->dir);
 	
+	printf("%d\n", r->anim_frame);
 	if (r->anim_frame == 18) {
 		r->animation = &missile_loop;
 		r->anim_frame = 0;
@@ -118,13 +164,37 @@ void rocket_draw(RocketData *r) {
 		WHITE
 	);
 
-	DrawCircle(
-		r->pos.x,
-		r->pos.y,
-		3,
-		RED
-	);
+
+	if (debug) {
+		DrawCircle(
+			r->pos.x,
+			r->pos.y,
+			3,
+			RED
+		);
+
+		// draw hitbox
+		Circle hit_circle = get_missile_head_hitbox(r);
+		DrawCircleLines(hit_circle.x, hit_circle.y, hit_circle.radius, RED);
+		/*
+		Vector2 hb[5];
+		get_rocket_hitbox(r, hb);
+		hb[4] = hb[0];
+		DrawLineStrip(hb, 5, RED);
+		*/
+	}
+
 
 	//printf("Angle: %f\n; Dir: (%.2f, %.2f)", angle, r->dir.x, r->dir.y);
 }
 
+void rocket_cleanup(struct PongState *pong_state) {
+	for (int i=0; i<pong_state->num_rockets; i++) {
+		RocketData *r = &pong_state->rockets[i];	
+		if (r->delete_me) {
+			pong_state->rockets[i] = pong_state->rockets[pong_state->num_rockets-1];
+			pong_state->num_rockets -= 1;
+			i -= 1;
+		}
+	}
+}

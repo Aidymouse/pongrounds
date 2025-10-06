@@ -1,6 +1,7 @@
 /** Object fns */
 
 #include "structs.h"
+#include "stdlib.h"
 
 /** Paddle **/
 void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state);
@@ -26,5 +27,12 @@ Rectangle sword_get_hitbox(struct PaddleData *p);
 /** Rocket **/
 void rocket_init(RocketData *r, struct PaddleData *spawner);
 void rocket_fly(float df, RocketData *r);
-void rocket_check_collisions(RocketData *r, WorldBorders borders, struct PaddleData **paddles);
-void rocket_draw(RocketData *r);
+void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameState *state);
+void rocket_draw(RocketData *r, bool debug);
+void rocket_cleanup(struct PongState *pong_state);
+
+/** Explosion **/
+void explosion_init(Explosion *e);
+void explosion_spawn(Vector2 pos, struct PongState *pong_state);
+void explosion_draw(Explosion *e);
+void explosion_cleanup(struct PongState *pong_state);

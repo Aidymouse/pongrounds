@@ -13,6 +13,11 @@ void DrawTextCentered(const char *t, int x, int y, int fontSize, Color color) {
 	DrawText(t, x-width/2, y, fontSize, color);
 }
 
+void DrawPolygon(const Vector2 *points, int num_points, float thickness, Color color) {
+	for (int p=0; p<num_points; p++) {
+	}
+}
+
 /** Gets closest distance in degrees between two angles, assuming negative is rotating anti-clockwise and positive rotating clockwise */
 float get_angle_distance(float angle1, float angle2) {
 

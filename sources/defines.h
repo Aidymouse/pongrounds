@@ -47,3 +47,5 @@
 #define MAX_ROCKETS (8)
 #define ROCKET_TURN_SPEED (5) // Speed at which rocket tries to correct to going straight up
 
+// Explosions
+#define MAX_EXPLOSIONS 8
