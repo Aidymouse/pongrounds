@@ -8,6 +8,8 @@ void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct Ga
 void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state);
 void paddle_activate_items(float dt, struct PaddleData *p, struct PongState *pong_state);
 void paddle_update(float dt, struct PaddleData *p);
+Rectangle paddle_get_time_influence_area(struct PaddleData *paddle);
+float paddle_get_time_power(struct PaddleData *paddle);
 
 /** Ball **/
 void ball_move(float dt, struct BallData *ball, struct GameState *state);

@@ -36,6 +36,9 @@
 
 // Time Wizards Chronometer
 #define CHRONOMETER_SIZE (200)
+#define BASE_TIME_POWER 0.7
+#define CUMULATIVE_TIME_POWER 0.95
+
 
 // Rockets
 #define HANG_TIME (0.5)

@@ -5,6 +5,27 @@
 #include "helper.h"
 #include <stdio.h>
 
+Rectangle paddle_get_time_influence_area(struct PaddleData *paddle) {
+	return (Rectangle){ 
+		paddle->pos.x - CHRONOMETER_SIZE/2,
+		paddle->pos.y - CHRONOMETER_SIZE/2,
+		CHRONOMETER_SIZE+paddle->paddle_width,
+		CHRONOMETER_SIZE+paddle->paddle_thickness 
+	};
+}
+
+float paddle_get_time_power(struct PaddleData *paddle) {
+	float speed_multiplier = 1;
+	if (paddle->items[ITEM_TIME_WIZARDS_CHRONOMETER] > 0) {
+		speed_multiplier *= BASE_TIME_POWER;
+		for (int t = paddle->items[ITEM_TIME_WIZARDS_CHRONOMETER]-1; t>0; t--) {
+			speed_multiplier *= CUMULATIVE_TIME_POWER;
+		}
+	}
+	return speed_multiplier;
+}
+
+
 void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state) {
 
 	p->hp = p->max_hp;

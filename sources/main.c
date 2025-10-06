@@ -136,6 +136,9 @@ int main(void)
 	p2.items_total[debug] += 1;
 	p1.items[debug] += 1;
 	p1.items_total[debug] += 1;
+	int debug2 = ITEM_TIME_WIZARDS_CHRONOMETER;
+	p2.items[debug2] += 1;
+	p2.items_total[debug2] += 1;
 
 	struct BallData ball;
 	init_ball(&ball);
