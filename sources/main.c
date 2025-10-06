@@ -74,7 +74,9 @@ void init_pong_state(struct PongState *g) {
 	init_ball(&(g->balls[0]));
 	//init_ball(&(g->balls[1]));
 	g->ball_respawn_timer = 0;
+	g->end_round_timer = 0;
 	g->num_rockets = 0;
+	g->num_explosions = 0;
 	
 }
 

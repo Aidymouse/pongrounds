@@ -30,6 +30,8 @@ void change_state_to_pong(struct GameState *state) {
 		state->camera->zoom = 0.8 - 0.05 * (nerd_glasses-1);
 	}
 
+	state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
+
 
 	paddle_refresh(state->player1->paddle, state->player2->paddle, state);
 	paddle_refresh(state->player2->paddle, state->player1->paddle, state);

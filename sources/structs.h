@@ -150,6 +150,7 @@ typedef struct Circle {
 struct PongState {
 	int current_round;
 	float ball_respawn_timer; // Time that delays the ball respawn
+	float end_round_timer;
 	int num_balls;
 	struct BallData balls[16]; // Up to 16 balls!
 	RocketData rockets[8]; // Swapback array of rockets

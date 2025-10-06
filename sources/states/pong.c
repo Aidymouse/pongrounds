@@ -147,6 +147,8 @@ void state_pong(float dt, struct GameState *state) {
 
 		/** /COLLISIONS **/		
 
+
+
 		// If all balls are destroyed, set the timer to respawn the ball
 		bool all_destroyed = true;
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
@@ -157,26 +159,52 @@ void state_pong(float dt, struct GameState *state) {
 			}
 		}
 
-		if (all_destroyed && state->pong_state->ball_respawn_timer <= 0) {
-			state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
-		}
 		
 		// Respawn ball if timer's up
-		if (pong_state->ball_respawn_timer > 0) {
+		if (all_destroyed && state->pong_state->ball_respawn_timer <= 0) {
+				state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
+		}
+
+		if (pong_state->ball_respawn_timer > 0 && pong_state->end_round_timer <= 0) {
 			pong_state->ball_respawn_timer -= dt;
 			if (pong_state->ball_respawn_timer <= 0) {
 				pong_state->num_balls = 1;
 				ball_respawn(&(state->pong_state->balls[0]));
-				
-				// Detect end of round (after respawn delay for game feel)
-				if (player1->paddle->hp <= 0) {
-					change_state_to_pick_items(state, player1->paddle);
-				} else if (player2->paddle->hp <= 0) {
-					change_state_to_pick_items(state, player2->paddle);
-				}
-
 			}
 		}
+
+
+		if ((player1->paddle->hp <= 0 || player2->paddle->hp <= 0) && pong_state->end_round_timer <= 0) {
+			pong_state->end_round_timer = BALL_RESPAWN_DELAY;
+		} 
+
+		// Detect end of round
+		if (pong_state->end_round_timer > 0) {
+
+			// If the round can't actually end, don't!
+			bool round_can_end = all_destroyed 
+				&& pong_state->num_rockets == 0
+				&& pong_state->num_explosions == 0;
+
+			printf("All Destroyed %d\n", all_destroyed);
+			printf("Num Rockets %d\n", pong_state->num_rockets);
+			printf("Num Exp %d\n", pong_state->num_explosions);
+
+			pong_state->end_round_timer -= dt;
+			if (!round_can_end) {
+				pong_state->end_round_timer = BALL_RESPAWN_DELAY;
+			}
+
+			if (pong_state->end_round_timer <= 0) {
+				if (player1->paddle->hp <= 0 && round_can_end) {
+					change_state_to_pick_items(state, player1->paddle);
+				} else if (player2->paddle->hp <= 0 && round_can_end) {
+					change_state_to_pick_items(state, player2->paddle);
+				} 	
+			}
+		}
+
+		printf("End round timer %f\n", pong_state->end_round_timer);
 
 }
 
@@ -200,11 +228,6 @@ void draw_pong(struct GameState *state) {
 			}
 		}
 	
-		// BALL
-		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
-			struct BallData *ball = &(state->pong_state->balls[b_idx]);
-			ball_draw(ball, false);
-		}
 
 		// Items //
 		for (int i=0; i<state->pong_state->num_rockets; i++) {
@@ -213,6 +236,13 @@ void draw_pong(struct GameState *state) {
 
 		for (int i=0; i<state->pong_state->num_explosions; i++) {
 			explosion_draw(&state->pong_state->explosions[i], true);
+		}
+
+		// BALL
+		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
+			struct BallData *ball = &(state->pong_state->balls[b_idx]);
+			if (ball->destroyed) { continue; }
+			ball_draw(ball, false);
 		}
 
 		EndMode2D();

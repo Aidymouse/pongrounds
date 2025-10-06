@@ -159,8 +159,13 @@ void ball_sword_hit(struct BallData *ball, struct PongState *pong_state) {
 void ball_check_collisions(struct BallData *ball, struct GameState *state, WorldBorders world_borders) {
 	if (ball->destroyed) { return; }
 
-	// Missiles
+	// Explosions
 	for (int p=0; p<state->pong_state->num_explosions; p++) {
+		Explosion e = state->pong_state->explosions[p];
+		if (CheckCollisionCircles(ball->pos, ball->radius, e.pos, e.radius)) {
+			ball->destroyed = true;
+			return;
+		}
 		
 	}
 
