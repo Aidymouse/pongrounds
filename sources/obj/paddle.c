@@ -25,6 +25,16 @@ float paddle_get_time_power(struct PaddleData *paddle) {
 	return speed_multiplier;
 }
 
+Rectangle paddle_get_rect(struct PaddleData *p) {
+	Rectangle r = {
+		.x = p->pos.x,
+		.y = p->pos.y,
+		.width = p->paddle_width,
+		.height = p->paddle_thickness
+	};
+	return r;
+}
+
 
 void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state) {
 
@@ -138,8 +148,6 @@ void paddle_activate_items(float dt, struct PaddleData *p, struct PongState *pon
 	}
 
 	if (p->items[ITEM_NUCLEAR_LAUNCH_CODES] > 0 && p->item_cooldown_timers[ITEM_NUCLEAR_LAUNCH_CODES] <= 0 && pong_state->num_rockets < MAX_ROCKETS) {
-		printf("Rocket Spawn\n");
-
 		RocketData r;
 		rocket_init(&r, p);
 

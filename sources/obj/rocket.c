@@ -136,6 +136,7 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 	Circle c_head = get_missile_head_hitbox(r);
 	Vector2 c_head_pos = { .x = c_head.x, .y = c_head.y };
 
+	// Used for some effects where we basically want to target the whole missile. Only the head is explosive
 	Circle c_base = get_missile_base_hitbox(r);
 	Vector2 c_base_pos = { .x = c_base.x, .y = c_base.y };
 
@@ -152,11 +153,19 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 	}
 	
 	// if rocket collides with paddle, damage it (destroy it for momentary respawn?)
-	// if the rocket is in a time wizards zone, slow it down
 	struct PaddleData *paddles[2] = { state->player1->paddle, state->player2->paddle };
 	
 	r->speed_multiplier = 1;
+
 	for (int p=0; p<2; p++) {
+		Rectangle paddle_rect = paddle_get_rect(paddles[p]);
+		if (CheckCollisionCircleRec(c_head_pos, c_head.radius, paddle_rect)) {
+			r->delete_me = true;
+			explosion_spawn(c_head_pos, pong_state);
+			return;
+		} 
+
+		// if the rocket is in a time wizards zone, slow it down
 		Rectangle time_influence = paddle_get_time_influence_area(paddles[p]);
 		if (CheckCollisionCircleRec(c_head_pos, c_head.radius, time_influence) || 
 		CheckCollisionCircleRec(c_base_pos, c_base.radius, time_influence)) {
