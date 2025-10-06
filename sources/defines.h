@@ -52,3 +52,4 @@
 
 // Explosions
 #define MAX_EXPLOSIONS 8
+#define EXPLOSION_RADIUS 30

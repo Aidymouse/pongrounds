@@ -256,6 +256,10 @@ void draw_pong(struct GameState *state) {
 			rocket_draw(&state->pong_state->rockets[i], true);
 		}
 
+		for (int i=0; i<state->pong_state->num_explosions; i++) {
+			explosion_draw(&state->pong_state->explosions[i], true);
+		}
+
 		EndMode2D();
 
 		// UI (health, items) //

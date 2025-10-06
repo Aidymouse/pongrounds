@@ -1,11 +1,16 @@
 #include "obj.h"
 #include "structs.h"
+#include "raylib.h"
 
 void explosion_init(Explosion *e) {
+	e->life_timer = 1;
+	e->radius = EXPLOSION_RADIUS;
+	e->delete_me = false;
 }
 
 void explosion_spawn(Vector2 pos, struct PongState *pong_state) {
 	Explosion e;
+	e.pos = pos;
 	explosion_init(&e);
 	pong_state->explosions[pong_state->num_explosions] = e;
 	pong_state->num_explosions += 1;
@@ -20,7 +25,10 @@ void explosion_update(float dt, Explosion *e) {
 	}
 }
 
-void explosion_draw(Explosion *e) {
+void explosion_draw(Explosion *e, bool debug) {
+	if (debug) {
+		DrawCircleLines(e->pos.x, e->pos.y, e->radius, RED);
+	}
 }
 
 void explosion_cleanup(struct PongState *pong_state) {
