@@ -47,6 +47,8 @@ Rectangle sword_get_hitbox(struct PaddleData *p) {
 
 void sword_draw(struct PaddleData *p, bool debug) {
 
+	if (p->sword_timer <= 0) { return; }
+
 	Rectangle sword_rect = { 
 		.x = SWORD_TEX_DIMS_PX*p->sword_frame,
 		.y = 0,
