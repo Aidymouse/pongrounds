@@ -14,6 +14,8 @@ Rectangle paddle_get_time_influence_area(PaddleData *paddle) {
 	};
 }
 
+Vector2 paddle_center(PaddleData *p) { return (Vector2){ p->pos.x + p->paddle_width/2, p->pos.y + p->paddle_thickness/2}; }
+
 float paddle_get_time_power(PaddleData *paddle) {
 	float speed_multiplier = 1;
 	if (paddle->items[ITEM_TIME_WIZARDS_CHRONOMETER] > 0) {
@@ -36,7 +38,22 @@ Rectangle paddle_get_rect(PaddleData *p) {
 }
 
 Rectangle paddle_get_russian_secrets_rect(PaddleData *p) {
-	float midpoint = p->pos.x + p->paddle_width / 2;
+	if (p->items[ITEM_RUSSIAN_SECRETS] < 1) {
+		Rectangle none = { .x=0, .y=0, .width=0, .height=0 };
+		return none;
+	}
+
+	Vector2 p_center = paddle_center(p);
+	
+	float russian_secrets_width = RUSSIAN_SECRETS_AREA_WIDTH + (p->items[ITEM_RUSSIAN_SECRETS]-1) * RUSSIAN_SECRETS_AREA_ADDITIONAL;
+
+	Rectangle russian_secrets_rect = {
+		.x = p_center.x - russian_secrets_width/2,
+		.y = p->pos.y,
+		.width = russian_secrets_width,
+		.height = p->paddle_thickness
+	};
+	return russian_secrets_rect;
 }
 
 

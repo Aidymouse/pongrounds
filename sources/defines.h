@@ -53,3 +53,7 @@
 // Explosions
 #define MAX_EXPLOSIONS 8
 #define EXPLOSION_RADIUS 30
+
+// Russian Secrets
+#define RUSSIAN_SECRETS_AREA_WIDTH 10
+#define RUSSIAN_SECRETS_AREA_ADDITIONAL 4
