@@ -127,6 +127,7 @@ typedef struct RocketData {
 	int anim_frame;
 	float anim_timer;
 	FrameAnimation *animation;
+	float detonation_timer; // If something sets this to higher than 0, the missile will blow up when it hits 0
 
 	bool delete_me; // If true, this rocket will be deleted this frame
 } RocketData;

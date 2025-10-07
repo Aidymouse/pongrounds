@@ -34,7 +34,7 @@ Rectangle sword_get_hitbox(PaddleData *p);
 
 /** Rocket **/
 void rocket_init(RocketData *r, PaddleData *spawner);
-void rocket_fly(float df, RocketData *r);
+void rocket_fly(float df, RocketData *r, struct PongState *pong_state);
 void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameState *state);
 void rocket_draw(RocketData *r, bool debug);
 void rocket_cleanup(struct PongState *pong_state);

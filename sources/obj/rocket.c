@@ -29,6 +29,17 @@ FrameAnimation missile_loop = {
 	.frame_duration = 0.016,
 };
 
+Circle get_missile_head_hitbox(RocketData *r) {
+	float HB_DIST=70;
+	Vector2 circle_pos = Vec2Add(r->pos, Vec2MultScalar(r->dir, HB_DIST));
+	Circle c = {
+		.x = circle_pos.x,
+		.y = circle_pos.y,
+		.radius = 7,
+	};
+	return c;
+}
+
 void rocket_init(RocketData *r, PaddleData *spawner) {
 		Vector2 rocket_dir = spawner->facing;
 
@@ -51,7 +62,21 @@ void rocket_init(RocketData *r, PaddleData *spawner) {
 		r->speed_multiplier = 1;
 }
 
-void rocket_fly(float dt, RocketData *r) {
+void rocket_fly(float dt, RocketData *r, struct PongState *pong_state) {
+
+	// Detonation timer
+	if (r->detonation_timer > 0) {
+		r->detonation_timer -= dt;
+		if (r->detonation_timer <= 0) {
+			Circle c_head = get_missile_head_hitbox(r);
+			Vector2 c_head_pos = { .x = c_head.x, .y = c_head.y };
+			r->delete_me = true;
+			explosion_spawn(c_head_pos, pong_state);
+			return;
+		}
+	}
+	
+	// Move
 	if (r->fall_timer > 0) {
 		int m = 1;
 		if (r->dir.y < 0) { m = -1; }
@@ -65,7 +90,7 @@ void rocket_fly(float dt, RocketData *r) {
 		}
 	} else {
 		r->pos = Vec2Add(r->pos, Vec2MultScalar(r->dir, r->speed*r->speed_multiplier*dt));
-		//const angle = 
+		
 		float angle = Vec2GetAngle(r->dir);
 		float ang_to_top = get_angle_distance(angle, -90);
 		float ang_to_bottom = get_angle_distance(angle, 90);
@@ -98,16 +123,6 @@ void get_rocket_hitbox(RocketData *r, Vector2 *hitbox_points) {
 	hitbox_points[3] = Vec2Add(hitbox_points[2], Vec2MultScalar(r->dir, -HB_HEIGHT));
 }
 
-Circle get_missile_head_hitbox(RocketData *r) {
-	float HB_DIST=70;
-	Vector2 circle_pos = Vec2Add(r->pos, Vec2MultScalar(r->dir, HB_DIST));
-	Circle c = {
-		.x = circle_pos.x,
-		.y = circle_pos.y,
-		.radius = 7,
-	};
-	return c;
-}
 
 Circle get_missile_base_hitbox(RocketData *r) {
 	float HB_DIST=0;
@@ -121,6 +136,7 @@ Circle get_missile_base_hitbox(RocketData *r) {
 }
 
 void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameState *state) {
+	if (r->delete_me) { return; }
 	// if rocket is off screen, delete
 	if (r->pos.y > borders.bottom + 20 || r->pos.y < borders.top - 20) {
 		//printf("Rocket Delete\n");
@@ -171,6 +187,17 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 		if (CheckCollisionCircleRec(c_head_pos, c_head.radius, time_influence) || 
 		CheckCollisionCircleRec(c_base_pos, c_base.radius, time_influence)) {
 			r->speed_multiplier *= paddle_get_time_power(paddles[p]);
+		}
+	
+		// If we hit a sword --- DAMN!
+		if (paddle->sword_timer > 0) {
+			printf("Checking paddle %d for missile collision\n", paddle->id);
+			Rectangle sword_box = sword_get_hitbox(paddle);
+			if (CheckCollisionCircleRec(c_head_pos, c_head.radius, sword_box)) {
+				printf("Paddle %d (sword time %f) just hit a missile with a sword. Is it dumb???\n", paddle->id, paddle->sword_timer);
+				r->dir = Vec2Rotate(r->dir, 180);
+				r->detonation_timer = 1;
+			}
 		}
 	}
 }
