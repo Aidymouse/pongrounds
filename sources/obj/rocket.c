@@ -30,11 +30,9 @@ FrameAnimation missile_loop = {
 };
 
 void rocket_init(RocketData *r, PaddleData *spawner) {
-		Vector2 rocket_dir = {
-			.x = 0,
-			.y = -1,
-		};
-		Vector2 rocket_pos = Vec2Add(spawner->pos, (Vector2){spawner->paddle_width/2, 0});
+		Vector2 rocket_dir = spawner->facing;
+
+		Vector2 rocket_pos = Vec2Add(paddle_center(spawner), Vec2MultScalar(spawner->facing, spawner->facing.y));
 		if (spawner->facing.y == 1) { 
 			rocket_dir.y = 1; 
 			rocket_pos.y += spawner->paddle_thickness;
