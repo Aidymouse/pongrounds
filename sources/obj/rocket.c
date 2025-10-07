@@ -29,7 +29,7 @@ FrameAnimation missile_loop = {
 	.frame_duration = 0.016,
 };
 
-void rocket_init(RocketData *r, struct PaddleData *spawner) {
+void rocket_init(RocketData *r, PaddleData *spawner) {
 		Vector2 rocket_dir = {
 			.x = 0,
 			.y = -1,
@@ -153,12 +153,12 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 	}
 	
 	// if rocket collides with paddle, damage it (destroy it for momentary respawn?)
-	struct PaddleData *paddles[2] = { state->player1->paddle, state->player2->paddle };
+	PaddleData *paddles[2] = { state->player1->paddle, state->player2->paddle };
 	
 	r->speed_multiplier = 1;
 
 	for (int p=0; p<2; p++) {
-		struct PaddleData *paddle = paddles[p];
+		PaddleData *paddle = paddles[p];
 		if (paddle->destroyed_timer > 0) { continue; }
 		Rectangle paddle_rect = paddle_get_rect(paddle);
 		if (CheckCollisionCircleRec(c_head_pos, c_head.radius, paddle_rect)) {

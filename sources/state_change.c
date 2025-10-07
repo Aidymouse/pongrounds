@@ -17,7 +17,7 @@ void change_state_plain(enum GAME_STATES new_state, struct GameState *state) {
 	}
 }
 
-void change_state_to_pick_items(struct GameState *state, struct PaddleData *choosing) {
+void change_state_to_pick_items(struct GameState *state, PaddleData *choosing) {
 	struct PickItemsState *pick_items_state = state->pick_items_state;
 	roll_items(pick_items_state);
 	pick_items_state->choosing_paddle = choosing;

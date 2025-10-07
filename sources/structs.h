@@ -15,7 +15,8 @@ enum Items {
 	ITEM_TIME_WIZARDS_CHRONOMETER=6,
 	ITEM_BACHELOR_OF_PSYCHOLOGY_HONS=7,
 	ITEM_NIEKRO_CARD=8, // Chance of knuckleball on hit
-	ITEM_NUCLEAR_LAUNCH_CODES=9
+	ITEM_NUCLEAR_LAUNCH_CODES=9,
+	ITEM_RUSSIAN_SECRETS=10,
 };
 
  
@@ -43,7 +44,7 @@ enum GAME_STATES {
 };
 
 /** Objects **/
-struct PaddleData {
+typedef struct PaddleData {
 	Vector2 pos;
 	Vector2 vel; // Unit vector velocity direction
 	float speed;
@@ -75,7 +76,7 @@ struct PaddleData {
 	int sword_anim_dir; // -1 if back, 1 if forward
 
 
-};
+} PaddleData;
 
 
 enum BallState {
@@ -92,7 +93,7 @@ struct BallData {
 	int speed; 
 	bool destroyed;
 	// Pointer to paddle that last hit the ball. WARN: will be -1 if the ball has not been hit yet
-	struct PaddleData *last_hit_by;
+	PaddleData *last_hit_by;
 	// How much damage to inflict when a point is scored with this ball
 	int score_damage; 
 
@@ -107,8 +108,7 @@ struct BallData {
 	// When this timer hit's 0 we pick a new desired dir. Time varies from like .2s to .8s
 	float kb_dir_timer; 
 
-	
-
+	bool rs_spiked;
 	
 };
 
@@ -138,7 +138,7 @@ typedef struct Explosion {
 
 struct PlayerData {
 	int rounds_won;
-	struct PaddleData *paddle;
+	PaddleData *paddle;
 };
 
 /** Util **/
@@ -168,7 +168,7 @@ struct PickItemsState {
 	int item_choices[8]; // 3 by default but can do up
 	int num_item_choices; // 3 by default
 	int hovered_item; // Idx of the hovered item
-	struct PaddleData *choosing_paddle;
+	PaddleData *choosing_paddle;
 };
 
 typedef struct WorldBorders {

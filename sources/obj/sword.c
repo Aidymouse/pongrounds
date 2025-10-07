@@ -9,7 +9,7 @@
 
 
 
-void sword_swing(float dt, struct PaddleData *p) {
+void sword_swing(float dt, PaddleData *p) {
 	if (p->sword_timer > 0) { 
 		p->sword_timer -= dt; 
 		if (p->sword_timer <= 0) {
@@ -35,7 +35,7 @@ void sword_swing(float dt, struct PaddleData *p) {
 
 }
 
-Rectangle sword_get_hitbox(struct PaddleData *p) {
+Rectangle sword_get_hitbox(PaddleData *p) {
 	Rectangle r = (Rectangle){p->pos.x, 0, p->paddle_width, 50};
 	if (p->id == 1) {
 		r.y = p->pos.y + p->paddle_thickness;
@@ -45,7 +45,7 @@ Rectangle sword_get_hitbox(struct PaddleData *p) {
 	return r;
 }
 
-void sword_draw(struct PaddleData *p, bool debug) {
+void sword_draw(PaddleData *p, bool debug) {
 
 	if (p->sword_timer <= 0) { return; }
 

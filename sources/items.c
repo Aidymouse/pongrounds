@@ -12,6 +12,7 @@ const char *item_labels[] = {
 	"Bachelor of Psychology (Hons)",
 	"Niekro Trading Card",
 	"Nuclear Launch Codes",
+	"Russian Secrets",
 };
 
 const char *item_descriptions[] = {
@@ -25,6 +26,7 @@ const char *item_descriptions[] = {
 	"", // Bachelor of psychology (hons)
 	"Chance to launch a knuckeball on bounce", // Niekro Trading Card
 	"", // Nuclear Launch Codes
+	"", // Russian Secrets
 };
 
 const char *item_filenames[] = {
@@ -38,6 +40,7 @@ const char *item_filenames[] = {
 	"cards/bachelor of psychology.png", // Bachelor of psychology (hons)
 	"cards/niekro.png", // Niekro Trading Card
 	"cards/missile.png", // Nuclear Launch Codes
+	"cards/missile.png", // Russian Secrets TODO
 };
 
 const char *small_item_filenames[] = {
@@ -46,9 +49,10 @@ const char *small_item_filenames[] = {
 	"small/gonads.png", // Hypergonadism
 	"small/cage.png", // Chastity Cage
 	"small/glasses.png", // Nerd Glasses
-	"small/nuclearlaunchcodes.png", // Ceremonial Sword TODO
+	"small/sword.png", // Ceremonial Sword
 	"small/time.png", // Time Wizards Chronometer
 	"small/bachelor.png", // Bachelor of psychology (hons)
 	"small/niekrotradingcard.png", // Niekro Trading Card
 	"small/nuclearlaunchcodes.png", // Nuclear Launch Codes
+	"small/russiansecrets.png", // Russian Secrets
 };

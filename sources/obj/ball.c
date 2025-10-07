@@ -42,9 +42,9 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 		speed_multiplier *= 0.8;
 	}
 
-	struct PaddleData *paddles[2] = { state->player1->paddle, state->player2->paddle };
+	PaddleData *paddles[2] = { state->player1->paddle, state->player2->paddle };
 	for (int pi=0; pi<2; pi++) {
-		struct PaddleData *paddle = paddles[pi];
+		PaddleData *paddle = paddles[pi];
 		if (paddle->items[ITEM_TIME_WIZARDS_CHRONOMETER] > 0) {
 			Rectangle time_influence = paddle_get_time_influence_area(paddle);
 			if (CheckCollisionCircleRec(ball->pos, ball->radius, time_influence)) {
@@ -82,7 +82,7 @@ void ball_reflect_wall(struct BallData *b) {
 	}
 }
 
-void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
+void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 
 	// Get away from the paddle!
 	Vector2 paddle_center;
@@ -127,11 +127,17 @@ void ball_paddle_hit(struct BallData *b, struct PaddleData *p) {
 		}
 	}
 
+	b->rs_spiked = false;
+	if (p->items[ITEM_RUSSIAN_SECRETS] > 0) {
+		b->rs_spiked = true;
+	}
+	
+
 }
 
 void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct PlayerData *opponent) {
 
-	struct PaddleData *paddle = scorer->paddle;
+	PaddleData *paddle = scorer->paddle;
 
 	//scorer->score +=1;
 	opponent->paddle->hp -= b->score_damage;
@@ -178,9 +184,9 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 	}
 
 	// Collisions per paddle
-	struct PaddleData *paddles[2] = { state->player1->paddle, state->player2->paddle };
+	PaddleData *paddles[2] = { state->player1->paddle, state->player2->paddle };
 	for (int p=0; p<2; p++) {
-		struct PaddleData *paddle = paddles[p];
+		PaddleData *paddle = paddles[p];
 		// Paddle Ball Collisions
 		struct Rectangle pRect = {paddle->pos.x, paddle->pos.y, paddle->paddle_width, paddle->paddle_thickness};
 		if (CheckCollisionCircleRec(ball->pos, ball->radius, pRect)) {
@@ -199,8 +205,8 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 
 
 	// Expired panadol edge of screen collision
-	struct PaddleData *p1 = state->player1->paddle;
-	struct PaddleData *p2 = state->player2->paddle;
+	PaddleData *p1 = state->player1->paddle;
+	PaddleData *p2 = state->player2->paddle;
 	// TODO: make it get the item from the paddle currently on that side
 	if (ball->pos.y - ball->radius < world_borders.top && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
 		p1->items[ITEM_EXPIRED_PANADOL] -= 1;

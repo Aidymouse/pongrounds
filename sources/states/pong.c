@@ -13,7 +13,7 @@
 
 // Called on point score
 
-void display_items(struct PaddleData *p, int x, int y, int dir, Texture2D *textures) {
+void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {
 	/*
 	for (int i=0; i<16; i++) {
 		char s[16];
@@ -55,7 +55,7 @@ void display_items(struct PaddleData *p, int x, int y, int dir, Texture2D *textu
 }
 
 void display_health(struct PlayerData *p, int x, int y) {
-	struct PaddleData *paddle = p->paddle;
+	PaddleData *paddle = p->paddle;
 
 	int width = paddle->max_hp;
 
@@ -70,8 +70,8 @@ void state_pong(float dt, struct GameState *state) {
 
 		struct PlayerData *player1 = state->player1;
 		struct PlayerData *player2 = state->player2;
-		struct PaddleData *p1 = player1->paddle;
-		struct PaddleData *p2 = player2->paddle;
+		PaddleData *p1 = player1->paddle;
+		PaddleData *p2 = player2->paddle;
 
 		float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
 		float world_bottom = GetScreenToWorld2D((Vector2){0, SCREEN_HEIGHT}, *state->camera).y;
@@ -136,7 +136,7 @@ void state_pong(float dt, struct GameState *state) {
 		}
 
 		// Balls
-		struct PaddleData *paddles[2] = { p1, p2 };
+		PaddleData *paddles[2] = { p1, p2 };
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			// Left and right of screen
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
@@ -213,15 +213,15 @@ void draw_pong(struct GameState *state) {
 		struct PlayerData *player1 = state->player1;
 		struct PlayerData *player2 = state->player2;
 
-		struct PaddleData *p1 = player1->paddle;
-		struct PaddleData *p2 = player2->paddle;
+		PaddleData *p1 = player1->paddle;
+		PaddleData *p2 = player2->paddle;
 
 		BeginMode2D(*state->camera);
 
 		// PADDLES
-		struct PaddleData *paddles[2] = { p1, p2 };
+		PaddleData *paddles[2] = { p1, p2 };
 		for (int p_idx=0; p_idx<2; p_idx++) {
-			struct PaddleData *p = paddles[p_idx];
+			PaddleData *p = paddles[p_idx];
 			if (p->destroyed_timer > 0) { continue; }
 			DrawRectangle(p->pos.x, p->pos.y, p->paddle_width, p->paddle_thickness, p->color);
 			if (p->items[ITEM_CEREMONIAL_SWORD] > 0) {

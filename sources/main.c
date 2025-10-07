@@ -22,7 +22,7 @@ void init_gamestate(struct GameState *gs) {
 	gs->state = PONG;
 }
 
-void init_paddle(struct PaddleData *p) {
+void init_paddle(PaddleData *p) {
 	p->pos.x = SCREEN_WIDTH/2 - PADDLE_DEFAULT_WIDTH/2;
 	p->paddle_width = PADDLE_DEFAULT_WIDTH;
 	p->paddle_thickness = 10;
@@ -47,7 +47,7 @@ void init_paddle(struct PaddleData *p) {
 }
 
 
-void init_player(struct PlayerData *player, struct PaddleData *paddle) {
+void init_player(struct PlayerData *player, PaddleData *paddle) {
 	player->paddle = paddle;
 	init_paddle(player->paddle);
 }
@@ -116,9 +116,9 @@ int main(void)
 	struct PickItemsState pick_items_state;
 	init_pick_items_state(&pick_items_state);
 
-	struct PaddleData p1;
+	PaddleData p1;
 	struct PlayerData player1;
-	struct PaddleData p2;
+	PaddleData p2;
 	struct PlayerData player2;
  	
 	init_player(&player1, &p1);

@@ -5,7 +5,7 @@
 #include "helper.h"
 #include <stdio.h>
 
-Rectangle paddle_get_time_influence_area(struct PaddleData *paddle) {
+Rectangle paddle_get_time_influence_area(PaddleData *paddle) {
 	return (Rectangle){ 
 		paddle->pos.x - CHRONOMETER_SIZE/2,
 		paddle->pos.y - CHRONOMETER_SIZE/2,
@@ -14,7 +14,7 @@ Rectangle paddle_get_time_influence_area(struct PaddleData *paddle) {
 	};
 }
 
-float paddle_get_time_power(struct PaddleData *paddle) {
+float paddle_get_time_power(PaddleData *paddle) {
 	float speed_multiplier = 1;
 	if (paddle->items[ITEM_TIME_WIZARDS_CHRONOMETER] > 0) {
 		speed_multiplier *= BASE_TIME_POWER;
@@ -25,7 +25,7 @@ float paddle_get_time_power(struct PaddleData *paddle) {
 	return speed_multiplier;
 }
 
-Rectangle paddle_get_rect(struct PaddleData *p) {
+Rectangle paddle_get_rect(PaddleData *p) {
 	Rectangle r = {
 		.x = p->pos.x,
 		.y = p->pos.y,
@@ -35,8 +35,12 @@ Rectangle paddle_get_rect(struct PaddleData *p) {
 	return r;
 }
 
+Rectangle paddle_get_russian_secrets_rect(PaddleData *p) {
+	float midpoint = p->pos.x + p->paddle_width / 2;
+}
 
-void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct GameState *state) {
+
+void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state) {
 
 	p->hp = p->max_hp;
 	p->destroyed_timer = 0;
@@ -86,7 +90,7 @@ void paddle_refresh(struct PaddleData *p, struct PaddleData *opponent, struct Ga
 	}
 }
 
-void paddle_update(float dt, struct PaddleData *p) {
+void paddle_update(float dt, PaddleData *p) {
 
 	for (int i=0; i<NUM_ITEMS; i++) {
 		p->item_cooldown_timers[i] -= dt;
@@ -99,7 +103,7 @@ void paddle_update(float dt, struct PaddleData *p) {
 	}
 }
 
-void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state) {
+void paddle_move(float dt, PaddleData *p, struct PaddleControls controls, struct GameState *state) {
 
 		if (p->destroyed_timer > 0) { return; }
 
@@ -148,7 +152,7 @@ void paddle_move(float dt, struct PaddleData *p, struct PaddleControls controls,
 		}
 }
 
-void paddle_activate_items(float dt, struct PaddleData *p, struct PongState *pong_state) {
+void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state) {
 
 	if (p->destroyed_timer > 0) { return; }
 
