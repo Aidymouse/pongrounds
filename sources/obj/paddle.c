@@ -191,3 +191,15 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 
 }
 
+void paddle_draw(PaddleData *p) {
+			if (p->destroyed_timer > 0) { return; }
+			DrawRectangle(p->pos.x, p->pos.y, p->paddle_width, p->paddle_thickness, p->color);
+			if (p->items[ITEM_CEREMONIAL_SWORD] > 0) {
+				sword_draw(p, false);
+			}
+
+			if (p->items[ITEM_RUSSIAN_SECRETS] > 0) {
+				Rectangle rsa = paddle_get_russian_secrets_rect(p);
+				DrawRectangleLinesEx(rsa, 1, RED);
+			}
+}

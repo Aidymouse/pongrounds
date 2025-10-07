@@ -110,7 +110,7 @@ struct BallData {
 	// When this timer hit's 0 we pick a new desired dir. Time varies from like .2s to .8s
 	float kb_dir_timer; 
 
-	bool rs_spiked;
+	float rs_spiked_speed_mult;
 	
 };
 

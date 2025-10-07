@@ -5,12 +5,29 @@
 #include "defines.h"
 #include <stdio.h>
 
+void ball_init(struct BallData *b) {
+	b->pos.x = SCREEN_WIDTH/2;
+	b->pos.y = SCREEN_HEIGHT/2;
+	b->radius = 6;
+	b->vel.y = 1;
+	b->vel.x = 0;
+	b->speed = BALL_INIT_SPEED;
+	b->state = BS_NORMAL;
+	b->score_damage = BALL_SCORE_DAMAGE;
+	b->destroyed = false;
+	b->last_hit_by = 0; // equiv to NULL
+
+	b->kb_turn_speed = NIEKRO_KB_TURN_SPEED;
+
+	b->rs_spiked_speed_mult = 1;
+
+}
+
 void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 
 	if (ball->state == BS_NORMAL) {
 
 	} else if (ball->state == BS_KNUCKLEBALL) {
-
 
 		if (ball->kb_dir_timer <= 0) {
 			// Pick new dir (weighted)
@@ -53,6 +70,8 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 		}
 	}
 
+	speed_multiplier *= ball->rs_spiked_speed_mult;
+
 	ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*speed_multiplier*dt));
 }
 
@@ -66,6 +85,7 @@ void ball_respawn(struct BallData *b) {
 
 	b->radius = BALL_RADIUS;
 	b->score_damage = BALL_SCORE_DAMAGE;
+	b->rs_spiked_speed_mult = 1;
 }
 
 
@@ -111,6 +131,7 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 
 	//TODO: push the ball OUT of the paddle back the way it came first. We could probably be lazy and make it a linear push to the closest side but thats risky if the ball is going very fast
 
+	// Knuckle ball
 	if (b->state == BS_KNUCKLEBALL) {
 		b->state = BS_NORMAL;
 	}
@@ -127,9 +148,15 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 		}
 	}
 
-	b->rs_spiked = false;
+	// Russian secrets spiking
+	b->rs_spiked_speed_mult = 1;
 	if (p->items[ITEM_RUSSIAN_SECRETS] > 0) {
-		b->rs_spiked = true;
+		Rectangle rs_area = paddle_get_russian_secrets_rect(p);
+		if (CheckCollisionCircleRec(b->pos, b->radius, rs_area)) {
+			b->rs_spiked_speed_mult = RUSSIAN_SECRETS_SPEED_MULT + p->items[ITEM_RUSSIAN_SECRETS]-1 * RUSSIAN_SECRETS_SPEED_ADDITIONAL;
+			printf("Spiked! %f\n", b->rs_spiked_speed_mult);
+			b->vel = p->facing;
+		}
 	}
 	
 

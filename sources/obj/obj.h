@@ -13,8 +13,10 @@ Rectangle paddle_get_rect(PaddleData *p);
 Rectangle paddle_get_time_influence_area(PaddleData *paddle);
 float paddle_get_time_power(PaddleData *paddle);
 Rectangle paddle_get_russian_secrets_rect(PaddleData *paddle);
+void paddle_draw(PaddleData *paddle);
 
 /** Ball **/
+void ball_init(struct BallData *b);
 void ball_move(float dt, struct BallData *ball, struct GameState *state);
 void ball_respawn(struct BallData *b);
 void ball_reflect_wall(struct BallData *b);

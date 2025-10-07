@@ -126,8 +126,6 @@ void state_pong(float dt, struct GameState *state) {
 			explosion_update(dt, e);
 		}
 
-
-
 		/** Collisions **/
 		// Rockets
 		for (int i=0; i<pong_state->num_rockets; i++) {
@@ -186,10 +184,6 @@ void state_pong(float dt, struct GameState *state) {
 				&& pong_state->num_rockets == 0
 				&& pong_state->num_explosions == 0;
 
-			printf("All Destroyed %d\n", all_destroyed);
-			printf("Num Rockets %d\n", pong_state->num_rockets);
-			printf("Num Exp %d\n", pong_state->num_explosions);
-
 			pong_state->end_round_timer -= dt;
 			if (!round_can_end) {
 				pong_state->end_round_timer = BALL_RESPAWN_DELAY;
@@ -204,7 +198,6 @@ void state_pong(float dt, struct GameState *state) {
 			}
 		}
 
-		printf("End round timer %f\n", pong_state->end_round_timer);
 
 }
 
@@ -222,13 +215,8 @@ void draw_pong(struct GameState *state) {
 		PaddleData *paddles[2] = { p1, p2 };
 		for (int p_idx=0; p_idx<2; p_idx++) {
 			PaddleData *p = paddles[p_idx];
-			if (p->destroyed_timer > 0) { continue; }
-			DrawRectangle(p->pos.x, p->pos.y, p->paddle_width, p->paddle_thickness, p->color);
-			if (p->items[ITEM_CEREMONIAL_SWORD] > 0) {
-				sword_draw(p1, false);
-			}
+			paddle_draw(p);
 		}
-	
 
 		// Items //
 		for (int i=0; i<state->pong_state->num_rockets; i++) {

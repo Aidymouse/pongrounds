@@ -10,12 +10,11 @@
 #include "defines.h"
 #include "items.h"
 
+#include "obj/obj.h"
 #include "raylib.h"
 #include "structs.h"
 #include "Vec2.h"
 #include "helper.h"
-
-
 
 // INIT FNS //
 void init_gamestate(struct GameState *gs) {
@@ -52,26 +51,11 @@ void init_player(struct PlayerData *player, PaddleData *paddle) {
 	init_paddle(player->paddle);
 }
 
-void init_ball(struct BallData *b) {
-	b->pos.x = SCREEN_WIDTH/2;
-	b->pos.y = SCREEN_HEIGHT/2;
-	b->radius = 6;
-	b->vel.y = 1;
-	b->vel.x = 0;
-	b->speed = BALL_INIT_SPEED;
-	b->state = BS_NORMAL;
-	b->score_damage = BALL_SCORE_DAMAGE;
-	b->destroyed = false;
-
-	b->kb_turn_speed = 100;
-	b->last_hit_by = 0; // equiv to NULL
-
-}
 
 void init_pong_state(struct PongState *g) {
 	g->current_round = 0;
 	g->num_balls = 1;
-	init_ball(&(g->balls[0]));
+	ball_init(&(g->balls[0]));
 	//init_ball(&(g->balls[1]));
 	g->ball_respawn_timer = 0;
 	g->end_round_timer = 0;
@@ -120,6 +104,8 @@ int main(void)
 	struct PlayerData player1;
 	PaddleData p2;
 	struct PlayerData player2;
+	p1.id = 1;
+	p2.id = 2;
  	
 	init_player(&player1, &p1);
 	init_player(&player2, &p2);
@@ -133,17 +119,14 @@ int main(void)
 	p2.facing = (Vector2){ 0, -1 };
 
 	// DEBUG: hard code in some items
-	int debug = ITEM_NUCLEAR_LAUNCH_CODES;
+	int debug = ITEM_RUSSIAN_SECRETS;
 	p2.items[debug] += 1;
 	p2.items_total[debug] += 1;
 	p1.items[debug] += 1;
 	p1.items_total[debug] += 1;
-	int debug2 = ITEM_TIME_WIZARDS_CHRONOMETER;
-	p2.items[debug2] += 1;
-	p2.items_total[debug2] += 1;
 
 	struct BallData ball;
-	init_ball(&ball);
+	ball_init(&ball);
 
 	state.player1 = &player1;
 	state.player2 = &player2;
