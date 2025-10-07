@@ -72,6 +72,13 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 
 	speed_multiplier *= ball->rs_spiked_speed_mult;
 
+	if (ball->rs_spiked_speed_mult > 1) {
+		ball->rs_spiked_speed_mult -= RS_SPIKE_DECELLERATION;
+		if (ball->rs_spiked_speed_mult < 1) {
+			ball->rs_spiked_speed_mult = 1;
+		}
+	}
+
 	ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*speed_multiplier*dt));
 }
 

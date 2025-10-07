@@ -50,7 +50,7 @@ void sword_draw(PaddleData *p, bool debug) {
 
 	if (p->sword_timer <= 0) { return; }
 
-	Rectangle sword_rect = { 
+	Rectangle sword_tex_rect = { 
 		.x = SWORD_TEX_DIMS_PX*p->sword_frame,
 		.y = 0,
 		.width = SWORD_TEX_DIMS_PX*p->sword_anim_dir,
@@ -66,14 +66,14 @@ void sword_draw(PaddleData *p, bool debug) {
 	};
 
 	if (p->id == 1) {
-		sword_rect.height = SWORD_TEX_DIMS_PX*-1;
+		sword_tex_rect.height = SWORD_TEX_DIMS_PX*-1;
 		sword_origin.y = 16;
 		sword_pos.y += p->paddle_thickness;
 	}
 
 	DrawTexturePro(
 		tex_sword,
-		sword_rect,
+		sword_tex_rect,
 		(Rectangle){sword_pos.x, sword_pos.y, SWORD_TEX_DIMS_PX, SWORD_TEX_DIMS_PX},
 		sword_origin,
 		0, // TODO facing angle
