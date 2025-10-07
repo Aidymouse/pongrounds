@@ -51,6 +51,8 @@ struct PaddleData {
 	float max_speed; 
 	int id; // 1 is player 1, 2 is player 2. Player 2 owns the bottom side of the screen
 
+	float destroyed_timer;
+
 	int paddle_width;
 	int paddle_thickness;
 	int hp;

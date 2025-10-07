@@ -161,6 +161,7 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 		Rectangle paddle_rect = paddle_get_rect(paddles[p]);
 		if (CheckCollisionCircleRec(c_head_pos, c_head.radius, paddle_rect)) {
 			r->delete_me = true;
+			paddles[p]->destroyed_timer = MISSILE_DEATH_TIME;
 			explosion_spawn(c_head_pos, pong_state);
 			return;
 		} 

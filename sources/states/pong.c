@@ -222,6 +222,7 @@ void draw_pong(struct GameState *state) {
 		struct PaddleData *paddles[2] = { p1, p2 };
 		for (int p_idx=0; p_idx<2; p_idx++) {
 			struct PaddleData *p = paddles[p_idx];
+			if (p->destroyed_timer > 0) { continue; }
 			DrawRectangle(p->pos.x, p->pos.y, p->paddle_width, p->paddle_thickness, p->color);
 			if (p->items[ITEM_CEREMONIAL_SWORD] > 0) {
 				sword_draw(p1, false);

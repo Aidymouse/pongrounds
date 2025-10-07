@@ -49,6 +49,7 @@
 #define MISSILE_TEX_DIMS_PX (128)
 #define MAX_ROCKETS (8)
 #define ROCKET_TURN_SPEED (5) // Speed at which rocket tries to correct to going straight up
+#define MISSILE_DEATH_TIME (1)
 
 // Explosions
 #define MAX_EXPLOSIONS 8
