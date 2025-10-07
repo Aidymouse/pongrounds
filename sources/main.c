@@ -126,11 +126,11 @@ int main(void)
 
 	p1.pos.y = 40;
 	p1.color = BLUE;
-	p1.id = 1;
+	p1.facing = (Vector2){ 0, 1 };
 
 	p2.pos.y = SCREEN_HEIGHT - p2.paddle_thickness - 40;
 	p2.color = ORANGE;
-	p2.id = 2;
+	p2.facing = (Vector2){ 0, -1 };
 
 	// DEBUG: hard code in some items
 	int debug = ITEM_NUCLEAR_LAUNCH_CODES;

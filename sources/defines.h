@@ -8,7 +8,7 @@
 #define POINTS_PER_ROUND (2)
 #define NUM_ROUNDS (7)
 
-#define NUM_ITEMS 10
+#define NUM_ITEMS 11
 
 // Animations
 #define CARD_ANIM_FRAMES 43
@@ -37,8 +37,7 @@
 // Time Wizards Chronometer
 #define CHRONOMETER_SIZE (200)
 #define BASE_TIME_POWER 0.7
-#define CUMULATIVE_TIME_POWER 0.95
-
+#define CUMULATIVE_TIME_POWER 0.95 // Additional multiplier on speed for each additional chronometer
 
 // Rockets
 #define HANG_TIME (0.5)

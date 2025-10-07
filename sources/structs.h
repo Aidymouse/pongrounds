@@ -47,10 +47,12 @@ enum GAME_STATES {
 typedef struct PaddleData {
 	Vector2 pos;
 	Vector2 vel; // Unit vector velocity direction
+	Vector2 facing; // What direction we're facing. Yeah I know it's a rectangle
+	int id; // 2 owns the bottom of the screen
+
 	float speed;
 	// Max normal speed while not dashing
 	float max_speed; 
-	int id; // 1 is player 1, 2 is player 2. Player 2 owns the bottom side of the screen
 
 	float destroyed_timer;
 

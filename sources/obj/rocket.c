@@ -35,7 +35,7 @@ void rocket_init(RocketData *r, PaddleData *spawner) {
 			.y = -1,
 		};
 		Vector2 rocket_pos = Vec2Add(spawner->pos, (Vector2){spawner->paddle_width/2, 0});
-		if (spawner->id == 1) { 
+		if (spawner->facing.y == 1) { 
 			rocket_dir.y = 1; 
 			rocket_pos.y += spawner->paddle_thickness;
 		}
