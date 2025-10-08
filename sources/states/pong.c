@@ -221,11 +221,11 @@ void draw_pong(struct GameState *state) {
 
 		// Items //
 		for (int i=0; i<state->pong_state->num_rockets; i++) {
-			rocket_draw(&state->pong_state->rockets[i], true);
+			rocket_draw(&state->pong_state->rockets[i], false);
 		}
 
 		for (int i=0; i<state->pong_state->num_explosions; i++) {
-			explosion_draw(&state->pong_state->explosions[i], true);
+			explosion_draw(&state->pong_state->explosions[i], false);
 		}
 
 		// BALL

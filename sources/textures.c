@@ -9,11 +9,13 @@ Texture2D tex_item_cards[NUM_ITEMS];
 Texture2D tex_small_items[NUM_ITEMS];
 Texture2D tex_sword;
 Texture2D tex_missile;
+Texture2D tex_explosion;
 
 void load_textures() {
 
 	tex_sword = LoadTexture(ASSETS_PATH"sword swing.png");
 	tex_missile = LoadTexture(ASSETS_PATH"missile shoot.png");
+	tex_explosion = LoadTexture(ASSETS_PATH"explosion.png");
 
 	for (int i=0; i<NUM_ITEMS; i++) {
 		if (strcmp(item_filenames[i], "") != 0) {

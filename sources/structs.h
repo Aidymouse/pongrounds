@@ -138,7 +138,10 @@ typedef struct RocketData {
 typedef struct Explosion {
 	Vector2 pos;
 	float radius;
-	float life_timer; // the clock is always ticking
+	float active_timer;
+	float anim_timer;
+	int anim_frame;
+	//float life_timer; // the clock is always ticking
 	bool delete_me;
 } Explosion;
 
