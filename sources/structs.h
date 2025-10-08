@@ -17,6 +17,7 @@ enum Items {
 	ITEM_NIEKRO_CARD=8, // Chance of knuckleball on hit
 	ITEM_NUCLEAR_LAUNCH_CODES=9,
 	ITEM_RUSSIAN_SECRETS=10,
+	ITEM_HYDRAULIC_PRESS=11,
 };
 
  
@@ -93,7 +94,7 @@ struct BallData {
 	// Actually the unit vector direction of velocity
 	Vector2 vel; 
 	int speed; 
-	bool destroyed;
+	bool delete_me;
 	// Pointer to paddle that last hit the ball. WARN: will be -1 if the ball has not been hit yet
 	PaddleData *last_hit_by;
 	// How much damage to inflict when a point is scored with this ball
@@ -111,6 +112,8 @@ struct BallData {
 	float kb_dir_timer; 
 
 	float rs_spiked_speed_mult;
+
+	float hp_timer;
 	
 };
 
@@ -156,8 +159,9 @@ struct PongState {
 	int current_round;
 	float ball_respawn_timer; // Time that delays the ball respawn
 	float end_round_timer;
+	float impact_timer; // If > 0, the game will freeze. Don't set this very high
 	int num_balls;
-	struct BallData balls[16]; // Up to 16 balls!
+	struct BallData balls[MAX_BALLS]; // Up to many balls!
 	RocketData rockets[8]; // Swapback array of rockets
 	int num_rockets;
 	Explosion explosions[MAX_EXPLOSIONS];

@@ -17,6 +17,7 @@ void paddle_draw(PaddleData *paddle);
 
 /** Ball **/
 void ball_init(struct BallData *b);
+struct BallData *ball_spawn(struct PongState *pong_state);
 void ball_move(float dt, struct BallData *ball, struct GameState *state);
 void ball_respawn(struct BallData *b);
 void ball_reflect_wall(struct BallData *b);
@@ -26,6 +27,7 @@ void ball_draw(struct BallData *ball, bool debug);
 void ball_sword_hit(struct BallData *b, struct PongState *pong_state);
 void ball_refresh(struct BallData *ball);
 void ball_check_collisions(struct BallData *ball, struct GameState *state, WorldBorders world_borders);
+void ball_cleanup(struct PongState *state);
 
 /** Sword **/
 void sword_swing(float dt, PaddleData *p);

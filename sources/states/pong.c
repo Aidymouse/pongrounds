@@ -87,7 +87,7 @@ void state_pong(float dt, struct GameState *state) {
 		// Update //
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
-			if (ball->destroyed) continue;
+			if (ball->delete_me) continue;
 			ball_move(dt, ball, state);
 		}
 
@@ -146,12 +146,13 @@ void state_pong(float dt, struct GameState *state) {
 		/** /COLLISIONS **/		
 
 
+		ball_cleanup(state->pong_state);
 
 		// If all balls are destroyed, set the timer to respawn the ball
 		bool all_destroyed = true;
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
-			if (ball->destroyed == false) {
+			if (ball->delete_me == false) {
 				all_destroyed = false;
 				break;
 			}
@@ -230,7 +231,7 @@ void draw_pong(struct GameState *state) {
 		// BALL
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
-			if (ball->destroyed) { continue; }
+			if (ball->delete_me) { continue; }
 			ball_draw(ball, false);
 		}
 

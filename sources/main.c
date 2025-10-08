@@ -121,12 +121,12 @@ int main(void)
 	p2.facing = (Vector2){ 0, -1 };
 
 	// DEBUG: hard code in some items
-	int debug = ITEM_NUCLEAR_LAUNCH_CODES;
+	int debug = ITEM_HYDRAULIC_PRESS;
 	p2.items[debug] += 1;
 	p2.items_total[debug] += 1;
-	debug = ITEM_CEREMONIAL_SWORD;
 	p1.items[debug] += 1;
 	p1.items_total[debug] += 1;
+	// /DEBUG
 
 	struct BallData ball;
 	ball_init(&ball);

@@ -13,6 +13,7 @@ const char *item_labels[] = {
 	"Niekro Trading Card",
 	"Nuclear Launch Codes",
 	"Russian Secrets",
+	"Hydraulic Press",
 };
 
 const char *item_descriptions[] = {
@@ -27,6 +28,7 @@ const char *item_descriptions[] = {
 	"Chance to launch a knuckeball on bounce", // Niekro Trading Card
 	"", // Nuclear Launch Codes
 	"", // Russian Secrets
+	"", // Hydraulic Press
 };
 
 const char *item_filenames[] = {
@@ -41,6 +43,7 @@ const char *item_filenames[] = {
 	"cards/niekro.png", // Niekro Trading Card
 	"cards/missile.png", // Nuclear Launch Codes
 	"cards/missile.png", // Russian Secrets TODO
+	"cards/missile.png", // Hydraulic Press TODO
 };
 
 const char *small_item_filenames[] = {
@@ -55,4 +58,5 @@ const char *small_item_filenames[] = {
 	"small/niekrotradingcard.png", // Niekro Trading Card
 	"small/nuclearlaunchcodes.png", // Nuclear Launch Codes
 	"small/russiansecrets.png", // Russian Secrets
+	"small/russiansecrets.png", // Hydraulic Press TODO
 };
