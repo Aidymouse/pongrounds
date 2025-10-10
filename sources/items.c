@@ -15,6 +15,7 @@ const char *item_labels[] = {
 	"Russian Secrets",
 	"Hydraulic Press",
 	"Antique Game Console",
+	"Cloning Vat",
 };
 
 const char *item_descriptions[] = {
@@ -31,6 +32,7 @@ const char *item_descriptions[] = {
 	"", // Russian Secrets
 	"", // Hydraulic Press
 	"", // Antique game console
+	"", // Cloning Vat
 };
 
 const char *item_filenames[] = {
@@ -47,6 +49,7 @@ const char *item_filenames[] = {
 	"cards/missile.png", // Russian Secrets TODO
 	"cards/missile.png", // Hydraulic Press TODO
 	"cards/missile.png", // Antique Game Console TODO
+	"cards/missile.png", // Cloning Vat TODO
 };
 
 const char *small_item_filenames[] = {
@@ -63,4 +66,5 @@ const char *small_item_filenames[] = {
 	"small/russiansecrets.png", // Russian Secrets
 	"small/russiansecrets.png", // Hydraulic Press TODO
 	"small/russiansecrets.png", // Antique Game Console TODO
+	"small/russiansecrets.png", // Cloning Vat TODO
 };

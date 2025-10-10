@@ -9,7 +9,7 @@
 #define NUM_ROUNDS (7)
 #define DEFAULT_SCREENSHAKE_DECAY 1
 
-#define NUM_ITEMS 13
+#define NUM_ITEMS 14
 #define MAX_BALLS 32
 
 // Animations
