@@ -62,7 +62,9 @@ void rocket_init(RocketData *r, PaddleData *spawner) {
 		r->speed_multiplier = 1;
 }
 
-void rocket_fly(float dt, RocketData *r, struct PongState *pong_state) {
+void rocket_fly(float dt, RocketData *r, struct GameState *state) {
+
+	struct PongState *pong_state = state->pong_state;
 
 	// Detonation timer
 	if (r->detonation_timer > 0) {
@@ -72,6 +74,8 @@ void rocket_fly(float dt, RocketData *r, struct PongState *pong_state) {
 			Vector2 c_head_pos = { .x = c_head.x, .y = c_head.y };
 			r->delete_me = true;
 			explosion_spawn(c_head_pos, pong_state);
+			state->screenshake_timer = 0.5;
+			state->screenshake_amplitude = 2;
 			return;
 		}
 	}
@@ -139,7 +143,6 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 	if (r->delete_me) { return; }
 	// if rocket is off screen, delete
 	if (r->pos.y > borders.bottom + 20 || r->pos.y < borders.top - 20) {
-		//printf("Rocket Delete\n");
 		r->delete_me = true;
 		return;
 	}
@@ -162,6 +165,8 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 		if (CheckCollisionCircles(ball->pos, ball->radius, c_head_pos, c_head.radius)) {
 			r->delete_me = true;
 			explosion_spawn(c_head_pos, pong_state);
+			state->screenshake_timer = 0.5;
+			state->screenshake_amplitude = 2;
 			return;
 		}
 	}
@@ -179,6 +184,8 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 			r->delete_me = true;
 			paddle->destroyed_timer = MISSILE_DEATH_TIME;
 			explosion_spawn(c_head_pos, pong_state);
+			state->screenshake_timer = 0.5;
+			state->screenshake_amplitude = 2;
 			return;
 		} 
 

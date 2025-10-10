@@ -19,6 +19,10 @@
 // INIT FNS //
 void init_gamestate(struct GameState *gs) {
 	gs->state = PONG;
+
+	gs->screenshake_timer = 0;
+	gs->screenshake_amplitude = 2;
+	gs->screenshake_decay = DEFAULT_SCREENSHAKE_DECAY;
 }
 
 void init_paddle(PaddleData *p) {
@@ -63,6 +67,8 @@ void init_pong_state(struct PongState *g) {
 	g->end_round_timer = 0;
 	g->num_rockets = 0;
 	g->num_explosions = 0;
+
+	
 	
 }
 
@@ -70,11 +76,35 @@ void init_pick_items_state(struct PickItemsState *s) {
 	s->num_item_choices = 3;
 }
 
+Vector2 center = (Vector2){ SCREEN_WIDTH/2, SCREEN_HEIGHT/2 };
+
 void init_camera(Camera2D *camera) {
 	camera->target = (Vector2){ SCREEN_WIDTH/2, SCREEN_HEIGHT/2 };
-	camera->offset = (Vector2){ SCREEN_WIDTH/2, SCREEN_HEIGHT/2 };
+	camera->offset = center;
 	camera->zoom = 1.0f;
 	camera->rotation = 0.0;
+}
+
+void update_screenshake (float dt, struct GameState *state) {
+	// Screenshake
+	if (state->screenshake_timer > 0 || state->screenshake_amplitude > 0) {
+		
+		state->camera->offset = Vec2Add(center, (Vector2){
+			randInt(-state->screenshake_amplitude, state->screenshake_amplitude),
+			randInt(-state->screenshake_amplitude, state->screenshake_amplitude),
+		});
+
+		state->screenshake_timer -= dt;
+
+		if (state->screenshake_timer <= 0) {
+
+			state->screenshake_amplitude -= state->screenshake_decay;
+			if (state->screenshake_amplitude <= 0 || state->screenshake_decay <= 0) {
+				state->camera->offset = center;
+				state->screenshake_amplitude = 0;
+			}
+		}
+	}
 }
 
 // MAIN //
@@ -146,10 +176,13 @@ int main(void)
 
 		// Update
 		if (state.state == PONG) {
+			update_screenshake(dt, &state);
 			state_pong(dt, &state);
 		} else if (state.state == PICK_ITEM) {
 			state_pick_items(dt, state.pick_items_state, &state);
 		}
+	
+
 
 		// Draw
         BeginDrawing();

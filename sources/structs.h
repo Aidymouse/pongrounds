@@ -196,6 +196,10 @@ struct GameState {
 	struct PongState *pong_state;
 	struct PickItemsState *pick_items_state;
 	Camera2D *camera;
+	float screenshake_timer;
+	float screenshake_freq_timer;
+	float screenshake_decay; // Screenshake will shake at amplitude until the timer runs out, then amplitude will reduce by decay until it reaches 0
+	float screenshake_amplitude; // How much to shake by
 };
 
 struct PaddleControls {

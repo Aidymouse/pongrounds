@@ -7,6 +7,7 @@
 // Game Vars
 #define POINTS_PER_ROUND (2)
 #define NUM_ROUNDS (7)
+#define DEFAULT_SCREENSHAKE_DECAY 1
 
 #define NUM_ITEMS 12
 #define MAX_BALLS 32

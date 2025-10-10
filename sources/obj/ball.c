@@ -217,7 +217,7 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 		int press_chance = p->items[ITEM_HYDRAULIC_PRESS] * HYDRAULIC_PRESS_CHANCE + p->items[ITEM_HYDRAULIC_PRESS]-1 * HYDRAULIC_PRESS_CHANCE_ADDITIONAL;
 		if (randInt(1, 100) < press_chance) {
 			b->hp_timer = HYDRAULIC_PRESS_TIMER;
-			p->item_use_timers[ITEM_HYDRAULIC_PRESS] = ITEM_USE_BUMP_TIME;
+			p->item_use_timers[ITEM_HYDRAULIC_PRESS] = HYDRAULIC_PRESS_TIMER;
 		}
 	}
 	
