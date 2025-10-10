@@ -51,10 +51,8 @@ void init_paddle(PaddleData *p) {
 
 }
 
-
-void init_player(struct PlayerData *player, PaddleData *paddle) {
-	player->paddle = paddle;
-	init_paddle(player->paddle);
+void init_player(struct PlayerData *player) {
+	//player->paddle = paddle;
 }
 
 
@@ -67,9 +65,7 @@ void init_pong_state(struct PongState *g) {
 	g->end_round_timer = 0;
 	g->num_rockets = 0;
 	g->num_explosions = 0;
-
-	
-	
+	g->num_paddles = 2;
 }
 
 void init_pick_items_state(struct PickItemsState *s) {
@@ -129,33 +125,40 @@ int main(void)
 	struct PongState pong_state;
 	init_pong_state(&pong_state);
 
+	init_paddle( &pong_state.paddles[0] );
+	struct PaddleData *p1 = &pong_state.paddles[0];
+	p1->pos.y = 40;
+	p1->color = BLUE;
+	p1->facing = (Vector2){ 0, 1 };
+
+	init_paddle( &pong_state.paddles[1] );
+	struct PaddleData *p2 = &pong_state.paddles[1];
+	p2->id = 2;
+
 	struct PickItemsState pick_items_state;
 	init_pick_items_state(&pick_items_state);
+	p2->pos.y = SCREEN_HEIGHT - p2->paddle_thickness - 40;
+	p2->color = ORANGE;
+	p2->facing = (Vector2){ 0, -1 };
 
-	PaddleData p1;
-	struct PlayerData player1;
-	PaddleData p2;
-	struct PlayerData player2;
-	p1.id = 1;
-	p2.id = 2;
  	
-	init_player(&player1, &p1);
-	init_player(&player2, &p2);
+	// Player 1
+	struct PlayerData player1;
+	init_player(&player1);
+	player1.paddle = &pong_state.paddles[0];
+	p1->id = 1;
 
-	p1.pos.y = 40;
-	p1.color = BLUE;
-	p1.facing = (Vector2){ 0, 1 };
-
-	p2.pos.y = SCREEN_HEIGHT - p2.paddle_thickness - 40;
-	p2.color = ORANGE;
-	p2.facing = (Vector2){ 0, -1 };
+	// Player 2
+	struct PlayerData player2;
+	init_player(&player2);
+	player2.paddle = &pong_state.paddles[1];
 
 	// DEBUG: hard code in some items
 	int debug = ITEM_ANTIQUE_GAME_CONSOLE;
-	p2.items[debug] += 1;
-	p2.items_total[debug] += 1;
-	p1.items[debug] += 1;
-	p1.items_total[debug] += 1;
+	p2->items[debug] += 1;
+	p2->items_total[debug] += 1;
+	p1->items[debug] += 1;
+	p1->items_total[debug] += 1;
 	// /DEBUG
 
 	struct BallData ball;

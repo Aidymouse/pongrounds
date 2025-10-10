@@ -11,6 +11,7 @@
 
 #define NUM_ITEMS 14
 #define MAX_BALLS 32
+#define MAX_PADDLES 32
 
 // Animations
 #define CARD_ANIM_FRAMES 43
@@ -54,6 +55,8 @@
 #define MAX_ROCKETS (8)
 #define ROCKET_TURN_SPEED (5) // Speed at which rocket tries to correct to going straight up
 #define MISSILE_DEATH_TIME (1)
+#define MISSILE_SHAKE_DUR (0.5) // Missile screenshake duration
+#define MISSILE_SHAKE_AMPL (2) // missile screenshake amplitude
 
 // Explosions
 #define MAX_EXPLOSIONS 8

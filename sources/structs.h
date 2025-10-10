@@ -45,6 +45,10 @@ enum GAME_STATES {
 	MENU=3
 };
 
+// How the paddle is controlled
+//enum PaddleBrain {
+//}
+
 /** Objects **/
 typedef struct PaddleData {
 	Vector2 pos;
@@ -79,6 +83,8 @@ typedef struct PaddleData {
 	int sword_frame;
 	int sword_anim_dir; // -1 if back, 1 if forward
 
+	bool clone; // Clone paddles are destroyed when the ball hits them or their destroyed timer goes up by one
+ 
 
 } PaddleData;
 
@@ -164,6 +170,8 @@ struct PongState {
 	float ball_respawn_timer; // Time that delays the ball respawn
 	float end_round_timer;
 	float impact_timer; // If > 0, the game will freeze. Don't set this very high
+	struct PaddleData paddles[MAX_PADDLES]; // [0] is controlled by p1, [1] is controlled by p2, all others are free
+	int num_paddles;
 	int num_balls;
 	struct BallData balls[MAX_BALLS]; // Up to many balls!
 	RocketData rockets[8]; // Swapback array of rockets

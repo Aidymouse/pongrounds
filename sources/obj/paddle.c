@@ -134,6 +134,7 @@ void paddle_move(float dt, PaddleData *p, struct PaddleControls controls, struct
 				p->vel.x = 0;
 			}
 
+			// TODO: limit
 			if (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS] > 0) {
 				if (IsKeyDown(controls.up)) {
 					p->vel.y = -1;

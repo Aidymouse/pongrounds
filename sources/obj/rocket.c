@@ -74,8 +74,8 @@ void rocket_fly(float dt, RocketData *r, struct GameState *state) {
 			Vector2 c_head_pos = { .x = c_head.x, .y = c_head.y };
 			r->delete_me = true;
 			explosion_spawn(c_head_pos, pong_state);
-			state->screenshake_timer = 0.5;
-			state->screenshake_amplitude = 2;
+			state->screenshake_timer = MISSILE_SHAKE_DUR;
+			state->screenshake_amplitude = MISSILE_SHAKE_AMPL;
 			return;
 		}
 	}
@@ -184,8 +184,8 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 			r->delete_me = true;
 			paddle->destroyed_timer = MISSILE_DEATH_TIME;
 			explosion_spawn(c_head_pos, pong_state);
-			state->screenshake_timer = 0.5;
-			state->screenshake_amplitude = 2;
+			state->screenshake_timer = MISSILE_SHAKE_DUR;
+			state->screenshake_amplitude = MISSILE_SHAKE_AMPL;
 			return;
 		} 
 
