@@ -30,6 +30,10 @@
 #define PADDLE_DEFAULT_HP (100)
 #define PADDLE_SPEED (400)
 
+// Cherry blossom cloak
+#define CLOAK_DASH_SPEED (2200)
+#define CLOAK_DASH_SPEED_BONUS (200) // Additional
+
 // Sword
 #define SWORD_DURATION (0.2)
 #define SWORD_COOLDOWN (2)

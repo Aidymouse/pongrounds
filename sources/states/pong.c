@@ -194,19 +194,12 @@ void state_pong(float dt, struct GameState *state) {
 
 void draw_pong(struct GameState *state) {
 
-		struct PlayerData *player1 = state->player1;
-		struct PlayerData *player2 = state->player2;
-
-		PaddleData *p1 = player1->paddle;
-		PaddleData *p2 = player2->paddle;
-
 		BeginMode2D(*state->camera);
 
 		// PADDLES
-		PaddleData *paddles[2] = { p1, p2 };
-		for (int p_idx=0; p_idx<2; p_idx++) {
-			PaddleData *p = paddles[p_idx];
-			paddle_draw(p);
+		for (int p_idx=state->pong_state->num_paddles; p_idx>=0; p_idx--) {
+			PaddleData p = state->pong_state->paddles[p_idx];
+			paddle_draw(&p);
 		}
 
 		// Items //
@@ -228,10 +221,10 @@ void draw_pong(struct GameState *state) {
 		EndMode2D();
 
 		// UI (health, items) //
-		display_items(p1, 0, 0, 1, tex_small_items);
-		display_health(player1, SCREEN_WIDTH/2, 10);
+		display_items(&state->pong_state->paddles[0], 0, 0, 1, tex_small_items);
+		display_health(state->player1, SCREEN_WIDTH/2, 10);
 
-		display_items(p2, SCREEN_WIDTH-50, SCREEN_HEIGHT, -1, tex_small_items);
-		display_health(player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-10-10);
+		display_items(&state->pong_state->paddles[1], SCREEN_WIDTH-50, SCREEN_HEIGHT, -1, tex_small_items);
+		display_health(state->player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-10-10);
 
 }

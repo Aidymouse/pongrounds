@@ -13,6 +13,7 @@ Rectangle paddle_get_time_influence_area(PaddleData *paddle);
 float paddle_get_time_power(PaddleData *paddle);
 Rectangle paddle_get_russian_secrets_rect(PaddleData *paddle);
 void paddle_draw(PaddleData *paddle);
+void paddle_init(PaddleData *p);
 
 /** Ball **/
 void ball_init(struct BallData *b);

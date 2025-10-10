@@ -19,6 +19,7 @@ enum Items {
 	ITEM_RUSSIAN_SECRETS=10,
 	ITEM_HYDRAULIC_PRESS=11,
 	ITEM_ANTIQUE_GAME_CONSOLE=12,
+	ITEM_CLONING_VAT=13,
 };
 
  
@@ -59,11 +60,19 @@ struct PaddleControls {
 	int item;
 };
 
+// Paddle
+typedef enum PaddleBrain {
+	PB_PLAYER=0,
+	PB_CLONE=1, // Clones created by cloning vat
+	PB_COMPUTER=2, // Computer controlled player paddle
+} PaddleBrain;
+
 typedef struct PaddleData {
 	Vector2 pos;
 	Vector2 vel; // Unit vector velocity direction
 	Vector2 facing; // What direction we're facing. Yeah I know it's a rectangle
 	int id; // 2 owns the bottom of the screen
+	PaddleBrain brain;
 
 	float speed;
 	// Max normal speed while not dashing
@@ -92,8 +101,9 @@ typedef struct PaddleData {
 	int sword_frame;
 	int sword_anim_dir; // -1 if back, 1 if forward
 
-	bool clone; // Clone paddles are destroyed when the ball hits them or their destroyed timer goes up by one
- 
+	bool cv_clone; // Clone paddles are destroyed when the ball hits them or their destroyed timer goes up by one
+	struct PaddleData *cv_creator;
+	int cv_num_clones;
 
 } PaddleData;
 

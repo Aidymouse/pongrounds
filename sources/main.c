@@ -26,31 +26,6 @@ void init_gamestate(struct GameState *gs) {
 	gs->screenshake_decay = DEFAULT_SCREENSHAKE_DECAY;
 }
 
-void init_paddle(PaddleData *p) {
-	p->pos.x = SCREEN_WIDTH/2 - PADDLE_DEFAULT_WIDTH/2;
-	p->paddle_width = PADDLE_DEFAULT_WIDTH;
-	p->paddle_thickness = 10;
-	p->color = WHITE;
-	p->hp = PADDLE_DEFAULT_HP;
-	p->max_hp = PADDLE_DEFAULT_HP;
-	p->vel.x = 0;
-	p->vel.y = 0;
-	p->speed = PADDLE_SPEED;
-	p->max_speed = PADDLE_SPEED;
-
-	p->sword_frame = 0;
-	p->sword_anim_timer = 0;
-	p->sword_anim_dir = 1;
-	p->sword_timer = 0;
-
-	for (int i=0; i<NUM_ITEMS; i++) {
-		p->items[i] = 0;
-		p->items_total[i] = 0;
-		p->item_cooldown_timers[i] = 0;
-		p->item_use_timers[i] = 0;
-	} 
-
-}
 
 void init_player(struct PlayerData *player) {
 	//player->paddle = paddle;
@@ -129,14 +104,14 @@ int main(void)
 	struct PongState pong_state;
 	init_pong_state(&pong_state);
 
-	init_paddle( &pong_state.paddles[0] );
+	paddle_init( &pong_state.paddles[0] );
 	struct PaddleData *p1 = &pong_state.paddles[0];
 	p1->id = 1;
 	p1->pos.y = 40;
 	p1->color = BLUE;
 	p1->facing = (Vector2){ 0, 1 };
 
-	init_paddle( &pong_state.paddles[1] );
+	paddle_init( &pong_state.paddles[1] );
 	struct PaddleData *p2 = &pong_state.paddles[1];
 	p2->id = 2;
 	p2->pos.y = SCREEN_HEIGHT - p2->paddle_thickness - 40;
@@ -160,11 +135,11 @@ int main(void)
 	player2.controls = p2_controls;
 
 	// DEBUG: hard code in some items
-	int debug = ITEM_ANTIQUE_GAME_CONSOLE;
-	p2->items[debug] += 1;
-	p2->items_total[debug] += 1;
-	p1->items[debug] += 1;
-	p1->items_total[debug] += 1;
+	int debug_item = ITEM_CLONING_VAT;
+	p2->items[debug_item] += 1;
+	p2->items_total[debug_item] += 1;
+	p1->items[debug_item] += 1;
+	p1->items_total[debug_item] += 1;
 	// /DEBUG
 
 	struct BallData ball;
