@@ -165,6 +165,7 @@ void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state
 /** */
 void clone_paddle_init(struct PaddleData *p, struct PaddleData *creator) {
 	paddle_init(p);
+	p->brain = PB_CLONE;
 	p->cv_creator = creator;
 	p->cv_clone = true;
 	p->color = GRAY;
@@ -284,11 +285,13 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state) {
 
 	if (p->destroyed_timer > 0) { return; }
 
-	// TODO: switch on paddle brain
-	if (p->id == 1) {
-		paddle_player_control(dt, p, state->player1->controls, state);
-	} else {
-		paddle_player_control(dt, p, state->player2->controls, state);
+	if (p->brain == PB_PLAYER) {
+		struct PaddleControls controls = state->player1->controls;
+		if (p->id == 2) {
+			controls = state->player2->controls;
+		}
+
+		paddle_player_control(dt, p, controls, state);
 	}
 
 
