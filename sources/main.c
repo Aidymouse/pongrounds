@@ -151,7 +151,7 @@ int main(void)
 	p2.facing = (Vector2){ 0, -1 };
 
 	// DEBUG: hard code in some items
-	int debug = ITEM_NUCLEAR_LAUNCH_CODES;
+	int debug = ITEM_ANTIQUE_GAME_CONSOLE;
 	p2.items[debug] += 1;
 	p2.items_total[debug] += 1;
 	p1.items[debug] += 1;

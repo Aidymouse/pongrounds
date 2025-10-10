@@ -189,6 +189,16 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 
 	}
 
+	if (p->items[ITEM_ANTIQUE_GAME_CONSOLE] > 0) {
+		for (int i=0; i<pong_state->num_balls; i++) {
+			pong_state->balls[i].vel.x *= -1;
+			pong_state->balls[i].kb_dir.x *= -1;
+		}
+
+		p->items[ITEM_ANTIQUE_GAME_CONSOLE] -= 1;
+		p->item_use_timers[ITEM_ANTIQUE_GAME_CONSOLE] = ITEM_USE_BUMP_TIME;
+	}
+
 }
 
 void paddle_draw(PaddleData *p) {

@@ -14,6 +14,7 @@ const char *item_labels[] = {
 	"Nuclear Launch Codes",
 	"Russian Secrets",
 	"Hydraulic Press",
+	"Antique Game Console",
 };
 
 const char *item_descriptions[] = {
@@ -29,6 +30,7 @@ const char *item_descriptions[] = {
 	"", // Nuclear Launch Codes
 	"", // Russian Secrets
 	"", // Hydraulic Press
+	"", // Antique game console
 };
 
 const char *item_filenames[] = {
@@ -44,6 +46,7 @@ const char *item_filenames[] = {
 	"cards/missile.png", // Nuclear Launch Codes
 	"cards/missile.png", // Russian Secrets TODO
 	"cards/missile.png", // Hydraulic Press TODO
+	"cards/missile.png", // Antique Game Console TODO
 };
 
 const char *small_item_filenames[] = {
@@ -59,4 +62,5 @@ const char *small_item_filenames[] = {
 	"small/nuclearlaunchcodes.png", // Nuclear Launch Codes
 	"small/russiansecrets.png", // Russian Secrets
 	"small/russiansecrets.png", // Hydraulic Press TODO
+	"small/russiansecrets.png", // Antique Game Console TODO
 };
