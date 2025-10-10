@@ -50,6 +50,15 @@ enum GAME_STATES {
 //}
 
 /** Objects **/
+struct PaddleControls {
+	int left;
+	int right;
+	int dash;
+	int up;
+	int down;
+	int item;
+};
+
 typedef struct PaddleData {
 	Vector2 pos;
 	Vector2 vel; // Unit vector velocity direction
@@ -155,6 +164,7 @@ typedef struct Explosion {
 struct PlayerData {
 	int rounds_won;
 	PaddleData *paddle;
+	struct PaddleControls controls;
 };
 
 /** Util **/
@@ -211,13 +221,6 @@ struct GameState {
 	float screenshake_amplitude; // How much to shake by
 };
 
-struct PaddleControls {
-	int left;
-	int right;
-	int dash;
-	int up;
-	int down;
-};
 
 
 

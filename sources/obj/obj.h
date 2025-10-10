@@ -5,10 +5,9 @@
 
 /** Paddle **/
 void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state);
-void paddle_move(float dt, PaddleData *p, struct PaddleControls controls, struct GameState *state);
 void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state);
 Vector2 paddle_center(PaddleData *p);
-void paddle_update(float dt, PaddleData *p);
+void paddle_update(float dt, PaddleData *p, struct GameState *state);
 Rectangle paddle_get_rect(PaddleData *p);
 Rectangle paddle_get_time_influence_area(PaddleData *paddle);
 float paddle_get_time_power(PaddleData *paddle);

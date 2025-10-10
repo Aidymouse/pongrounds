@@ -105,70 +105,9 @@ void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state
 			p->pos.y = world_bottom - p->paddle_thickness - 40;
 		}
 	}
+
 }
 
-void paddle_update(float dt, PaddleData *p) {
-
-	for (int i=0; i<NUM_ITEMS; i++) {
-		p->item_cooldown_timers[i] -= dt;
-		p->item_use_timers[i] -= dt;
-	}
-
-	if (p->destroyed_timer > 0) {
-		p->destroyed_timer -= dt;
-		return;
-	}
-}
-
-void paddle_move(float dt, PaddleData *p, struct PaddleControls controls, struct GameState *state) {
-
-		if (p->destroyed_timer > 0) { return; }
-
-		// Higher than max speed and we're dashing - no control allowed
-		if (p->speed <= p->max_speed) { 
-			if (IsKeyDown(controls.left)) {
-				p->vel.x = -1;
-			} else if (IsKeyDown(controls.right)) {
-				p->vel.x = 1;
-			} else {
-				p->vel.x = 0;
-			}
-
-			// TODO: limit
-			if (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS] > 0) {
-				if (IsKeyDown(controls.up)) {
-					p->vel.y = -1;
-				} else if (IsKeyDown(controls.down)) {
-					p->vel.y = 1;
-				} else {
-					p->vel.y = 0;
-				}
-			}
-		}
-
-		if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyPressed(controls.dash)) {
-			p->speed = 2200 + 200*p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1;
-		}
-
-		// Decelerate dash
-		if (p->speed > p->max_speed) {
-			p->speed -= 250;
-			if (p->speed < p->max_speed) {
-				p->speed = p->max_speed;
-			}
-		}
-
-		p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, p->speed*dt));
-
-		float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
-		float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
-
-		if (p->pos.x + p->paddle_width > world_right) {
-			p->pos.x = world_right - p->paddle_width;
-		} else if (p->pos.x < world_left) {
-			p->pos.x = world_left;
-		}
-}
 
 void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state) {
 
@@ -201,6 +140,83 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 	}
 
 }
+
+
+void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state) {
+	// Higher than max speed and we're dashing - no control allowed
+	if (p->speed <= p->max_speed) { 
+		if (IsKeyDown(controls.left)) {
+			p->vel.x = -1;
+		} else if (IsKeyDown(controls.right)) {
+			p->vel.x = 1;
+		} else {
+			p->vel.x = 0;
+		}
+
+		// TODO: limit
+		if (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS] > 0) {
+			if (IsKeyDown(controls.up)) {
+				p->vel.y = -1;
+			} else if (IsKeyDown(controls.down)) {
+				p->vel.y = 1;
+			} else {
+				p->vel.y = 0;
+			}
+		}
+	}
+
+	if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyPressed(controls.dash)) {
+		p->speed = 2200 + 200*p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1;
+	}
+
+	if (IsKeyPressed(controls.item)) {
+		paddle_activate_items(dt, p, state->pong_state);
+	}
+}
+
+void paddle_update(float dt, PaddleData *p, struct GameState *state) {
+
+	if (p->destroyed_timer > 0) { return; }
+
+	// TODO: switch on paddle brain
+	if (p->id == 1) {
+		paddle_player_control(dt, p, state->player1->controls, state);
+	} else {
+		paddle_player_control(dt, p, state->player2->controls, state);
+	}
+
+
+	// Decelerate dash
+	if (p->speed > p->max_speed) {
+		p->speed -= 250;
+		if (p->speed < p->max_speed) {
+			p->speed = p->max_speed;
+		}
+	}
+
+	p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, p->speed*dt));
+
+	float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
+	float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
+
+	if (p->pos.x + p->paddle_width > world_right) {
+		p->pos.x = world_right - p->paddle_width;
+	} else if (p->pos.x < world_left) {
+		p->pos.x = world_left;
+	}
+
+	for (int i=0; i<NUM_ITEMS; i++) {
+		p->item_cooldown_timers[i] -= dt;
+		p->item_use_timers[i] -= dt;
+	}
+
+	if (p->destroyed_timer > 0) {
+		p->destroyed_timer -= dt;
+		return;
+	}
+}
+
+
 
 void paddle_draw(PaddleData *p) {
 			if (p->destroyed_timer > 0) { return; }

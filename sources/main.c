@@ -8,6 +8,7 @@
 #include "textures.h"
 
 #include "defines.h"
+#include "controls.h"
 #include "items.h"
 
 #include "obj/obj.h"
@@ -103,6 +104,9 @@ void update_screenshake (float dt, struct GameState *state) {
 	}
 }
 
+struct PaddleControls p1_controls = { P1_LEFT_KEY, P1_RIGHT_KEY, P1_DASH_KEY, P1_UP_KEY, P1_DOWN_KEY, P1_ITEM_KEY };
+struct PaddleControls p2_controls = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY, P2_UP_KEY, P2_DOWN_KEY, P2_ITEM_KEY };
+
 // MAIN //
 int main(void)
 {
@@ -127,6 +131,7 @@ int main(void)
 
 	init_paddle( &pong_state.paddles[0] );
 	struct PaddleData *p1 = &pong_state.paddles[0];
+	p1->id = 1;
 	p1->pos.y = 40;
 	p1->color = BLUE;
 	p1->facing = (Vector2){ 0, 1 };
@@ -134,24 +139,25 @@ int main(void)
 	init_paddle( &pong_state.paddles[1] );
 	struct PaddleData *p2 = &pong_state.paddles[1];
 	p2->id = 2;
-
-	struct PickItemsState pick_items_state;
-	init_pick_items_state(&pick_items_state);
 	p2->pos.y = SCREEN_HEIGHT - p2->paddle_thickness - 40;
 	p2->color = ORANGE;
 	p2->facing = (Vector2){ 0, -1 };
+
+	struct PickItemsState pick_items_state;
+	init_pick_items_state(&pick_items_state);
 
  	
 	// Player 1
 	struct PlayerData player1;
 	init_player(&player1);
 	player1.paddle = &pong_state.paddles[0];
-	p1->id = 1;
+	player1.controls = p1_controls;
 
 	// Player 2
 	struct PlayerData player2;
 	init_player(&player2);
 	player2.paddle = &pong_state.paddles[1];
+	player2.controls = p2_controls;
 
 	// DEBUG: hard code in some items
 	int debug = ITEM_ANTIQUE_GAME_CONSOLE;
