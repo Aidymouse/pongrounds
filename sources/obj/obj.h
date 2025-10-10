@@ -14,6 +14,7 @@ float paddle_get_time_power(PaddleData *paddle);
 Rectangle paddle_get_russian_secrets_rect(PaddleData *paddle);
 void paddle_draw(PaddleData *paddle);
 void paddle_init(PaddleData *p);
+void paddle_cleanup(struct PongState *pong_state);
 
 /** Ball **/
 void ball_init(struct BallData *b);

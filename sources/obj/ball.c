@@ -222,6 +222,11 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 	}
 	
 
+	// Cloning vat - destroy this paddle if it's a clone
+	if (p->brain == PB_CLONE) {
+		p->delete_me = true;
+	}
+
 }
 
 void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct PlayerData *opponent) {

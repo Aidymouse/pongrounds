@@ -32,6 +32,11 @@ void change_state_to_pong(struct GameState *state) {
 
 	state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
 
+	// Get rid of paddle clones
+	for (int i=2; i<state->pong_state->num_paddles; i++) {
+		state->pong_state->paddles[i].delete_me = true;
+	}
+	paddle_cleanup(state->pong_state);
 
 	paddle_refresh(state->player1->paddle, state->player2->paddle, state);
 	paddle_refresh(state->player2->paddle, state->player1->paddle, state);

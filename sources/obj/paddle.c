@@ -20,6 +20,7 @@ struct PaddleData *paddle_spawn(struct PongState *pong_state) {
 void paddle_init(PaddleData *p) {
 	p->pos.x = SCREEN_WIDTH/2 - PADDLE_DEFAULT_WIDTH/2;
 	p->paddle_width = PADDLE_DEFAULT_WIDTH;
+	p->delete_me = false;
 	p->paddle_thickness = 10;
 	p->color = WHITE;
 	p->hp = PADDLE_DEFAULT_HP;
@@ -45,6 +46,7 @@ void paddle_init(PaddleData *p) {
 	p->cv_creator = NULL;
 	p->cv_clone = false;
 	p->cv_num_clones = 0;
+	p->cv_lag_dist = 0;
 
 }
 
@@ -157,18 +159,25 @@ void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state
 	// Handle cloning vat
 	if (p->cv_num_clones > 0) {
 		// TODO: Delete all clones
+		// I think state change will handle this
 	}
 
 }
 
 
 /** */
-void clone_paddle_init(struct PaddleData *p, struct PaddleData *creator) {
-	paddle_init(p);
-	p->brain = PB_CLONE;
-	p->cv_creator = creator;
-	p->cv_clone = true;
-	p->color = GRAY;
+void clone_paddle_init(struct PaddleData *c, struct PaddleData *creator) {
+	//paddle_init(c);
+	c->brain = PB_CLONE;
+	c->cv_creator = creator;
+	c->cv_clone = true;
+	c->cv_lag_dist = CV_DEFAULT_LAG_DISTANCE * creator->cv_num_clones;
+	c->color = GRAY;
+	// Clones dont get items
+	for (int i=0; i<NUM_ITEMS; i++) {
+		c->items[i] = 0;
+		c->items_total[i] = 0;
+	}
 }
 
 /** */
@@ -209,7 +218,11 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 	if (p->items[ITEM_CLONING_VAT] > 0) {
 		PaddleData *c = paddle_spawn(pong_state);
 		if (c != NULL) { 
-			clone_paddle_init(c,p);
+			PaddleData clone = *p;
+			p->cv_num_clones += 1;
+			clone_paddle_init(&clone,p);
+			*c = clone;
+			c->pos.y = p->pos.y + (p->paddle_thickness + 10) * p->cv_num_clones;
 			// TODO: get paddles position
 		}
 	}
@@ -258,7 +271,7 @@ void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls
 
 
 /**  */
-void paddle_brain_clone(struct PaddleData *paddle, struct PaddleData *following, struct GameState *state) {
+void paddle_brain_clone(struct PaddleData *paddle, struct GameState *state) {
 	// If the master paddle is far away, move toward it. Otherwise sit still
 	// very simply, if paddle is to the left of ball, go right. otherwise, go left
 	
@@ -266,9 +279,11 @@ void paddle_brain_clone(struct PaddleData *paddle, struct PaddleData *following,
 
 	struct BallData ball = pong_state->balls[0];
 
+	struct PaddleData *following = paddle->cv_creator;
+
 	float dist = following->pos.x - paddle->pos.x;
 
-	float MAX_DIST = 50;
+	float MAX_DIST = paddle->cv_lag_dist;
 	if (dist * dist > MAX_DIST*MAX_DIST) {
 		if (dist < 0) {
 			paddle->vel.x = -1;
@@ -287,11 +302,14 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state) {
 
 	if (p->brain == PB_PLAYER) {
 		struct PaddleControls controls = state->player1->controls;
-		if (p->id == 2) {
-			controls = state->player2->controls;
-		}
+		if (p->id == 2) { controls = state->player2->controls; }
 
 		paddle_player_control(dt, p, controls, state);
+
+	} else if (p->brain == PB_CLONE) {
+		if (p->destroyed_timer > 0) { p->delete_me = true; }
+
+		paddle_brain_clone(p, state);
 	}
 
 
@@ -303,7 +321,14 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state) {
 		}
 	}
 
-	p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, p->speed*dt));
+	// External speed multipliers
+	// TODO: time wizards chronometer slowing down non-allied paddles
+	float speed_mult = 1;
+	if (p->brain == PB_CLONE) {
+		speed_mult *= CV_CLONE_SPEED_MULT;
+	}
+
+	p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, p->speed*speed_mult*dt));
 
 	float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
 	float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
@@ -339,3 +364,22 @@ void paddle_draw(PaddleData *p) {
 				DrawRectangleLinesEx(rsa, 1, RED);
 			}
 }
+
+void paddle_cleanup(struct PongState *pong_state) {
+
+	for (int p=2; p<pong_state->num_paddles; p++) {
+		struct PaddleData *paddle = &pong_state->paddles[p];
+		if (pong_state->num_paddles <= 2) { return; }
+
+		if (paddle->delete_me) {
+			pong_state->paddles[p] = pong_state->paddles[pong_state->num_paddles-1];
+			pong_state->num_paddles -= 1;
+			// Update number of clones if clone is destroyed
+			if (paddle->cv_creator != NULL) {
+				paddle->cv_creator->cv_num_clones -= 1;
+			}
+			p -= 1;
+		}
+	}
+}
+

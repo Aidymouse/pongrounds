@@ -73,6 +73,7 @@ typedef struct PaddleData {
 	Vector2 facing; // What direction we're facing. Yeah I know it's a rectangle
 	int id; // 2 owns the bottom of the screen
 	PaddleBrain brain;
+	bool delete_me;
 
 	float speed;
 	// Max normal speed while not dashing
@@ -104,6 +105,7 @@ typedef struct PaddleData {
 	bool cv_clone; // Clone paddles are destroyed when the ball hits them or their destroyed timer goes up by one
 	struct PaddleData *cv_creator;
 	int cv_num_clones;
+	int cv_lag_dist;
 
 } PaddleData;
 

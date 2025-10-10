@@ -102,7 +102,6 @@ void state_pong(float dt, struct GameState *state) {
 		if (p2->items[ITEM_CEREMONIAL_SWORD] > 0) { sword_swing(dt, p2); }
 
 		// Rockets 
-		rocket_cleanup(pong_state);
 
 		for (int i=0; i<pong_state->num_rockets; i++) {
 			RocketData *r = &pong_state->rockets[i];	
@@ -110,11 +109,16 @@ void state_pong(float dt, struct GameState *state) {
 		}
 
 		// Explosions 
-		explosion_cleanup(pong_state);
 		for (int i=0; i<pong_state->num_explosions; i++) {
 			Explosion *e = &pong_state->explosions[i];	
 			explosion_update(dt, e);
 		}
+
+		// Clean up deleted things
+		paddle_cleanup(state->pong_state);
+		ball_cleanup(state->pong_state);
+		rocket_cleanup(pong_state);
+		explosion_cleanup(pong_state);
 
 		/** Collisions **/
 		// Rockets
@@ -136,7 +140,6 @@ void state_pong(float dt, struct GameState *state) {
 		/** /COLLISIONS **/		
 
 
-		ball_cleanup(state->pong_state);
 
 		// If all balls are destroyed, set the timer to respawn the ball
 		bool all_destroyed = true;
@@ -197,7 +200,7 @@ void draw_pong(struct GameState *state) {
 		BeginMode2D(*state->camera);
 
 		// PADDLES
-		for (int p_idx=state->pong_state->num_paddles; p_idx>=0; p_idx--) {
+		for (int p_idx=state->pong_state->num_paddles-1; p_idx>=0; p_idx--) {
 			PaddleData p = state->pong_state->paddles[p_idx];
 			paddle_draw(&p);
 		}
