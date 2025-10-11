@@ -157,10 +157,7 @@ void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state
 	}
 
 	// Handle cloning vat
-	if (p->cv_num_clones > 0) {
-		// TODO: Delete all clones
-		// I think state change will handle this
-	}
+	p->cv_num_clones = 0; // State change handles deleting extra paddles
 
 }
 
@@ -216,14 +213,16 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 
 	// Cloning Vat
 	if (p->items[ITEM_CLONING_VAT] > 0) {
+		p->items[ITEM_CLONING_VAT] -= 1;
 		PaddleData *c = paddle_spawn(pong_state);
 		if (c != NULL) { 
 			PaddleData clone = *p;
 			p->cv_num_clones += 1;
 			clone_paddle_init(&clone,p);
 			*c = clone;
-			c->pos.y = p->pos.y + (p->paddle_thickness + 10) * p->cv_num_clones;
-			// TODO: get paddles position
+			// Find pos
+			c->pos = Vec2Add(p->pos, Vec2MultScalar(p->facing, (p->paddle_thickness + 10) * p->cv_num_clones));
+			// TODO: how to stop paddles layering on top of one another
 		}
 	}
 
@@ -374,10 +373,6 @@ void paddle_cleanup(struct PongState *pong_state) {
 		if (paddle->delete_me) {
 			pong_state->paddles[p] = pong_state->paddles[pong_state->num_paddles-1];
 			pong_state->num_paddles -= 1;
-			// Update number of clones if clone is destroyed
-			if (paddle->cv_creator != NULL) {
-				paddle->cv_creator->cv_num_clones -= 1;
-			}
 			p -= 1;
 		}
 	}

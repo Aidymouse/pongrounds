@@ -269,6 +269,7 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 		
 	}
 
+	// World walls
 	if (ball->pos.x - ball->radius <= world_borders.left) {
 		ball->pos.x = world_borders.left + ball->radius;
 		ball_reflect_wall(ball);
@@ -278,9 +279,9 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 	}
 
 	// Collisions per paddle
-	
 	for (int p=0; p<state->pong_state->num_paddles; p++) {
 		PaddleData *paddle = &state->pong_state->paddles[p];
+		if (paddle->destroyed_timer > 0) { continue; }
 		// Paddle Ball Collisions
 		struct Rectangle pRect = {paddle->pos.x, paddle->pos.y, paddle->paddle_width, paddle->paddle_thickness};
 		if (CheckCollisionCircleRec(ball->pos, ball->radius, pRect)) {
