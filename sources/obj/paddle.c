@@ -112,6 +112,10 @@ void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state
 	p->hp = p->max_hp;
 	p->destroyed_timer = 0;
 
+	if (p->bmcm_flipped) {
+		paddle_flip_across_axis(p);
+	}
+
 	for (int i=0; i<NUM_ITEMS; i++) {
 		p->items[i] = p->items_total[i];
 		p->item_cooldown_timers[i] = 0;
@@ -153,6 +157,14 @@ void clone_paddle_init(struct PaddleData *c, struct PaddleData *creator) {
 		c->items[i] = 0;
 		c->items_total[i] = 0;
 	}
+}
+
+void paddle_flip_across_axis(PaddleData *paddle) {
+	Vector2 pc = paddle_center(paddle);
+	float dist_to_center = SCREEN_HEIGHT/2 - pc.y;
+	paddle->pos.y = SCREEN_HEIGHT/2 + dist_to_center;
+	paddle->facing = Vec2Rotate(paddle->facing, 180);
+	paddle->bmcm_flipped = !paddle->bmcm_flipped;
 }
 
 /** */
@@ -201,6 +213,18 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 			// Find pos
 			c->pos = Vec2Add(p->pos, Vec2MultScalar(p->facing, (p->paddle_thickness + 10) * p->cv_num_clones));
 			// TODO: how to stop paddles layering on top of one another
+		}
+	}
+
+
+	// Broken Mind Control Machine
+	if (p->items[ITEM_BROKEN_MIND_CONTROL_MACHINE] > 0) {
+		p->item_use_timers[ITEM_BROKEN_MIND_CONTROL_MACHINE] = ITEM_USE_BUMP_TIME;
+		p->items[ITEM_BROKEN_MIND_CONTROL_MACHINE] -= 1;
+
+		for (int pI = 0; pI < pong_state->num_paddles; pI++) {
+			struct PaddleData *paddle = &pong_state->paddles[pI];
+			paddle_flip_across_axis(paddle);
 		}
 	}
 

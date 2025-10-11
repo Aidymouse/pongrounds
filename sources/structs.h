@@ -21,6 +21,8 @@ enum Items {
 	ITEM_ANTIQUE_GAME_CONSOLE=12,
 	ITEM_CLONING_VAT=13,
 	ITEM_SNOTCH=14,
+	ITEM_MAGNET=15,
+	ITEM_BROKEN_MIND_CONTROL_MACHINE=16,
 };
 
  
@@ -107,6 +109,8 @@ typedef struct PaddleData {
 	struct PaddleData *cv_creator;
 	int cv_num_clones;
 	int cv_lag_dist;
+
+	bool bmcm_flipped; // false if not flipped, true if flipped
 
 } PaddleData;
 

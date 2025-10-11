@@ -4,17 +4,19 @@
 #include "stdlib.h"
 
 /** Paddle **/
-void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state);
-void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state);
-Vector2 paddle_center(PaddleData *p);
+void paddle_init(PaddleData *p);
 void paddle_update(float dt, PaddleData *p, struct GameState *state);
+void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state);
+void paddle_draw(PaddleData *paddle);
+void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state);
+void paddle_cleanup(struct PongState *pong_state);
+
+void paddle_flip_across_axis(PaddleData *p);
+Vector2 paddle_center(PaddleData *p);
 Rectangle paddle_get_rect(PaddleData *p);
 Rectangle paddle_get_time_influence_area(PaddleData *paddle);
 float paddle_get_time_power(PaddleData *paddle);
 Rectangle paddle_get_russian_secrets_rect(PaddleData *paddle);
-void paddle_draw(PaddleData *paddle);
-void paddle_init(PaddleData *p);
-void paddle_cleanup(struct PongState *pong_state);
 
 /** Ball **/
 void ball_init(struct BallData *b);
