@@ -11,6 +11,7 @@ void paddle_init(PaddleData *p);
 void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorders borders);
 void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state);
 void paddle_draw(PaddleData *paddle, bool debug);
+void paddle_check_collisions(PaddleData *paddle, struct GameState *state);
 void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state);
 void paddle_cleanup(struct PongState *pong_state);
 

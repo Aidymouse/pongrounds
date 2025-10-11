@@ -29,6 +29,7 @@ void paddle_init(PaddleData *p) {
 	p->vel.y = 0;
 	p->speed = PADDLE_SPEED;
 	p->max_speed = PADDLE_SPEED;
+	p->invincibility_timer = 0;
 
 	p->sword_frame = 0;
 	p->sword_anim_timer = 0;
@@ -111,6 +112,7 @@ void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state
 
 	p->hp = p->max_hp;
 	p->destroyed_timer = 0;
+	p->invincibility_timer = 0;
 
 	if (p->bmcm_flipped) {
 		paddle_flip_across_axis(p);
@@ -302,7 +304,9 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorder
 	if (p->destroyed_timer > 0) { 
 		p->destroyed_timer -= dt;
 		return;
-	 }
+	}
+
+	if (p->invincibility_timer > 0) { p->invincibility_timer -= dt; }
 
 	if (p->brain == PB_PLAYER) {
 		struct PaddleControls controls = state->player1->controls;
@@ -378,13 +382,30 @@ Circle paddle_get_gravity_circle(PaddleData *p) {
 	return c;
 }
 
+void paddle_check_collisions(PaddleData *p, struct GameState *state) {
+	struct PongState *pong_state = state->pong_state;
+	if (p->invincibility_timer <= 0) {
+		// Swords
+		for (int pI=0; pI<pong_state->num_paddles; pI++) {
+			PaddleData *paddle = &pong_state->paddles[pI];
+			if (paddle == p) { continue; }
+			Rectangle sword = sword_get_hitbox(paddle);
+			Rectangle me = paddle_get_rect(p);
+			if ( CheckCollisionRecs(sword, me) && paddle->sword_timer > 0 ) {
+				p->hp -= SWORD_DAMAGE;
+				p->invincibility_timer = DAMAGE_INVINCIBILITY_TIME;
+			}
+		}
+	}
+}
+
 void paddle_draw(PaddleData *p, bool debug) {
 			if (p->destroyed_timer > 0) { return; }
 			DrawRectangle(p->pos.x, p->pos.y, p->paddle_width, p->paddle_thickness, p->color);
 
 			if (debug) {
 				if (p->items[ITEM_CEREMONIAL_SWORD] > 0) {
-					sword_draw(p, false);
+					sword_draw(p, debug);
 				}
 
 				if (p->items[ITEM_RUSSIAN_SECRETS] > 0) {

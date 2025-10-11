@@ -33,6 +33,7 @@ void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {
 		Color item_color = WHITE;
 		if (p->items[i] <= 0) { item_color = RED; }
 		if (p->item_use_timers[i] > 0) { item_color = BLUE; }
+		if (p->item_cooldown_timers[i] > 0) { item_color = GRAY; }
 
 		if (p->items_total[i] > 0 || p->items[i] > 0) {
 			DrawTexturePro(
@@ -51,6 +52,10 @@ void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {
 			sprintf(s, "x%d", p->items[i]);
 			DrawText(s, item_x, item_y, 9, item_color);
 		}
+
+		char s2[16];
+		sprintf(s2, "x%f", p->item_cooldown_timers[i]);
+		DrawText(s2, item_x-50, item_y, 9, item_color);
 	}
 }
 
@@ -128,13 +133,18 @@ void state_pong(float dt, struct GameState *state) {
 		}
 
 		// Balls
-		PaddleData *paddles[2] = { p1, p2 };
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			// Left and right of screen
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
 	
 			ball_check_collisions(ball, state, world_borders);
 
+		}
+
+		// Paddles
+		for (int pI = 0; pI < state->pong_state->num_paddles; pI++) {
+			PaddleData *paddle = &state->pong_state->paddles[pI];
+			paddle_check_collisions(paddle, state);
 		}
 
 		/** /COLLISIONS **/		
@@ -202,7 +212,7 @@ void draw_pong(struct GameState *state) {
 		// PADDLES
 		for (int p_idx=state->pong_state->num_paddles-1; p_idx>=0; p_idx--) {
 			PaddleData p = state->pong_state->paddles[p_idx];
-			paddle_draw(&p, false);
+			paddle_draw(&p, true);
 		}
 
 		// Items //

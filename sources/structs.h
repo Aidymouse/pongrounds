@@ -80,6 +80,7 @@ typedef struct PaddleData {
 	int id; // 2 owns the bottom of the screen
 	PaddleBrain brain;
 	bool delete_me;
+	float invincibility_timer;
 
 	float speed;
 	// Max normal speed while not dashing
