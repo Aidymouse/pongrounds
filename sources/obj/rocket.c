@@ -209,7 +209,9 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 		Rectangle paddle_rect = paddle_get_rect(paddle);
 		if (CheckCollisionCircleRec(c_head_pos, c_head.radius, paddle_rect)) {
 			r->delete_me = true;
-			paddle->destroyed_timer = MISSILE_DEATH_TIME;
+			if (paddle->invincibility_timer <= 0) {
+				paddle->destroyed_timer = MISSILE_DEATH_TIME;
+			}
 			explosion_spawn(c_head_pos, pong_state);
 			state->screenshake_timer = MISSILE_SHAKE_DUR;
 			state->screenshake_amplitude = MISSILE_SHAKE_AMPL;

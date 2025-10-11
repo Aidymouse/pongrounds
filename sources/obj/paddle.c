@@ -303,6 +303,9 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorder
 
 	if (p->destroyed_timer > 0) { 
 		p->destroyed_timer -= dt;
+		if (p->destroyed_timer <= 0) {
+			p->invincibility_timer = DAMAGE_INVINCIBILITY_TIME;
+		}
 		return;
 	}
 
