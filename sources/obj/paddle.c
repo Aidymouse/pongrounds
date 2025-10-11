@@ -395,8 +395,12 @@ void paddle_check_collisions(PaddleData *p, struct GameState *state) {
 			Rectangle sword = sword_get_hitbox(paddle);
 			Rectangle me = paddle_get_rect(p);
 			if ( CheckCollisionRecs(sword, me) && paddle->sword_timer > 0 ) {
-				p->hp -= SWORD_DAMAGE;
-				p->invincibility_timer = DAMAGE_INVINCIBILITY_TIME;
+				if (p->brain == PB_CLONE) {
+					p->delete_me = true;
+				} else {
+					p->hp -= SWORD_DAMAGE;
+					p->invincibility_timer = DAMAGE_INVINCIBILITY_TIME;
+				}
 			}
 		}
 	}
