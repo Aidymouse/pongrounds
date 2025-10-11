@@ -19,7 +19,9 @@ const char *item_labels[] = {
 	"Legally Distinct Golden Snotch",
 	"Yo Momma", 
 	"Broken Mind Control Machine" 
+	//"Underwear (Used)" 
 	"Mutant Mouse" 
+	"Sentient Hand" 
 };
 
 const char *item_descriptions[] = {
@@ -40,7 +42,9 @@ const char *item_descriptions[] = {
 	"", // Legally Distinct Golden Snotch
 	"", // Yo Momma
 	"", // Broken Mind Control Machine
+	//"", // Underwear (Used)
 	"", // Mutant Mouse
+	"" // Sentient Hand
 };
 
 const char *item_filenames[] = {
@@ -61,7 +65,9 @@ const char *item_filenames[] = {
 	"cards/todo.png", // Legally Distinct Golden Snotch TODO
 	"cards/todo.png", // Yo Momma
 	"cards/todo.png", // Broken Mind Control Machine
+	//"cards/todo.png", // Underwear (Used)
 	"cards/todo.png", // Mutant Mouse
+	"cards/todo.png", // Sentient Hand
 };
 
 const char *small_item_filenames[] = {
@@ -82,5 +88,7 @@ const char *small_item_filenames[] = {
 	"small/todo.png", // Snotch TODO
 	"small/todo.png", // Yo Momma
 	"small/todo.png", // Broken Mind Control Machine
+	//"small/todo.png", // Underwear (Used)
 	"small/todo.png", // Mutant Mouse
+	"small/todo.png", // Sentient Hand
 };

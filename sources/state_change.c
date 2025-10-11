@@ -3,6 +3,7 @@
 #include "states/pick_item.h"
 #include "states/pong.h"
 #include "obj/obj.h"
+#include "helper.h"
 
 #include <stdio.h>
 
@@ -24,6 +25,32 @@ void change_state_to_pick_items(struct GameState *state, PaddleData *choosing) {
 	state->state = PICK_ITEM;
 }
 
+/** TO PONG **/
+
+void handle_sentient_hand(PaddleData *thief, PaddleData *victim) {
+	while (thief->items[ITEM_SENTIENT_HAND] > 0) {
+		int num_to_steal = 0;
+		int steal_choices[NUM_ITEMS] = {0};
+		for (int item_idx=0; item_idx<NUM_ITEMS; item_idx++) {
+			if (victim->items[item_idx] > 0) {
+				steal_choices[num_to_steal] = item_idx;
+				num_to_steal += 1;
+			}
+		}
+		
+		if (num_to_steal <= 0) { return; }
+
+		int stolen = randInt(0, num_to_steal-1);
+		int stolen_item_idx = steal_choices[stolen];
+		victim->items[stolen_item_idx] -= 1;
+		thief->items[stolen_item_idx] += 1;
+		thief->items[ITEM_SENTIENT_HAND] -= 1;
+	}
+	
+	//steal_item(state->player1->paddle, state->player2->paddle);		
+}
+
+/** */
 void change_state_to_pong(struct GameState *state) {
 	int nerd_glasses = state->player1->paddle->items[ITEM_NERD_GLASSES] + state->player2->paddle->items[ITEM_NERD_GLASSES];
 	if (nerd_glasses > 0) {
@@ -37,10 +64,19 @@ void change_state_to_pong(struct GameState *state) {
 		state->pong_state->paddles[i].delete_me = true;
 	}
 	paddle_cleanup(state->pong_state);
-
+	
 	paddle_refresh(state->player1->paddle, state->player2->paddle, state);
 	paddle_refresh(state->player2->paddle, state->player1->paddle, state);
 	//ball_refresh(&(state->pong_state->balls[0])); // No ball refresh cos pongs ball respawn handles it. Also it didnt work? idk why
+
+	// Sentient Hand
+	// TODO: UX on sentient hand is terrible - really hard to tell who stole what
+	if (state->player1->paddle->items[ITEM_SENTIENT_HAND] > 0) {
+		handle_sentient_hand(state->player1->paddle, state->player2->paddle);
+	}
+	if (state->player2->paddle->items[ITEM_SENTIENT_HAND] > 0) {
+		handle_sentient_hand(state->player2->paddle, state->player1->paddle);
+	}
 
 	state->state = PONG;
 }

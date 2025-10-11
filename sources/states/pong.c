@@ -34,7 +34,7 @@ void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {
 		if (p->items[i] <= 0) { item_color = RED; }
 		if (p->item_use_timers[i] > 0) { item_color = BLUE; }
 
-		if (p->items_total[i] > 0) {
+		if (p->items_total[i] > 0 || p->items[i] > 0) {
 			DrawTexturePro(
 				textures[i], 
 				(Rectangle){0, 0, SMALL_ITEM_DIMS_PX, SMALL_ITEM_DIMS_PX},
