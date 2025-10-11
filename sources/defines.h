@@ -9,7 +9,7 @@
 #define NUM_ROUNDS (7)
 #define DEFAULT_SCREENSHAKE_DECAY 1
 
-#define NUM_ITEMS 14
+#define NUM_ITEMS 15
 #define MAX_BALLS 32
 #define MAX_PADDLES 32
 
@@ -29,6 +29,11 @@
 #define PADDLE_DEFAULT_WIDTH (100)
 #define PADDLE_DEFAULT_HP (100)
 #define PADDLE_SPEED (400)
+
+// Hypergonadism
+#define HYPERGONADISM_WIDTH_BONUS 20
+// Chastity Cage
+#define CHASTITY_CAGE_WIDTH_PENALTY 20
 
 // Cherry blossom cloak
 #define CLOAK_DASH_SPEED (2200)
@@ -84,3 +89,7 @@
 // Cloning vat
 #define CV_DEFAULT_LAG_DISTANCE 100
 #define CV_CLONE_SPEED_MULT 0.8
+
+// Snotch
+#define SNOTCH_CHANCE 20
+#define SNOTCH_CHANCE_ADDITIONAL 20

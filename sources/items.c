@@ -16,6 +16,7 @@ const char *item_labels[] = {
 	"Hydraulic Press",
 	"Antique Game Console",
 	"Cloning Vat",
+	"Legally Distinct Golden Snotch",
 };
 
 const char *item_descriptions[] = {
@@ -33,6 +34,7 @@ const char *item_descriptions[] = {
 	"", // Hydraulic Press
 	"", // Antique game console
 	"", // Cloning Vat
+	"", // Legally Distinct Golden Snotch
 };
 
 const char *item_filenames[] = {
@@ -46,10 +48,11 @@ const char *item_filenames[] = {
 	"cards/bachelor of psychology.png", // Bachelor of psychology (hons)
 	"cards/niekro.png", // Niekro Trading Card
 	"cards/missile.png", // Nuclear Launch Codes
-	"cards/missile.png", // Russian Secrets TODO
-	"cards/missile.png", // Hydraulic Press TODO
-	"cards/missile.png", // Antique Game Console TODO
-	"cards/missile.png", // Cloning Vat TODO
+	"cards/todo.png", // Russian Secrets TODO
+	"cards/todo.png", // Hydraulic Press TODO
+	"cards/todo.png", // Antique Game Console TODO
+	"cards/todo.png", // Cloning Vat TODO
+	"cards/todo.png", // Legally Distinct Golden Snotch TODO
 };
 
 const char *small_item_filenames[] = {
@@ -64,7 +67,8 @@ const char *small_item_filenames[] = {
 	"small/niekrotradingcard.png", // Niekro Trading Card
 	"small/nuclearlaunchcodes.png", // Nuclear Launch Codes
 	"small/russiansecrets.png", // Russian Secrets
-	"small/russiansecrets.png", // Hydraulic Press TODO
-	"small/russiansecrets.png", // Antique Game Console TODO
-	"small/russiansecrets.png", // Cloning Vat TODO
+	"small/todo.png", // Hydraulic Press TODO
+	"small/todo.png", // Antique Game Console TODO
+	"small/todo.png", // Cloning Vat TODO
+	"small/todo.png", // Snotch TODO
 };

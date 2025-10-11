@@ -16,6 +16,7 @@ void ball_init(struct BallData *b) {
 	b->score_damage = BALL_SCORE_DAMAGE;
 	b->delete_me = false;
 	b->last_hit_by = 0; // equiv to NULL
+	b->color = WHITE;
 
 	b->kb_turn_speed = NIEKRO_KB_TURN_SPEED;
 
@@ -134,6 +135,7 @@ void ball_respawn(struct BallData *b) {
 	//if (b->vel.y < 0) { b->vel.y = -BALL_INIT_SPEED; } else { b->vel.y = BALL_INIT_SPEED; }
 	b->speed = BALL_INIT_SPEED;
 	b->delete_me = false;
+	b->color = WHITE;
 
 	b->radius = BALL_RADIUS;
 	b->score_damage = BALL_SCORE_DAMAGE;
@@ -220,11 +222,21 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 			p->item_use_timers[ITEM_HYDRAULIC_PRESS] = HYDRAULIC_PRESS_TIMER;
 		}
 	}
-	
 
 	// Cloning vat - destroy this paddle if it's a clone
 	if (p->brain == PB_CLONE) {
 		p->delete_me = true;
+	}
+
+	// Snotch
+	if (p->items[ITEM_SNOTCH] > 0) {
+		int snotch_chance = SNOTCH_CHANCE + p->items[ITEM_SNOTCH]-1 * SNOTCH_CHANCE_ADDITIONAL;
+		if (randInt(1, 100) < snotch_chance) {
+			b->score_damage *= 2;
+			p->item_use_timers[ITEM_SNOTCH] = ITEM_USE_BUMP_TIME;
+			if (b->color.b - 60 <= 0) { b->color.b = 0; } else { b->color.b -= 60; }
+			if (b->color.g - 60 <= 0) { b->color.g = 0; } else { b->color.g -= 60; }
+		}
 	}
 
 }
@@ -322,7 +334,7 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 }
 
 void ball_draw(struct BallData *ball, bool debug) {
-	DrawCircle(ball->pos.x, ball->pos.y, ball->radius, WHITE);
+	DrawCircle(ball->pos.x, ball->pos.y, ball->radius, ball->color);
 	if (debug) {
 		// Draw line of balls knuckleball facing
 		DrawLineEx(ball->pos, Vec2Add(ball->pos, Vec2MultScalar(ball->kb_dir, 50)), 3, RED); 

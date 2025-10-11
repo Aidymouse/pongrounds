@@ -118,30 +118,8 @@ void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state
 		p->item_use_timers[i] = 0;
 	}
 
-	// Width changes have a flat bonus of 30, then a 5% width increase for every hypergonadism. It's 5% of the prior width so there's diminishing returns
-	float width_bonus = 0;
-	if (p->items[ITEM_HYPERGONADISM] > 0) {
-
-		float new_width = PADDLE_DEFAULT_WIDTH + 20;
-
-		for (int b=p->items[ITEM_HYPERGONADISM]-1; b>0; b--) {
-			new_width *= 1.05;
-		}
-
-		width_bonus = new_width - PADDLE_DEFAULT_WIDTH;
-	}
-
-	float width_penalty = 0;
-	if (opponent->items[ITEM_CHASTITY_CAGE] > 0) {
-
-		float new_width = PADDLE_DEFAULT_WIDTH + 20;
-
-		for (int b=opponent->items[ITEM_CHASTITY_CAGE]-1; b>0; b--) {
-			new_width *= 1.05;
-		}
-
-		width_penalty = new_width - PADDLE_DEFAULT_WIDTH;
-	}
+	float width_bonus = HYPERGONADISM_WIDTH_BONUS * p->items[ITEM_HYPERGONADISM];
+	float width_penalty = CHASTITY_CAGE_WIDTH_PENALTY * opponent->items[ITEM_CHASTITY_CAGE];
 
 	p->paddle_width = PADDLE_DEFAULT_WIDTH + width_bonus - width_penalty;
 
@@ -297,7 +275,10 @@ void paddle_brain_clone(struct PaddleData *paddle, struct GameState *state) {
 /** */
 void paddle_update(float dt, PaddleData *p, struct GameState *state) {
 
-	if (p->destroyed_timer > 0) { return; }
+	if (p->destroyed_timer > 0) { 
+		p->destroyed_timer -= dt;
+		return;
+	 }
 
 	if (p->brain == PB_PLAYER) {
 		struct PaddleControls controls = state->player1->controls;
@@ -343,10 +324,6 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state) {
 		p->item_use_timers[i] -= dt;
 	}
 
-	if (p->destroyed_timer > 0) {
-		p->destroyed_timer -= dt;
-		return;
-	}
 }
 
 

@@ -20,6 +20,7 @@ enum Items {
 	ITEM_HYDRAULIC_PRESS=11,
 	ITEM_ANTIQUE_GAME_CONSOLE=12,
 	ITEM_CLONING_VAT=13,
+	ITEM_SNOTCH=14,
 };
 
  
@@ -123,6 +124,7 @@ struct BallData {
 	Vector2 vel; 
 	int speed; 
 	bool delete_me;
+	Color color;
 	// Pointer to paddle that last hit the ball. WARN: will be -1 if the ball has not been hit yet
 	PaddleData *last_hit_by;
 	// How much damage to inflict when a point is scored with this ball

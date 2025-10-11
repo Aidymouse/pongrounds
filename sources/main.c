@@ -51,7 +51,7 @@ void init_pick_items_state(struct PickItemsState *s) {
 Vector2 center = (Vector2){ SCREEN_WIDTH/2, SCREEN_HEIGHT/2 };
 
 void init_camera(Camera2D *camera) {
-	camera->target = (Vector2){ SCREEN_WIDTH/2, SCREEN_HEIGHT/2 };
+	camera->target = center;
 	camera->offset = center;
 	camera->zoom = 1.0f;
 	camera->rotation = 0.0;
@@ -135,7 +135,7 @@ int main(void)
 	player2.controls = p2_controls;
 
 	// DEBUG: hard code in some items
-	int debug_item = ITEM_CLONING_VAT;
+	int debug_item = ITEM_SNOTCH;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
 	p1->items[debug_item] += 1;
@@ -156,6 +156,7 @@ int main(void)
 	// Game loop //
     while (!WindowShouldClose())
     {
+		// TODO how to reset this on the first frame cos it takes ages to load the textures
 		dt = GetFrameTime();
 
 		// Update

@@ -60,6 +60,7 @@ void rocket_init(RocketData *r, PaddleData *spawner) {
 		r->anim_timer = r->animation->frame_duration;
 		r->delete_me = false;
 		r->speed_multiplier = 1;
+		r->detonation_timer = 0;
 }
 
 void rocket_fly(float dt, RocketData *r, struct GameState *state) {
