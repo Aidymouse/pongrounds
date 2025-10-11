@@ -248,9 +248,9 @@ void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls
 		// TODO: limit
 		if (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS] > 0) {
 			if (IsKeyDown(controls.up)) {
-				p->vel.y = -1;
+				p->vel.y = -0.6;
 			} else if (IsKeyDown(controls.down)) {
-				p->vel.y = 1;
+				p->vel.y = 0.6;
 			} else {
 				p->vel.y = 0;
 			}
@@ -297,7 +297,7 @@ void paddle_brain_clone(struct PaddleData *paddle, struct GameState *state) {
 }
 
 /** */
-void paddle_update(float dt, PaddleData *p, struct GameState *state) {
+void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorders borders) {
 
 	if (p->destroyed_timer > 0) { 
 		p->destroyed_timer -= dt;
@@ -334,13 +334,29 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state) {
 
 	p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, p->speed*speed_mult*dt));
 
-	float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
-	float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
+	// Cap position by number of bachelors of psychology
+	int y_cap = SCREEN_HEIGHT/2 + BACHELOR_DIST_FROM_CENTER * p->facing.y;
+	if (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS] > 0) {
+		y_cap -= BACHELOR_ADDITIONAL_DISTANCE * (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS]-1) * p->facing.y;
+	}
 
-	if (p->pos.x + p->paddle_width > world_right) {
-		p->pos.x = world_right - p->paddle_width;
-	} else if (p->pos.x < world_left) {
-		p->pos.x = world_left;
+	if (p->facing.y == -1 && p->pos.y < y_cap) {
+		p->pos.y = y_cap;
+	} else if (p->facing.y == 1 && p->pos.y + p->paddle_thickness > y_cap) {
+		p->pos.y = y_cap - p->paddle_thickness;
+	}
+	
+	// Cap position by world border
+	if (p->pos.x + p->paddle_width > borders.right) {
+		p->pos.x = borders.right - p->paddle_width;
+	} else if (p->pos.x < borders.left) {
+		p->pos.x = borders.left;
+	}
+
+	if (p->pos.y + p->paddle_thickness > borders.bottom) {
+		p->pos.y = borders.bottom - p->paddle_thickness;
+	} else if (p->pos.y < borders.top) {
+		p->pos.y = borders.top;
 	}
 
 	for (int i=0; i<NUM_ITEMS; i++) {

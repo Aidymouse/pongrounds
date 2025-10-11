@@ -135,11 +135,11 @@ int main(void)
 	player2.controls = p2_controls;
 
 	// DEBUG: hard code in some items
-	int debug_item = ITEM_NUCLEAR_LAUNCH_CODES;
+	int debug_item = ITEM_BACHELOR_OF_PSYCHOLOGY_HONS;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
-	p1->items[debug_item] += 1;
-	p1->items_total[debug_item] += 1;
+	p1->items[debug_item] += 5;
+	p1->items_total[debug_item] += 5;
 	// /DEBUG
 
 	struct BallData ball;

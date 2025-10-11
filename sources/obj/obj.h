@@ -8,7 +8,7 @@ void gravitate_towards(float dt, Vector2 pos, Vector2 *dir, Vector2 center, floa
 
 /** Paddle **/
 void paddle_init(PaddleData *p);
-void paddle_update(float dt, PaddleData *p, struct GameState *state);
+void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorders borders);
 void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state);
 void paddle_draw(PaddleData *paddle, bool debug);
 void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state);

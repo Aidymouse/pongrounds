@@ -94,7 +94,7 @@ void state_pong(float dt, struct GameState *state) {
 
 		// Update paddles
 		for (int p_idx=0; p_idx < state->pong_state->num_paddles; p_idx++) {
-			paddle_update(dt, &state->pong_state->paddles[p_idx], state);
+			paddle_update(dt, &state->pong_state->paddles[p_idx], state, world_borders);
 		}
 		
 		// Sword 

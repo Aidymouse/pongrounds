@@ -35,6 +35,10 @@
 // Chastity Cage
 #define CHASTITY_CAGE_WIDTH_PENALTY 20
 
+// Bachelor of Psychology (Hons)
+#define BACHELOR_DIST_FROM_CENTER 80 // Distance from center of screen you can be 
+#define BACHELOR_ADDITIONAL_DISTANCE 40 // Ammount of extra distance you can walk with additional bachelors
+
 // Cherry blossom cloak
 #define CLOAK_DASH_SPEED (2200)
 #define CLOAK_DASH_SPEED_BONUS (200) // Additional
