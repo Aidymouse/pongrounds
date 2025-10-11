@@ -9,7 +9,7 @@
 #define NUM_ROUNDS (7)
 #define DEFAULT_SCREENSHAKE_DECAY 1
 
-#define NUM_ITEMS 17
+#define NUM_ITEMS 18
 #define MAX_BALLS 32
 #define MAX_PADDLES 32
 
@@ -97,3 +97,6 @@
 // Yo momma
 #define YM_RADIUS 120 // gravity strength is always 100% if the ball is in the gravity zone
 #define YM_BASE_STRENGTH 100 // turn speed (deg/sec) toward gravitational center?
+
+// Mutant Mouse
+#define MUTANT_MOUSE_ACCEL 5

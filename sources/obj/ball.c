@@ -27,6 +27,8 @@ void ball_init(struct BallData *b) {
 	b->hp_timer = 0;
 	b->ym_gravity_turn_speed = 0;
 
+	b->mm_speed_bonus = 0;
+
 }
 
 /** */
@@ -107,6 +109,19 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 		}
 	}
 
+	
+	// Mutant mouse speed accrual
+	for (int pI = 0; pI < 2; pI++) {
+		PaddleData *paddle = &state->pong_state->paddles[pI];
+		if (paddle->items[ITEM_MUTANT_MOUSE] > 0) {
+			if ((ball->vel.y > 0 && paddle->facing.y > 0) ||
+				(ball->vel.y < 0 && paddle->facing.y < 0)
+			) {
+				ball->mm_speed_bonus += MUTANT_MOUSE_ACCEL;
+			} 	
+		}
+	}
+	
 	// Find speed multiplier
 	float speed_multiplier = 1;
 	if (ball->state == BS_KNUCKLEBALL) {
@@ -138,7 +153,7 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 		gravitate_towards(dt, ball->pos, &ball->vel, ball->ym_gravity_center, ball->ym_gravity_turn_speed * speed_multiplier);
 	}
 
-	ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*speed_multiplier*dt));
+	ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, (ball->speed+ball->mm_speed_bonus)*speed_multiplier*dt));
 }
 
 void ball_respawn(struct BallData *b) {
@@ -153,6 +168,10 @@ void ball_respawn(struct BallData *b) {
 	b->radius = BALL_RADIUS;
 	b->score_damage = BALL_SCORE_DAMAGE;
 	b->rs_spiked_speed_mult = 1;
+
+	b->ym_gravity_turn_speed = 0;
+
+	b->mm_speed_bonus = 0;
 }
 
 
@@ -251,6 +270,9 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 			if (b->color.g - 60 <= 0) { b->color.g = 0; } else { b->color.g -= 60; }
 		}
 	}
+
+	// Mutant Mouse
+	b->mm_speed_bonus = 0;
 
 }
 

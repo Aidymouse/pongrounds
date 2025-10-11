@@ -19,6 +19,7 @@ const char *item_labels[] = {
 	"Legally Distinct Golden Snotch",
 	"Yo Momma", 
 	"Broken Mind Control Machine" 
+	"Mutant Mouse" 
 };
 
 const char *item_descriptions[] = {
@@ -39,6 +40,7 @@ const char *item_descriptions[] = {
 	"", // Legally Distinct Golden Snotch
 	"", // Yo Momma
 	"", // Broken Mind Control Machine
+	"", // Mutant Mouse
 };
 
 const char *item_filenames[] = {
@@ -59,6 +61,7 @@ const char *item_filenames[] = {
 	"cards/todo.png", // Legally Distinct Golden Snotch TODO
 	"cards/todo.png", // Yo Momma
 	"cards/todo.png", // Broken Mind Control Machine
+	"cards/todo.png", // Mutant Mouse
 };
 
 const char *small_item_filenames[] = {
@@ -79,4 +82,5 @@ const char *small_item_filenames[] = {
 	"small/todo.png", // Snotch TODO
 	"small/todo.png", // Yo Momma
 	"small/todo.png", // Broken Mind Control Machine
+	"small/todo.png", // Mutant Mouse
 };

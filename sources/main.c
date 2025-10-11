@@ -135,12 +135,7 @@ int main(void)
 	player2.controls = p2_controls;
 
 	// DEBUG: hard code in some items
-	int debug_item = ITEM_YO_MOMMA;
-	p2->items[debug_item] += 1;
-	p2->items_total[debug_item] += 1;
-	p1->items[debug_item] += 1;
-	p1->items_total[debug_item] += 1;
-	debug_item = ITEM_NUCLEAR_LAUNCH_CODES;
+	int debug_item = ITEM_MUTANT_MOUSE;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
 	p1->items[debug_item] += 1;

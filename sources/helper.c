@@ -40,5 +40,5 @@ bool is_heading_towards(Vector2 obj_pos, Vector2 obj_dir, Vector2 target_pos) {
 	Vector2 to_target = Vec2Sub(target_pos, obj_pos);
 	float ang_target = Vec2GetAngle(to_target);
 	float ang_dir = Vec2GetAngle(obj_dir);
-	return (get_angle_distance(ang_target, ang_dir) < 90);
+	return ( abs(get_angle_distance(ang_target, ang_dir)) < 90);
 }

@@ -23,6 +23,7 @@ enum Items {
 	ITEM_SNOTCH=14,
 	ITEM_YO_MOMMA=15,
 	ITEM_BROKEN_MIND_CONTROL_MACHINE=16,
+	ITEM_MUTANT_MOUSE=17,
 };
 
  
@@ -151,6 +152,8 @@ struct BallData {
 
 	float ym_gravity_turn_speed;
 	Vector2 ym_gravity_center;
+
+	float mm_speed_bonus;
 	
 };
 
