@@ -153,9 +153,6 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 		r->delete_me = true;
 		return;
 	}
-	
-	Vector2 hitbox[4];
-	get_rocket_hitbox(r, hitbox);
 
 	Circle c_head = get_missile_head_hitbox(r);
 	Vector2 c_head_pos = { .x = c_head.x, .y = c_head.y };
@@ -175,6 +172,29 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 			state->screenshake_timer = 0.5;
 			state->screenshake_amplitude = 2;
 			return;
+		}
+	}
+
+	// if a rocket collides with another rocket, both should blow up!
+	for (int i=0; i<pong_state->num_rockets; i++) {
+		RocketData *rocket = &pong_state->rockets[i];
+		if (rocket == r) { continue; } // I think this works?
+
+		Circle r_c_head = get_missile_head_hitbox(rocket);
+		Vector2 r_c_head_pos = { .x = r_c_head.x, .y = r_c_head.y };
+		Circle r_c_base = get_missile_base_hitbox(rocket);
+		Vector2 r_c_base_pos = { .x = r_c_base.x, .y = r_c_base.y };
+		
+		if (CheckCollisionCircles(c_head_pos, c_head.radius, r_c_head_pos, r_c_head.radius) || 
+			CheckCollisionCircles(c_head_pos, c_head.radius, r_c_base_pos, r_c_head.radius)) {
+			r->delete_me = true;
+			explosion_spawn(c_head_pos, pong_state);
+			rocket->delete_me = true;
+			explosion_spawn(r_c_head_pos, pong_state);
+			state->screenshake_timer = 0.5;
+			state->screenshake_amplitude = 2;
+			return;
+			
 		}
 	}
 	
