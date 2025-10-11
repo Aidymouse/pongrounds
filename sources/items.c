@@ -17,7 +17,7 @@ const char *item_labels[] = {
 	"Antique Game Console",
 	"Cloning Vat",
 	"Legally Distinct Golden Snotch",
-	"???", // Magnet
+	"Yo Momma", 
 	"Broken Mind Control Machine" 
 };
 
@@ -37,7 +37,7 @@ const char *item_descriptions[] = {
 	"", // Antique game console
 	"", // Cloning Vat
 	"", // Legally Distinct Golden Snotch
-	"", // Magnet
+	"", // Yo Momma
 	"", // Broken Mind Control Machine
 };
 
@@ -57,7 +57,7 @@ const char *item_filenames[] = {
 	"cards/todo.png", // Antique Game Console TODO
 	"cards/todo.png", // Cloning Vat TODO
 	"cards/todo.png", // Legally Distinct Golden Snotch TODO
-	"cards/todo.png", // Magnet
+	"cards/todo.png", // Yo Momma
 	"cards/todo.png", // Broken Mind Control Machine
 };
 
@@ -77,6 +77,6 @@ const char *small_item_filenames[] = {
 	"small/todo.png", // Antique Game Console TODO
 	"small/todo.png", // Cloning Vat TODO
 	"small/todo.png", // Snotch TODO
-	"small/todo.png", // Magnet
+	"small/todo.png", // Yo Momma
 	"small/todo.png", // Broken Mind Control Machine
 };

@@ -202,7 +202,7 @@ void draw_pong(struct GameState *state) {
 		// PADDLES
 		for (int p_idx=state->pong_state->num_paddles-1; p_idx>=0; p_idx--) {
 			PaddleData p = state->pong_state->paddles[p_idx];
-			paddle_draw(&p);
+			paddle_draw(&p, false);
 		}
 
 		// Items //

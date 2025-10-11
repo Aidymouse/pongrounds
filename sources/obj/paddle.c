@@ -351,18 +351,37 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state) {
 }
 
 
+/** */
+Circle paddle_get_gravity_circle(PaddleData *p) {
+	Vector2 center = paddle_center(p);
+	Circle c = {
+		.x = center.x,
+		.y = center.y,
+		.radius = YM_RADIUS + 10 * ((p->paddle_width - PADDLE_DEFAULT_WIDTH) / HYPERGONADISM_WIDTH_BONUS) // Pretty hacky but should mean you have +10 for every hypergonadism and -10 for every chastity cage
+	};
+	return c;
+}
 
-void paddle_draw(PaddleData *p) {
+void paddle_draw(PaddleData *p, bool debug) {
 			if (p->destroyed_timer > 0) { return; }
 			DrawRectangle(p->pos.x, p->pos.y, p->paddle_width, p->paddle_thickness, p->color);
-			if (p->items[ITEM_CEREMONIAL_SWORD] > 0) {
-				sword_draw(p, false);
+
+			if (debug) {
+				if (p->items[ITEM_CEREMONIAL_SWORD] > 0) {
+					sword_draw(p, false);
+				}
+
+				if (p->items[ITEM_RUSSIAN_SECRETS] > 0) {
+					Rectangle rsa = paddle_get_russian_secrets_rect(p);
+					DrawRectangleLinesEx(rsa, 1, RED);
+				}
+
+				if (p->items[ITEM_YO_MOMMA] > 0) {
+					Circle gravity = paddle_get_gravity_circle(p);
+					DrawCircleLines(gravity.x, gravity.y, gravity.radius, RED);
+				}
 			}
 
-			if (p->items[ITEM_RUSSIAN_SECRETS] > 0) {
-				Rectangle rsa = paddle_get_russian_secrets_rect(p);
-				DrawRectangleLinesEx(rsa, 1, RED);
-			}
 }
 
 void paddle_cleanup(struct PongState *pong_state) {

@@ -5,6 +5,8 @@
 #include "defines.h"
 #include <stdio.h>
 
+/**
+ */
 void ball_init(struct BallData *b) {
 	b->pos.x = SCREEN_WIDTH/2;
 	b->pos.y = SCREEN_HEIGHT/2;
@@ -23,9 +25,11 @@ void ball_init(struct BallData *b) {
 	b->rs_spiked_speed_mult = 1;
 
 	b->hp_timer = 0;
+	b->ym_gravity_turn_speed = 0;
 
 }
 
+/** */
 struct BallData *ball_spawn(struct PongState *pong_state) {
 
 	if (pong_state->num_balls >= MAX_BALLS) { return NULL; }
@@ -37,6 +41,7 @@ struct BallData *ball_spawn(struct PongState *pong_state) {
 	return &pong_state->balls[pong_state->num_balls-1];
 }
 
+/** */
 struct BallData *ball_clone(struct BallData *ball, struct PongState *pong_state) {
 
 	if (pong_state->num_balls >= MAX_BALLS) { return NULL; }
@@ -48,6 +53,9 @@ struct BallData *ball_clone(struct BallData *ball, struct PongState *pong_state)
 	return &pong_state->balls[pong_state->num_balls-1];
 }
 
+
+/**
+ */
 void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 
 	if (ball->state == BS_NORMAL) {
@@ -123,6 +131,11 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 		if (ball->rs_spiked_speed_mult < 1) {
 			ball->rs_spiked_speed_mult = 1;
 		}
+	}
+
+	// Yo Momma gravity angle change
+	if (ball->ym_gravity_turn_speed > 0) {
+		gravitate_towards(dt, ball->pos, &ball->vel, ball->ym_gravity_center, ball->ym_gravity_turn_speed * speed_multiplier);
 	}
 
 	ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, ball->speed*speed_multiplier*dt));
@@ -291,6 +304,7 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 	}
 
 	// Collisions per paddle
+	ball->ym_gravity_turn_speed = 0;
 	for (int p=0; p<state->pong_state->num_paddles; p++) {
 		PaddleData *paddle = &state->pong_state->paddles[p];
 		if (paddle->destroyed_timer > 0) { continue; }
@@ -307,6 +321,20 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 				paddle->sword_timer = 0;
 			}
 		}
+
+		// Yo Momma 
+		if (paddle->items[ITEM_YO_MOMMA] > 0) {
+			Circle paddle_gravity = paddle_get_gravity_circle(paddle);
+			if (is_heading_towards(ball->pos, ball->vel, paddle_center(paddle)) &&
+				CheckCollisionCircles((Vector2){paddle_gravity.x, paddle_gravity.y}, paddle_gravity.radius, ball->pos, ball->radius)
+			) {
+				ball->ym_gravity_turn_speed = YM_BASE_STRENGTH;
+				ball->ym_gravity_center = paddle_center(paddle);
+			}
+		}
+		
+		
+
 	} // /paddle collisions
 
 
@@ -337,7 +365,7 @@ void ball_draw(struct BallData *ball, bool debug) {
 	DrawCircle(ball->pos.x, ball->pos.y, ball->radius, ball->color);
 	if (debug) {
 		// Draw line of balls knuckleball facing
-		DrawLineEx(ball->pos, Vec2Add(ball->pos, Vec2MultScalar(ball->kb_dir, 50)), 3, RED); 
+		DrawLineEx(ball->pos, Vec2Add(ball->pos, Vec2MultScalar(ball->vel, 50)), 3, RED); 
 		Vector2 kb_desired = GetVec2FromAngle(ball->kb_desired_angle);
 		DrawLineEx(ball->pos, Vec2Add(ball->pos, Vec2MultScalar(kb_desired, 50)), 5, BLUE); 
 	}

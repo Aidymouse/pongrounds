@@ -61,6 +61,7 @@ void rocket_init(RocketData *r, PaddleData *spawner) {
 		r->delete_me = false;
 		r->speed_multiplier = 1;
 		r->detonation_timer = 0;
+		r->ym_turn_speed = 0;
 }
 
 void rocket_fly(float dt, RocketData *r, struct GameState *state) {
@@ -99,14 +100,19 @@ void rocket_fly(float dt, RocketData *r, struct GameState *state) {
 		float angle = Vec2GetAngle(r->dir);
 		float ang_to_top = get_angle_distance(angle, -90);
 		float ang_to_bottom = get_angle_distance(angle, 90);
-		if (abs(ang_to_top) < abs(ang_to_bottom)) {
-			float ang_dir = 1;
-			if (ang_to_top < 0) { ang_dir = -1; }
-			r->dir = Vec2Rotate(r->dir, ROCKET_TURN_SPEED*ang_dir*r->speed_multiplier*dt);
+
+		if (r->ym_turn_speed > 0) {
+			gravitate_towards(dt, r->pos, &r->dir, r->ym_target, r->ym_turn_speed);
 		} else {
-			float ang_dir = 1;
-			if (ang_to_bottom < 0) { ang_dir = -1; }
-			r->dir = Vec2Rotate(r->dir, ROCKET_TURN_SPEED*ang_dir*r->speed_multiplier*dt);
+			if (abs(ang_to_top) < abs(ang_to_bottom)) {
+				float ang_dir = 1;
+				if (ang_to_top < 0) { ang_dir = -1; }
+				r->dir = Vec2Rotate(r->dir, ROCKET_TURN_SPEED*ang_dir*r->speed_multiplier*dt);
+			} else {
+				float ang_dir = 1;
+				if (ang_to_bottom < 0) { ang_dir = -1; }
+				r->dir = Vec2Rotate(r->dir, ROCKET_TURN_SPEED*ang_dir*r->speed_multiplier*dt);
+			}
 		}
 
 		r->speed += ROCKET_ACCELERATION;
@@ -176,6 +182,7 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 	
 	r->speed_multiplier = 1; // Also handle time wizard here
 
+	r->ym_turn_speed = 0;
 	for (int p=0; p<pong_state->num_paddles; p++) {
 		PaddleData *paddle = &pong_state->paddles[p];
 		if (paddle->destroyed_timer > 0) { continue; }
@@ -194,6 +201,17 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 		if (CheckCollisionCircleRec(c_head_pos, c_head.radius, time_influence) || 
 		CheckCollisionCircleRec(c_base_pos, c_base.radius, time_influence)) {
 			r->speed_multiplier *= paddle_get_time_power(paddle);
+		}
+
+		// Paddle: Yo Momma
+		if (paddle->items[ITEM_YO_MOMMA] > 0) {
+			Circle ym_circ = paddle_get_gravity_circle(paddle);
+			if (is_heading_towards(r->pos, r->dir, paddle_center(paddle)) &&
+				CheckCollisionCircles(c_head_pos, c_head.radius, paddle_center(paddle), ym_circ.radius)
+			) {
+				r->ym_target = paddle_center(paddle);
+				r->ym_turn_speed = YM_BASE_STRENGTH;
+			}
 		}
 	
 		// If we hit a sword --- DAMN!

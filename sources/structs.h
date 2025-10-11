@@ -21,7 +21,7 @@ enum Items {
 	ITEM_ANTIQUE_GAME_CONSOLE=12,
 	ITEM_CLONING_VAT=13,
 	ITEM_SNOTCH=14,
-	ITEM_MAGNET=15,
+	ITEM_YO_MOMMA=15,
 	ITEM_BROKEN_MIND_CONTROL_MACHINE=16,
 };
 
@@ -148,6 +148,9 @@ struct BallData {
 	float rs_spiked_speed_mult;
 
 	float hp_timer;
+
+	float ym_gravity_turn_speed;
+	Vector2 ym_gravity_center;
 	
 };
 
@@ -167,6 +170,8 @@ typedef struct RocketData {
 	float detonation_timer; // If something sets this to higher than 0, the missile will blow up when it hits 0
 
 	bool delete_me; // If true, this rocket will be deleted this frame
+	Vector2 ym_target;
+	int ym_turn_speed;
 } RocketData;
 
 typedef struct Explosion {

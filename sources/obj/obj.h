@@ -3,14 +3,18 @@
 #include "structs.h"
 #include "stdlib.h"
 
+/** General */
+void gravitate_towards(float dt, Vector2 pos, Vector2 *dir, Vector2 center, float strength);
+
 /** Paddle **/
 void paddle_init(PaddleData *p);
 void paddle_update(float dt, PaddleData *p, struct GameState *state);
 void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state);
-void paddle_draw(PaddleData *paddle);
+void paddle_draw(PaddleData *paddle, bool debug);
 void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state);
 void paddle_cleanup(struct PongState *pong_state);
 
+Circle paddle_get_gravity_circle(PaddleData *p);
 void paddle_flip_across_axis(PaddleData *p);
 Vector2 paddle_center(PaddleData *p);
 Rectangle paddle_get_rect(PaddleData *p);
@@ -20,17 +24,18 @@ Rectangle paddle_get_russian_secrets_rect(PaddleData *paddle);
 
 /** Ball **/
 void ball_init(struct BallData *b);
-struct BallData *ball_spawn(struct PongState *pong_state);
+void ball_draw(struct BallData *ball, bool debug);
 void ball_move(float dt, struct BallData *ball, struct GameState *state);
+void ball_refresh(struct BallData *ball);
+void ball_check_collisions(struct BallData *ball, struct GameState *state, WorldBorders world_borders);
+void ball_cleanup(struct PongState *state);
+struct BallData *ball_spawn(struct PongState *pong_state);
+
 void ball_respawn(struct BallData *b);
 void ball_reflect_wall(struct BallData *b);
 void ball_paddle_hit(struct BallData *b, PaddleData *p);
 void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct PlayerData *opponent);
-void ball_draw(struct BallData *ball, bool debug);
 void ball_sword_hit(struct BallData *b, struct PongState *pong_state);
-void ball_refresh(struct BallData *ball);
-void ball_check_collisions(struct BallData *ball, struct GameState *state, WorldBorders world_borders);
-void ball_cleanup(struct PongState *state);
 
 /** Sword **/
 void sword_swing(float dt, PaddleData *p);

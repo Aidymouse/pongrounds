@@ -93,3 +93,7 @@
 // Snotch
 #define SNOTCH_CHANCE 20
 #define SNOTCH_CHANCE_ADDITIONAL 20
+
+// Yo momma
+#define YM_RADIUS 120 // gravity strength is always 100% if the ball is in the gravity zone
+#define YM_BASE_STRENGTH 100 // turn speed (deg/sec) toward gravitational center?
