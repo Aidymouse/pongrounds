@@ -172,12 +172,11 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 	}
 	
 	// if rocket collides with paddle, damage it (destroy it for momentary respawn?)
-	PaddleData *paddles[2] = { state->player1->paddle, state->player2->paddle };
 	
-	r->speed_multiplier = 1;
+	r->speed_multiplier = 1; // Also handle time wizard here
 
-	for (int p=0; p<2; p++) {
-		PaddleData *paddle = paddles[p];
+	for (int p=0; p<pong_state->num_paddles; p++) {
+		PaddleData *paddle = &pong_state->paddles[p];
 		if (paddle->destroyed_timer > 0) { continue; }
 		Rectangle paddle_rect = paddle_get_rect(paddle);
 		if (CheckCollisionCircleRec(c_head_pos, c_head.radius, paddle_rect)) {
@@ -190,10 +189,10 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 		} 
 
 		// if the rocket is in a time wizards zone, slow it down
-		Rectangle time_influence = paddle_get_time_influence_area(paddles[p]);
+		Rectangle time_influence = paddle_get_time_influence_area(paddle);
 		if (CheckCollisionCircleRec(c_head_pos, c_head.radius, time_influence) || 
 		CheckCollisionCircleRec(c_base_pos, c_base.radius, time_influence)) {
-			r->speed_multiplier *= paddle_get_time_power(paddles[p]);
+			r->speed_multiplier *= paddle_get_time_power(paddle);
 		}
 	
 		// If we hit a sword --- DAMN!
@@ -201,7 +200,6 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 			printf("Checking paddle %d for missile collision\n", paddle->id);
 			Rectangle sword_box = sword_get_hitbox(paddle);
 			if (CheckCollisionCircleRec(c_head_pos, c_head.radius, sword_box)) {
-				printf("Paddle %d (sword time %f) just hit a missile with a sword. Is it dumb???\n", paddle->id, paddle->sword_timer);
 				r->dir = Vec2Rotate(r->dir, 180);
 				r->detonation_timer = 1;
 			}
