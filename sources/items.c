@@ -35,7 +35,7 @@ const char *item_descriptions[] = {
 	"Lets you move vertically", // Bachelor of psychology (hons)
 	"Chance to launch a knuckeball on bounce", // Niekro Trading Card
 	"Lets you shoot a missile", // Nuclear Launch Codes
-	"", // Russian Secrets
+	"Spikes the ball if it hits dead center of the paddle", // Russian Secrets
 	"Chance to crush the ball", // Hydraulic Press
 	"Lets you reflect the balls movement", // Antique game console
 	"Lets you create another paddle", // Cloning Vat
@@ -79,7 +79,7 @@ const char *small_item_filenames[] = {
 	"small/sword.png", // Ceremonial Sword
 	"small/time.png", // Time Wizards Chronometer
 	"small/bachelor.png", // Bachelor of psychology (hons)
-	"small/niekrotradingcard.png", // Niekro Trading Card
+	"small/niekro.png", // Niekro Trading Card
 	"small/missile.png", // Nuclear Launch Codes
 	"small/russian secrets.png", // Russian Secrets
 	"small/press.png", // Hydraulic Press 

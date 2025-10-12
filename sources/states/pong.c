@@ -13,19 +13,21 @@
 
 // Called on point score
 
-#define NUM_FY_STRINGS 9
+#define NUM_FY_STRINGS 10
 
 const char* fuck_you_strings[] = {
 	"VICTORY",
-	"неудачник",
+	"неудачник", // Renders as a bunch of question marks but it's funny
 	"CALCULATED",
 	"I WIN",
 	"YOU LOSE",
 	"ANOTHER?",
 	"FAIR",
-	"失败者",
+	//"失败者",
 	"MORE",
 	"LOSER",
+	"SKILL ISSUE",
+	"TASTE THE PAIN",
 };
 
 const int fuck_you_size[] = {
@@ -38,7 +40,8 @@ const int fuck_you_size[] = {
 	150,
 	150,
 	150,
-	150,
+	100, // Skill Issue
+	90, // Taste the Pain
 };
 
 void display_fuck_you(struct PongState *pong_state) {

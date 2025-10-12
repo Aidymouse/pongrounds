@@ -295,7 +295,7 @@ void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls
 		p->item_use_timers[ITEM_CHERRY_BLOSSOM_CLOAK] = ITEM_USE_BUMP_TIME;
 	}
 
-	if (state->pong_state->end_round_timer == 0) {
+	if (state->pong_state->end_round_timer <= 0) {
 		if (IsKeyPressed(controls.item)) {
 			paddle_activate_items(dt, p, state->pong_state);
 		}
