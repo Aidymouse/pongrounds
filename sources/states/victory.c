@@ -86,7 +86,7 @@ void draw_victory(VictoryState *victory_state) {
 		DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, bg);
 
 		if (victory_state->flash_timer > 1) {
-			if ((int)(victory_state->flash_timer / 0.5) % 2 == 0) {
+			if ((int)(victory_state->flash_timer / 0.5) % 2 == 1) {
 				DrawTextCentered(pn, SCREEN_WIDTH/2, SCREEN_HEIGHT/2-100, 100, victory_state->victor->paddle->color);
 			}
 			DrawTextCentered("GLORIOUS VICTOR", SCREEN_WIDTH/2, SCREEN_HEIGHT/2+100, 80, HACKER_GREEN);

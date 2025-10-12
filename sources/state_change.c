@@ -4,6 +4,7 @@
 #include "states/pong.h"
 #include "obj/obj.h"
 #include "helper.h"
+#include "states/states.h"
 
 #include <stdio.h>
 
@@ -59,6 +60,13 @@ void change_state_to_pong(struct GameState *state) {
 
 	if (state->state == STATE_PICK_ITEM) {
 		state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
+	}
+
+	if (state->state == STATE_MENU) {
+		init_player(state->player1);
+		init_player(state->player2);
+		init_state_pong(state->pong_state);
+		init_state_pick_items(state->pick_items_state);
 	}
 
 	// Get rid of paddle clones

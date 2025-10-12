@@ -28,34 +28,8 @@ void init_gamestate(struct GameState *gs) {
 }
 
 
-void init_player(struct PlayerData *player) {
-	//player->paddle = paddle;
-	player->num_points = 0;
-}
 
 
-void init_pong_state(struct PongState *g) {
-
-	g->current_round = 0;
-	g->num_balls = 0;
-	ball_init(&(g->balls[0]));
-	//init_ball(&(g->balls[1]));
-	g->ball_respawn_timer = 0;
-	g->end_round_timer = 0;
-	g->num_rockets = 0;
-	g->num_explosions = 0;
-	g->num_paddles = 2;
-	g->fuck_you_timer = FUCK_YOU_DURATION;
-	sprintf(g->fuck_you_text, "FIRST TO %d", NUM_ROUNDS);
-	//g->fuck_you_text = "FIRST TO 10";
-	g->fuck_you_size = 100;
-	g->points_to_win = NUM_ROUNDS;
-	g->ball_respawn_timer = BALL_RESPAWN_DELAY;
-}
-
-void init_pick_items_state(struct PickItemsState *s) {
-	s->num_item_choices = 3;
-}
 
 Vector2 center = (Vector2){ SCREEN_WIDTH/2, SCREEN_HEIGHT/2 };
 
@@ -111,7 +85,7 @@ int main(void)
 	init_gamestate(&state);
 
 	struct PongState pong_state;
-	init_pong_state(&pong_state);
+	init_state_pong(&pong_state);
 
 	MenuState menu_state;
 	init_state_menu(&menu_state);
@@ -134,7 +108,7 @@ int main(void)
 	p2->facing = (Vector2){ 0, -1 };
 
 	struct PickItemsState pick_items_state;
-	init_pick_items_state(&pick_items_state);
+	init_state_pick_items(&pick_items_state);
 
  	
 	// Player 1

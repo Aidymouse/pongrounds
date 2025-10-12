@@ -52,7 +52,7 @@ void state_menu(struct GameState *state) {
 				// Do the option
 				if (btn->id == BTN_PLAY) {
 					printf("Play\n");
-				
+					
 					change_state_to_pong(state);
 					menu_state->hovered = NULL;
 				} else if (btn->id == BTN_QUIT) {

@@ -7,11 +7,10 @@
 #include "obj/obj.h"
 #include "raylib.h"
 #include "textures.h"
+#include "states/states.h"
 
 #include "Vec2.h"
 #include "helper.h"
-
-// Called on point score
 
 #define NUM_FY_STRINGS 10
 
@@ -67,6 +66,24 @@ void display_fuck_you(struct PongState *pong_state) {
 	Color flash = {.r = 128, .g = 0, .b = 0, .a = 128 };
 
 	DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, flash);
+}
+
+void init_state_pong(struct PongState *pong_state) {
+	pong_state->current_round = 0;
+	pong_state->num_balls = 0;
+	ball_init(&(pong_state->balls[0]));
+	//init_ball(&(pong_state->balls[1]));
+	pong_state->ball_respawn_timer = 0;
+	pong_state->end_round_timer = 0;
+	pong_state->num_rockets = 0;
+	pong_state->num_explosions = 0;
+	pong_state->num_paddles = 2;
+	pong_state->fuck_you_timer = FUCK_YOU_DURATION;
+	sprintf(pong_state->fuck_you_text, "FIRST TO %d", NUM_ROUNDS);
+	//pong_state->fuck_you_text = "FIRST TO 10";
+	pong_state->fuck_you_size = 100;
+	pong_state->points_to_win = NUM_ROUNDS;
+	pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
 }
 
 void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {

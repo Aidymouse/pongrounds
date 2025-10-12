@@ -5,6 +5,11 @@
 #include "state_change.h"
 #include "anim.h"
 #include <stdio.h>
+#include "states/states.h"
+
+void init_state_pick_items(struct PickItemsState *s) {
+	s->num_item_choices = 3;
+}
 
 void roll_items(struct PickItemsState *state) {
 	// Load all items into swap back array
