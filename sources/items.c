@@ -80,7 +80,7 @@ const char *small_item_filenames[] = {
 	"small/time.png", // Time Wizards Chronometer
 	"small/bachelor.png", // Bachelor of psychology (hons)
 	"small/niekrotradingcard.png", // Niekro Trading Card
-	"small/nuclearlaunchcodes.png", // Nuclear Launch Codes
+	"small/missile.png", // Nuclear Launch Codes
 	"small/russian secrets.png", // Russian Secrets
 	"small/press.png", // Hydraulic Press 
 	"small/antique game console.png", // Antique Game Console 
