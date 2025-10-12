@@ -188,7 +188,7 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 
 		pong_state->rockets[pong_state->num_rockets] = r;
 		pong_state->num_rockets += 1;
-		p->item_cooldown_timers[ITEM_NUCLEAR_LAUNCH_CODES] = 0.5;
+		p->item_cooldown_timers[ITEM_NUCLEAR_LAUNCH_CODES] = MISSILE_COOLDOWN;
 
 	}
 
@@ -295,8 +295,10 @@ void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls
 		p->item_use_timers[ITEM_CHERRY_BLOSSOM_CLOAK] = ITEM_USE_BUMP_TIME;
 	}
 
-	if (IsKeyPressed(controls.item)) {
-		paddle_activate_items(dt, p, state->pong_state);
+	if (state->pong_state->end_round_timer == 0) {
+		if (IsKeyPressed(controls.item)) {
+			paddle_activate_items(dt, p, state->pong_state);
+		}
 	}
 }
 

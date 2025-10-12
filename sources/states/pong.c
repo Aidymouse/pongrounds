@@ -236,9 +236,6 @@ void state_pong(float dt, struct GameState *state) {
 			}
 		}
 
-		
-
-
 		if ((player1->paddle->hp <= 0 || player2->paddle->hp <= 0) && pong_state->end_round_timer <= 0) {
 			pong_state->end_round_timer = BALL_RESPAWN_DELAY;
 		} 
