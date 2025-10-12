@@ -53,9 +53,13 @@ void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {
 			DrawText(s, item_x, item_y, 9, item_color);
 		}
 
+
+		// TODO: stolen items
+		/**
 		char s2[16];
 		sprintf(s2, "x%f", p->item_cooldown_timers[i]);
 		DrawText(s2, item_x-50, item_y, 9, item_color);
+		*/
 	}
 }
 
@@ -94,7 +98,7 @@ void state_pong(float dt, struct GameState *state) {
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
 			if (ball->delete_me) continue;
-			//ball_move(dt, ball, state);
+			ball_move(dt, ball, state);
 		}
 
 		// Update paddles
@@ -212,7 +216,7 @@ void draw_pong(struct GameState *state) {
 		// PADDLES
 		for (int p_idx=state->pong_state->num_paddles-1; p_idx>=0; p_idx--) {
 			PaddleData p = state->pong_state->paddles[p_idx];
-			paddle_draw(&p, true);
+			paddle_draw(&p, false);
 		}
 
 		// Items //

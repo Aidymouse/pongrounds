@@ -75,6 +75,14 @@ void state_pick_items(float dt, struct PickItemsState *state, struct GameState *
 
 void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 
+	// Who is picking
+	if (state->choosing_paddle->id == 1) {
+		DrawTextCentered("Player 1 To Choose", SCREEN_WIDTH/2, 80, 40, state->choosing_paddle->color);
+	} else if (state->choosing_paddle->id == 2) {
+		DrawTextCentered("Player 2 To Choose", SCREEN_WIDTH/2, 80, 40, state->choosing_paddle->color);
+	}
+
+	// Show items
 	for (int i=0; i<state->num_item_choices; i++) {
 		Rectangle item_rect = get_rect_for_item_idx(i, state->num_item_choices);
 		//printf("%d\n", i);
