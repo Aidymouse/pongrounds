@@ -77,9 +77,9 @@ void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 
 	// Who is picking
 	if (state->choosing_paddle->id == 1) {
-		DrawTextCentered("Player 1 To Choose", SCREEN_WIDTH/2, 80, 40, state->choosing_paddle->color);
+		DrawTextCentered("Player 1 To Choose", SCREEN_WIDTH/2, 120, 40, state->choosing_paddle->color);
 	} else if (state->choosing_paddle->id == 2) {
-		DrawTextCentered("Player 2 To Choose", SCREEN_WIDTH/2, 80, 40, state->choosing_paddle->color);
+		DrawTextCentered("Player 2 To Choose", SCREEN_WIDTH/2, 120, 40, state->choosing_paddle->color);
 	}
 
 	// Show items

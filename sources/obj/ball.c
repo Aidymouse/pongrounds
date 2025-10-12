@@ -290,7 +290,7 @@ void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct Player
 void ball_sword_hit(struct BallData *ball, struct PongState *pong_state) {
 	// Split into two balls!
 	// Make this ball half, duplicate self
-	ball->radius = ball->radius/2;
+	ball->radius = ball->radius*0.75;
 	if (ball->radius < 1) { ball->radius = 1; }
 	ball->score_damage /= 2;
 	if (ball->score_damage < 5) { ball->score_damage = 5; }
