@@ -158,6 +158,9 @@ int main(void)
 
 	float dt = 0;
 
+	unsigned int b = 0x12110f;
+	Color bg = GetColor(b);
+	
 	// Game loop //
     while (!WindowShouldClose())
     {
@@ -176,7 +179,7 @@ int main(void)
 
 		// Draw
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(bg);
 
 		if (state.state == PONG) {
 			draw_pong(&state);
