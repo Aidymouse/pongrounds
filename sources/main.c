@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "string.h"
+#include "states/states.h"
 #include "states/pong.h"
 #include "states/pick_item.h"
 
@@ -19,8 +20,8 @@
 
 // INIT FNS //
 void init_gamestate(struct GameState *gs) {
-	gs->state = PONG;
-
+	gs->state = STATE_MENU;
+	gs->quit_please = false;
 	gs->screenshake_timer = 0;
 	gs->screenshake_amplitude = 2;
 	gs->screenshake_decay = DEFAULT_SCREENSHAKE_DECAY;
@@ -95,7 +96,7 @@ int main(void)
 	load_textures();
 
 	// Init State //
-	enum GAME_STATES game_state = PONG;
+	enum GAME_STATES game_state = STATE_MENU;
 
 	Camera2D camera;
 	init_camera(&camera);
@@ -105,6 +106,9 @@ int main(void)
 
 	struct PongState pong_state;
 	init_pong_state(&pong_state);
+
+	MenuState menu_state;
+	init_state_menu(&menu_state);
 
 	paddle_init( &pong_state.paddles[0] );
 	struct PaddleData *p1 = &pong_state.paddles[0];
@@ -151,6 +155,7 @@ int main(void)
 	state.player2 = &player2;
 	state.pong_state = &pong_state;
 	state.pick_items_state = &pick_items_state;
+	state.menu_state = &menu_state;
 	state.camera = &camera;
 
 	float dt = 0;
@@ -159,17 +164,19 @@ int main(void)
 	Color bg = GetColor(b);
 	
 	// Game loop //
-    while (!WindowShouldClose())
+    while (!WindowShouldClose() && !state.quit_please)
     {
 		// TODO how to reset this on the first frame cos it takes ages to load the textures
 		dt = GetFrameTime();
 
 		// Update
-		if (state.state == PONG) {
+		if (state.state == STATE_PONG) {
 			update_screenshake(dt, &state);
 			state_pong(dt, &state);
-		} else if (state.state == PICK_ITEM) {
+		} else if (state.state == STATE_PICK_ITEM) {
 			state_pick_items(dt, state.pick_items_state, &state);
+		} else if (state.state == STATE_MENU) {
+			state_menu(&state);
 		}
 	
 
@@ -178,11 +185,13 @@ int main(void)
         BeginDrawing();
         ClearBackground(bg);
 
-		if (state.state == PONG) {
+		if (state.state == STATE_PONG) {
 			draw_pong(&state);
-		} else if (state.state == PICK_ITEM) {
+		} else if (state.state == STATE_PICK_ITEM) {
 			draw_pong(&state); // Still in background
 			draw_pick_items(state.pick_items_state, tex_item_cards);
+		} else if (state.state == STATE_MENU) {
+			draw_menu(state.menu_state);
 		}
 
 		// Not sure bout this

@@ -9,10 +9,10 @@
 
 void change_state_plain(enum GAME_STATES new_state, struct GameState *state) {
 	
-	if (new_state == PICK_ITEM) {
+	if (new_state == STATE_PICK_ITEM) {
 		state->state = new_state;
 				
-	} else if (new_state == PONG) {
+	} else if (new_state == STATE_PONG) {
 		state->state = new_state;
 
 	}
@@ -22,7 +22,7 @@ void change_state_to_pick_items(struct GameState *state, PaddleData *choosing) {
 	struct PickItemsState *pick_items_state = state->pick_items_state;
 	roll_items(pick_items_state);
 	pick_items_state->choosing_paddle = choosing;
-	state->state = PICK_ITEM;
+	state->state = STATE_PICK_ITEM;
 }
 
 /** TO PONG **/
@@ -57,7 +57,9 @@ void change_state_to_pong(struct GameState *state) {
 		state->camera->zoom = 0.8 - 0.05 * (nerd_glasses-1);
 	}
 
-	state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
+	if (state->state == STATE_PICK_ITEM) {
+		state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
+	}
 
 	// Get rid of paddle clones
 	for (int i=2; i<state->pong_state->num_paddles; i++) {
@@ -78,5 +80,5 @@ void change_state_to_pong(struct GameState *state) {
 		handle_sentient_hand(state->player2->paddle, state->player1->paddle);
 	}
 
-	state->state = PONG;
+	state->state = STATE_PONG;
 }

@@ -163,7 +163,7 @@ void ball_respawn(struct BallData *b) {
 	//if (b->vel.y < 0) { b->vel.y = -BALL_INIT_SPEED; } else { b->vel.y = BALL_INIT_SPEED; }
 	b->speed = BALL_INIT_SPEED;
 	b->delete_me = false;
-	b->color = WHITE;
+	b->color = HACKER_GREEN;
 
 	b->radius = BALL_RADIUS;
 	b->score_damage = BALL_SCORE_DAMAGE;

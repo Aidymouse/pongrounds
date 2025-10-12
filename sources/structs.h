@@ -46,10 +46,10 @@ typedef struct FrameAnimation {
 } FrameAnimation;
 
 enum GAME_STATES {
-	PONG=0,
-	PICK_ITEM=1,
-	PAUSE=2,
-	MENU=3
+	STATE_PONG=0,
+	STATE_PICK_ITEM=1,
+	STATE_PAUSE=2,
+	STATE_MENU=3
 };
 
 // How the paddle is controlled
@@ -189,7 +189,7 @@ typedef struct Explosion {
 	float active_timer;
 	float anim_timer;
 	int anim_frame;
-	//float life_timer; // the clock is always ticking
+	//float life_timer; // the clock is always ticking. Unless you comment it out. Lol
 	bool delete_me;
 } Explosion;
 
@@ -235,6 +235,39 @@ struct PickItemsState {
 	PaddleData *choosing_paddle;
 };
 
+// Menu
+typedef struct MenuButton {
+	Rectangle dims;
+} MenuButton;
+
+typedef enum {
+	MENU_MAIN=0,
+	MENU_CONTROLS=1,
+} MENU;
+
+typedef enum {
+	BTN_PLAY,
+	BTN_QUIT,
+} BUTTON;
+
+typedef struct Button {
+	Rectangle dims;
+	Color color;
+	const char *text;
+	BUTTON id;
+} Button;
+
+typedef struct MenuState {
+	Button *current_menu;
+	int num_buttons;
+	Button *hovered; // Often NULL
+
+	Button main_buttons[32];
+	int num_main_buttons;
+	
+	int ui_idx;
+} MenuState;
+
 typedef struct WorldBorders {
 	float top;
 	float bottom;
@@ -245,10 +278,12 @@ typedef struct WorldBorders {
 struct GameState {
 	int state; // GAME_STATE
 
+	bool quit_please; // Allows access to quitting the window from anywhere
 	struct PlayerData *player1;
 	struct PlayerData *player2;
 	struct PongState *pong_state;
 	struct PickItemsState *pick_items_state;
+	MenuState *menu_state;
 	Camera2D *camera;
 	float screenshake_timer;
 	float screenshake_freq_timer;
