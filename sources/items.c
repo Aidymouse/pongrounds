@@ -58,16 +58,16 @@ const char *item_filenames[] = {
 	"cards/bachelor of psychology.png", // Bachelor of psychology (hons)
 	"cards/niekro.png", // Niekro Trading Card
 	"cards/missile.png", // Nuclear Launch Codes
-	"cards/todo.png", // Russian Secrets TODO
-	"cards/todo.png", // Hydraulic Press TODO
-	"cards/todo.png", // Antique Game Console TODO
-	"cards/todo.png", // Cloning Vat TODO
-	"cards/todo.png", // Legally Distinct Golden Snotch TODO
+	"cards/todo.png", // Russian Secrets
+	"cards/hydraulic press.png", // Hydraulic Press 
+	"cards/antique game console.png", // Antique Game Console 
+	"cards/cloning vat.png", // Cloning Vat 
+	"cards/legally distinct golden snotch.png", // Legally Distinct Golden Snotch 
 	"cards/todo.png", // Yo Momma
 	"cards/todo.png", // Broken Mind Control Machine
 	//"cards/todo.png", // Underwear (Used)
 	"cards/todo.png", // Mutant Mouse
-	"cards/todo.png", // Sentient Hand
+	"cards/sentient hand.png", // Sentient Hand
 };
 
 const char *small_item_filenames[] = {
@@ -81,14 +81,14 @@ const char *small_item_filenames[] = {
 	"small/bachelor.png", // Bachelor of psychology (hons)
 	"small/niekrotradingcard.png", // Niekro Trading Card
 	"small/nuclearlaunchcodes.png", // Nuclear Launch Codes
-	"small/russiansecrets.png", // Russian Secrets
-	"small/todo.png", // Hydraulic Press TODO
-	"small/todo.png", // Antique Game Console TODO
-	"small/todo.png", // Cloning Vat TODO
-	"small/todo.png", // Snotch TODO
-	"small/todo.png", // Yo Momma
+	"small/russian secrets.png", // Russian Secrets
+	"small/press.png", // Hydraulic Press 
+	"small/antique game console.png", // Antique Game Console 
+	"small/todo.png", // Cloning Vat 
+	"small/todo.png", // Snotch 
+	"small/yo mama.png", // Yo Momma
 	"small/todo.png", // Broken Mind Control Machine
 	//"small/todo.png", // Underwear (Used)
 	"small/todo.png", // Mutant Mouse
-	"small/todo.png", // Sentient Hand
+	"small/hand.png", // Sentient Hand
 };

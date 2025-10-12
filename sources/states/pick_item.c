@@ -85,12 +85,10 @@ void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 	// Show items
 	for (int i=0; i<state->num_item_choices; i++) {
 		Rectangle item_rect = get_rect_for_item_idx(i, state->num_item_choices);
-		//printf("%d\n", i);
-		if (i==state->hovered_item) {
-			DrawRectangleLines(item_rect.x, item_rect.y, item_rect.width, item_rect.height, RED);
-		} else {
-			DrawRectangleLines(item_rect.x, item_rect.y, item_rect.width, item_rect.height, WHITE);
-		}
+		Color card_color = HACKER_GREEN;
+		if (i==state->hovered_item) { card_color = RED; } 
+
+		DrawRectangleLines(item_rect.x, item_rect.y, item_rect.width, item_rect.height, card_color);
 
 		float margin = (item_rect.width-150)/2;
 
@@ -104,7 +102,7 @@ void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 			WHITE
 		);
 
-		DrawTextCentered( item_labels[state->item_choices[i]], item_rect.x+item_rect.width/2, item_rect.y+item_rect.height-25, 15, WHITE);
+		DrawTextCentered( item_labels[state->item_choices[i]], item_rect.x+item_rect.width/2, item_rect.y+item_rect.height-25, 15, card_color);
 
 	}
 }

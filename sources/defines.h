@@ -3,6 +3,7 @@
 #define SCREEN_HEIGHT (600)
 
 #define WINDOW_TITLE "Prounds"
+#define HACKER_GREEN (Color){95, 247, 158, 255}
 
 // Game Vars
 #define POINTS_PER_ROUND (2)
