@@ -18,7 +18,7 @@ void ball_init(struct BallData *b) {
 	b->score_damage = BALL_SCORE_DAMAGE;
 	b->delete_me = false;
 	b->last_hit_by = 0; // equiv to NULL
-	b->color = WHITE;
+	b->color = HACKER_GREEN;
 
 	b->kb_turn_speed = NIEKRO_KB_TURN_SPEED;
 

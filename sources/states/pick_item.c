@@ -84,9 +84,11 @@ void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 
 	// Show items
 	for (int i=0; i<state->num_item_choices; i++) {
+		bool is_hovered = i == state->hovered_item;
 		Rectangle item_rect = get_rect_for_item_idx(i, state->num_item_choices);
 		Color card_color = HACKER_GREEN;
-		if (i==state->hovered_item) { card_color = RED; } 
+
+		if (is_hovered) { card_color = RED; } 
 
 		DrawRectangleLines(item_rect.x, item_rect.y, item_rect.width, item_rect.height, card_color);
 
@@ -102,7 +104,11 @@ void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 			WHITE
 		);
 
-		DrawTextCentered( item_labels[state->item_choices[i]], item_rect.x+item_rect.width/2, item_rect.y+item_rect.height-25, 15, card_color);
+		if (is_hovered) {
+			DrawTextCentered( item_descriptions[state->item_choices[i]], item_rect.x+item_rect.width/2, item_rect.y+item_rect.height-50, 11, card_color);
+		} else {
+			DrawTextCentered( item_labels[state->item_choices[i]], item_rect.x+item_rect.width/2, item_rect.y+item_rect.height-25, 15, card_color);
+		}
 
 	}
 }

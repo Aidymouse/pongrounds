@@ -29,22 +29,22 @@ const char *item_descriptions[] = {
 	"Lets you dash", // Cherry Blossom Cloak
 	"Makes your paddle wider",
 	"Makes your opponents paddle shorter", // Chastity Cage
-	"", // Nerd Glasses
-	"", // Ceremonial Sword
-	"", // Time Wizards Chronometer
-	"", // Bachelor of psychology (hons)
+	"Zooms out", // Nerd Glasses
+	"Gives you a sword", // Ceremonial Sword
+	"Slows down the ball in a zone", // Time Wizards Chronometer
+	"Lets you move vertically", // Bachelor of psychology (hons)
 	"Chance to launch a knuckeball on bounce", // Niekro Trading Card
-	"", // Nuclear Launch Codes
+	"Lets you shoot a missile", // Nuclear Launch Codes
 	"", // Russian Secrets
-	"", // Hydraulic Press
-	"", // Antique game console
-	"", // Cloning Vat
-	"", // Legally Distinct Golden Snotch
-	"", // Yo Momma
-	"", // Broken Mind Control Machine
+	"Chance to crush the ball", // Hydraulic Press
+	"Lets you reflect the balls movement", // Antique game console
+	"Lets you create another paddle", // Cloning Vat
+	"Chance of doubling ball damage on paddle hit", // Legally Distinct Golden Snotch
+	"Gives your paddle gravity", // Yo Momma
+	"Switch sides with opponent", // Broken Mind Control Machine
 	//"", // Underwear (Used)
-	"", // Mutant Mouse
-	"", // Sentient Hand
+	"Ball speeds up as it moves away from you", // Mutant Mouse
+	"Steal a random item from opponent at the start of the round", // Sentient Hand
 };
 
 const char *item_filenames[] = {

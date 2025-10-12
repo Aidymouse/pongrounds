@@ -121,8 +121,8 @@ void display_health(struct PlayerData *p, int x, int y) {
 
 	int width = paddle->max_hp;
 
-	DrawRectangleLines(x - width/2, y, width, 10, WHITE);
-	DrawRectangle(x - width/2, y, paddle->hp, 10, WHITE);
+	DrawRectangleLines(x - width/2, y, width, 10, HACKER_GREEN);
+	DrawRectangle(x - width/2, y, paddle->hp, 10, HACKER_GREEN);
 }
 
 
