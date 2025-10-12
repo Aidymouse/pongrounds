@@ -30,6 +30,8 @@
 #define PADDLE_DEFAULT_HP (100)
 #define PADDLE_SPEED (400)
 #define DAMAGE_INVINCIBILITY_TIME 2
+#define PADDLE_DECELLERATION 50 //50
+#define PADDLE_TURN_SPEED 270
 
 // Hypergonadism
 #define HYPERGONADISM_WIDTH_BONUS 20
@@ -43,6 +45,7 @@
 // Cherry blossom cloak
 #define CLOAK_DASH_SPEED (2200)
 #define CLOAK_DASH_SPEED_BONUS (200) // Additional
+#define CLOAK_DECELLERATION (250)
 
 // Sword
 #define SWORD_DURATION (0.2)

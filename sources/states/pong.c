@@ -94,7 +94,7 @@ void state_pong(float dt, struct GameState *state) {
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
 			if (ball->delete_me) continue;
-			ball_move(dt, ball, state);
+			//ball_move(dt, ball, state);
 		}
 
 		// Update paddles

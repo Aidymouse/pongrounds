@@ -140,10 +140,9 @@ int main(void)
 	p2->items_total[debug_item] += 1;
 	p1->items[debug_item] += 5;
 	p1->items_total[debug_item] += 5;
-	debug_item = ITEM_CEREMONIAL_SWORD;
+	debug_item = ITEM_CHERRY_BLOSSOM_CLOAK;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
-	debug_item = ITEM_NUCLEAR_LAUNCH_CODES;
 	p1->items[debug_item] += 1;
 	p1->items_total[debug_item] += 1;
 	// /DEBUG

@@ -75,16 +75,19 @@ typedef enum PaddleBrain {
 
 typedef struct PaddleData {
 	Vector2 pos;
-	Vector2 vel; // Unit vector velocity direction
+	Vector2 dir; // Actually just the signs for speed so speed calculations can be positive only
+	//Vector2 desired_vel; // This is manipulated by paddle controls
 	Vector2 facing; // What direction we're facing. Yeah I know it's a rectangle
 	int id; // 2 owns the bottom of the screen
 	PaddleBrain brain;
 	bool delete_me;
-	float invincibility_timer;
+	float invincibility_timer; // Paddle flashes intermittently when this timer is > 0?
+	float hit_timer; // Paddle tinted red when hit timer is active
 
-	float speed;
+	//float speed;
+	Vector2 speed;
 	// Max normal speed while not dashing
-	float max_speed; 
+	Vector2 max_speed; 
 
 	float destroyed_timer;
 

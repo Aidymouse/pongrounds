@@ -25,11 +25,11 @@ void paddle_init(PaddleData *p) {
 	p->color = WHITE;
 	p->hp = PADDLE_DEFAULT_HP;
 	p->max_hp = PADDLE_DEFAULT_HP;
-	p->vel.x = 0;
-	p->vel.y = 0;
-	p->speed = PADDLE_SPEED;
-	p->max_speed = PADDLE_SPEED;
+	p->dir = (Vector2){0, 0};
+	p->speed = (Vector2){ 0, 0 };
+	p->max_speed = (Vector2){PADDLE_SPEED, PADDLE_SPEED*0.6};
 	p->invincibility_timer = 0;
+	p->hit_timer = 0;
 
 	p->sword_frame = 0;
 	p->sword_anim_timer = 0;
@@ -182,7 +182,6 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 
 	// Nuclear Launch Codes
 	if (p->items[ITEM_NUCLEAR_LAUNCH_CODES] > 0 && p->item_cooldown_timers[ITEM_NUCLEAR_LAUNCH_CODES] <= 0 && pong_state->num_rockets < MAX_ROCKETS) {
-		printf("Spawning rocket %d\n", pong_state->num_rockets);
 		RocketData r;
 		rocket_init(&r, p);
 
@@ -237,31 +236,62 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
  * a.k.a paddle_brain_player()
  * */
 void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state) {
-	// Higher than max speed and we're dashing - no control allowed
-	if (p->speed <= p->max_speed) { 
+	// Higher than max speed and we're dashing - no control allowed. 
+	// Dash speed reduction handled in update
+	Vector2 moving_impulse = { .x = 0, .y = 0 };
+	if (p->speed.x <= p->max_speed.x && p->speed.y <= p->max_speed.y) { 
 		if (IsKeyDown(controls.left)) {
-			p->vel.x = -1;
+			moving_impulse.x = -1;
 		} else if (IsKeyDown(controls.right)) {
-			p->vel.x = 1;
-		} else {
-			p->vel.x = 0;
-		}
+			moving_impulse.x = 1;
+		} 
 
-		// TODO: limit
 		if (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS] > 0) {
 			if (IsKeyDown(controls.up)) {
-				p->vel.y = -0.6;
+				moving_impulse.y = -1;
 			} else if (IsKeyDown(controls.down)) {
-				p->vel.y = 0.6;
-			} else {
-				p->vel.y = 0;
+				moving_impulse.y = 1;
+			} 	
+		} 
+
+		if (moving_impulse.x == 0) {
+			if (p->speed.x > 0) {
+				p->speed.x -= PADDLE_DECELLERATION; 
+				if (p->speed.x < 0) { p->speed.x = 0; }
 			}
 		}
+		if (moving_impulse.y == 0) {
+			if (p->speed.y > 0) {
+				p->speed.y -= PADDLE_DECELLERATION;
+				if (p->speed.y < 0) { p->speed.y = 0; }
+			}
+		} 
+
+
+		//p->dir = Vec2Normalize(p->dir);
+		//Vector2 desired_vel = Vec2Normalize(moving_impulse);
+
+	}
+		
+	// Turn move impulse into a direction and speed
+	if (moving_impulse.x != 0) {
+		p->dir.x = moving_impulse.x;
+		p->speed.x = PADDLE_SPEED;
+	}
+	if (moving_impulse.y != 0) {
+		p->dir.y = moving_impulse.y;
+		p->speed.y = PADDLE_SPEED * 0.6;
 	}
 
-	// TODO: timer???
 	if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyPressed(controls.dash)) {
-		p->speed = CLOAK_DASH_SPEED + CLOAK_DASH_SPEED_BONUS*p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1;
+		if (moving_impulse.x != 0) {
+			p->speed.x = CLOAK_DASH_SPEED + CLOAK_DASH_SPEED_BONUS*p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1;
+		}
+		if (moving_impulse.y != 0) {
+			p->speed.y = CLOAK_DASH_SPEED + CLOAK_DASH_SPEED_BONUS*p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1;
+		}
+		//p->speed.y = 
+		p->item_use_timers[ITEM_CHERRY_BLOSSOM_CLOAK] = ITEM_USE_BUMP_TIME;
 	}
 
 	if (IsKeyPressed(controls.item)) {
@@ -289,12 +319,12 @@ void paddle_brain_clone(struct PaddleData *paddle, struct GameState *state) {
 	float MAX_DIST = paddle->cv_lag_dist;
 	if (dist * dist > MAX_DIST*MAX_DIST) {
 		if (dist < 0) {
-			paddle->vel.x = -1;
+			//paddle->vel.x = -1;
 		} else {
-			paddle->vel.x = 1;
+			//paddle->vel.x = 1;
 		}
 	} else {
-		paddle->vel.x = 0;
+		//paddle->vel.x = 0;
 	}
 }
 
@@ -325,10 +355,17 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorder
 
 
 	// Decelerate dash
-	if (p->speed > p->max_speed) {
-		p->speed -= 250;
-		if (p->speed < p->max_speed) {
-			p->speed = p->max_speed;
+	if (p->speed.x > p->max_speed.x) {
+		p->speed.x -= CLOAK_DECELLERATION;
+		if (p->speed.x < p->max_speed.x) {
+			p->speed.x = p->max_speed.x;
+		}
+	}
+
+	if (p->speed.y > p->max_speed.y) {
+		p->speed.y -= CLOAK_DECELLERATION;
+		if (p->speed.y < p->max_speed.y) {
+			p->speed.y = p->max_speed.y;
 		}
 	}
 
@@ -339,7 +376,16 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorder
 		speed_mult *= CV_CLONE_SPEED_MULT;
 	}
 
-	p->pos = Vec2Add(p->pos, Vec2MultScalar(p->vel, p->speed*speed_mult*dt));
+	// Turn speed and dir into an actual velocity and then move that velocity
+	if (p->speed.x != 0 || p->speed.y != 0) {
+		Vector2 normal_speed = p->speed;
+		Vector2 signed_speed = {
+			.x = normal_speed.x * p->dir.x,
+			.y = normal_speed.y * p->dir.y,
+		};
+		//Vector2 vel = Vec2Normalize(signed_speed);
+		p->pos = Vec2Add(p->pos, Vec2MultScalar(signed_speed, speed_mult*dt));
+	}
 
 	// Cap position by number of bachelors of psychology
 	int y_cap = SCREEN_HEIGHT/2 + BACHELOR_DIST_FROM_CENTER * p->facing.y;
@@ -424,6 +470,10 @@ void paddle_draw(PaddleData *p, bool debug) {
 					Circle gravity = paddle_get_gravity_circle(p);
 					DrawCircleLines(gravity.x, gravity.y, gravity.radius, RED);
 				}
+
+				char s[32];
+				sprintf(s, "Speed: %f, %f\n", p->speed.x, p->speed.y);
+				DrawText(s, p->pos.x, p->pos.y + p->paddle_thickness, 10, WHITE);
 			}
 
 }
