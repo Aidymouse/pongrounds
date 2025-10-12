@@ -220,6 +220,9 @@ struct PongState {
 	int num_rockets;
 	Explosion explosions[MAX_EXPLOSIONS];
 	int num_explosions;
+
+	float fuck_you_timer;
+	int fuck_you_idx;
 };
 
 struct PickItemsState {

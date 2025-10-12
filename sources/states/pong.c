@@ -13,6 +13,59 @@
 
 // Called on point score
 
+#define NUM_FY_STRINGS 9
+
+const char* fuck_you_strings[] = {
+	"VICTORY",
+	"неудачник",
+	"CALCULATED",
+	"I WIN",
+	"YOU LOSE",
+	"ANOTHER?",
+	"FAIR",
+	"失败者",
+	"MORE",
+	"LOSER",
+};
+
+const int fuck_you_size[] = {
+	150, // Victory
+	150,
+	100, // Calculated
+	150, // I win
+	120, // You lose
+	120, // Another
+	150,
+	150,
+	150,
+	150,
+};
+
+void display_fuck_you(struct PongState *pong_state) {
+	const char* fy_string = fuck_you_strings[pong_state->fuck_you_idx];
+	int font_size = fuck_you_size[pong_state->fuck_you_idx];
+	float string_width = MeasureText(fy_string, font_size);
+
+	Vector2 offset = { .x = 0, .y = 0 };
+	if (pong_state->fuck_you_timer > FUCK_YOU_DURATION/2) {
+		offset.x = randInt(-5, 5);
+		offset.y = randInt(-2, 2);
+		
+	}
+	
+	DrawTextCentered(fy_string, SCREEN_WIDTH/2+offset.x, SCREEN_HEIGHT/2+offset.y, font_size, RED);
+	DrawRectangleLinesEx((Rectangle){
+		SCREEN_WIDTH/2-(string_width+60)/2,
+		SCREEN_HEIGHT/2-(font_size+20)/2,
+		string_width+60,
+		font_size+20
+	}, 5, RED);
+
+	Color flash = {.r = 128, .g = 0, .b = 0, .a = 128 };
+
+	DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, flash);
+}
+
 void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {
 	/*
 	for (int i=0; i<16; i++) {
@@ -153,6 +206,9 @@ void state_pong(float dt, struct GameState *state) {
 
 		/** /COLLISIONS **/		
 
+		if (state->pong_state->fuck_you_timer > 0) {
+			state->pong_state->fuck_you_timer -= dt;
+		}
 
 
 		// If all balls are destroyed, set the timer to respawn the ball
@@ -164,13 +220,14 @@ void state_pong(float dt, struct GameState *state) {
 				break;
 			}
 		}
-
 		
-		// Respawn ball if timer's up
 		if (all_destroyed && state->pong_state->ball_respawn_timer <= 0) {
 				state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
+				state->pong_state->fuck_you_idx = randInt(0, NUM_FY_STRINGS-1);
+				state->pong_state->fuck_you_timer = FUCK_YOU_DURATION;
 		}
 
+		// Respawn ball if timer's up
 		if (pong_state->ball_respawn_timer > 0 && pong_state->end_round_timer <= 0) {
 			pong_state->ball_respawn_timer -= dt;
 			if (pong_state->ball_respawn_timer <= 0) {
@@ -178,6 +235,8 @@ void state_pong(float dt, struct GameState *state) {
 				ball_respawn(&(state->pong_state->balls[0]));
 			}
 		}
+
+		
 
 
 		if ((player1->paddle->hp <= 0 || player2->paddle->hp <= 0) && pong_state->end_round_timer <= 0) {
@@ -236,6 +295,10 @@ void draw_pong(struct GameState *state) {
 		}
 
 		EndMode2D();
+	
+		if (state->pong_state->fuck_you_timer > 0) {
+			display_fuck_you(state->pong_state);
+		}
 
 		// UI (health, items) //
 		display_items(&state->pong_state->paddles[0], 0, 0, 1, tex_small_items);

@@ -18,10 +18,10 @@ const char *item_labels[] = {
 	"Cloning Vat",
 	"Legally Distinct Golden Snotch",
 	"Yo Momma", 
-	"Broken Mind Control Machine" 
+	"Broken Mind Control Machine",
 	//"Underwear (Used)" 
-	"Mutant Mouse" 
-	"Sentient Hand" 
+	"Mutant Mouse",
+	"Sentient Hand",
 };
 
 const char *item_descriptions[] = {
@@ -44,7 +44,7 @@ const char *item_descriptions[] = {
 	"", // Broken Mind Control Machine
 	//"", // Underwear (Used)
 	"", // Mutant Mouse
-	"" // Sentient Hand
+	"", // Sentient Hand
 };
 
 const char *item_filenames[] = {

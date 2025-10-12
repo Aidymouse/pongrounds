@@ -42,6 +42,8 @@ void init_pong_state(struct PongState *g) {
 	g->num_rockets = 0;
 	g->num_explosions = 0;
 	g->num_paddles = 2;
+	g->fuck_you_timer = 0;
+	g->fuck_you_idx = 0;
 }
 
 void init_pick_items_state(struct PickItemsState *s) {

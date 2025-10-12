@@ -11,7 +11,7 @@ int randInt(int lower, int upper) {
 
 void DrawTextCentered(const char *t, int x, int y, int fontSize, Color color) {
 	int width = MeasureText(t, fontSize);
-	DrawText(t, x-width/2, y, fontSize, color);
+	DrawText(t, x-width/2, y-fontSize/2, fontSize, color);
 }
 
 void DrawPolygon(const Vector2 *points, int num_points, float thickness, Color color) {

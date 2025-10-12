@@ -8,6 +8,7 @@
 #define POINTS_PER_ROUND (2)
 #define NUM_ROUNDS (7)
 #define DEFAULT_SCREENSHAKE_DECAY 1
+#define FUCK_YOU_DURATION 0.5
 
 #define NUM_ITEMS 19
 #define MAX_BALLS 32
