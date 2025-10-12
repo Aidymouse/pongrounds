@@ -30,12 +30,14 @@ void init_gamestate(struct GameState *gs) {
 
 void init_player(struct PlayerData *player) {
 	//player->paddle = paddle;
+	player->num_points = 0;
 }
 
 
 void init_pong_state(struct PongState *g) {
+
 	g->current_round = 0;
-	g->num_balls = 1;
+	g->num_balls = 0;
 	ball_init(&(g->balls[0]));
 	//init_ball(&(g->balls[1]));
 	g->ball_respawn_timer = 0;
@@ -43,8 +45,12 @@ void init_pong_state(struct PongState *g) {
 	g->num_rockets = 0;
 	g->num_explosions = 0;
 	g->num_paddles = 2;
-	g->fuck_you_timer = 0;
-	g->fuck_you_idx = 0;
+	g->fuck_you_timer = FUCK_YOU_DURATION;
+	sprintf(g->fuck_you_text, "FIRST TO %d", NUM_ROUNDS);
+	//g->fuck_you_text = "FIRST TO 10";
+	g->fuck_you_size = 100;
+	g->points_to_win = NUM_ROUNDS;
+	g->ball_respawn_timer = BALL_RESPAWN_DELAY;
 }
 
 void init_pick_items_state(struct PickItemsState *s) {
@@ -110,6 +116,9 @@ int main(void)
 	MenuState menu_state;
 	init_state_menu(&menu_state);
 
+	VictoryState victory_state;
+	init_state_victory(&victory_state);
+
 	paddle_init( &pong_state.paddles[0] );
 	struct PaddleData *p1 = &pong_state.paddles[0];
 	p1->id = 1;
@@ -141,13 +150,13 @@ int main(void)
 	player2.controls = p2_controls;
 
 	/* DEBUG: hard code in some items
-	int debug_item = ITEM_NUCLEAR_LAUNCH_CODES;
+	int debug_item = ITEM_CLONING_VAT;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
 	p1->items[debug_item] += 1;
 	p1->items_total[debug_item] += 1;
-	*/
 	// /DEBUG
+	*/
 
 	struct BallData ball;
 	ball_init(&ball);
@@ -157,11 +166,12 @@ int main(void)
 	state.pong_state = &pong_state;
 	state.pick_items_state = &pick_items_state;
 	state.menu_state = &menu_state;
+	state.victory_state = &victory_state;
 	state.camera = &camera;
 
 	float dt = 0;
 
-	unsigned int b = 0x12110f;
+	unsigned int b = BG_COLOR;
 	Color bg = GetColor(b);
 	
 	// Game loop //
@@ -178,6 +188,8 @@ int main(void)
 			state_pick_items(dt, state.pick_items_state, &state);
 		} else if (state.state == STATE_MENU) {
 			state_menu(&state);
+		} else if (state.state == STATE_VICTORY) {
+			state_victory(dt, &state);
 		}
 	
 
@@ -193,6 +205,9 @@ int main(void)
 			draw_pick_items(state.pick_items_state, tex_item_cards);
 		} else if (state.state == STATE_MENU) {
 			draw_menu(state.menu_state);
+	 	} else if (state.state == STATE_VICTORY) {
+			draw_pong(&state); // Still in background
+			draw_victory(state.victory_state);
 		}
 
 		// Not sure bout this

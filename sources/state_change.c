@@ -82,3 +82,12 @@ void change_state_to_pong(struct GameState *state) {
 
 	state->state = STATE_PONG;
 }
+
+void change_state_to_victory(struct GameState *state, struct PlayerData *victor) {
+	state->victory_state->victor = victor;
+	state->state = STATE_VICTORY;
+}
+
+void change_state_to_menu(struct GameState *state) {
+	state->state = STATE_MENU;
+}

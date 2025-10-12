@@ -4,16 +4,19 @@
 
 #define WINDOW_TITLE "Prounds"
 #define HACKER_GREEN (Color){95, 247, 158, 255}
+#define BG_COLOR 0x12110f
 
-// Game Vars
-#define POINTS_PER_ROUND (2)
-#define NUM_ROUNDS (7)
+// State Vars
+#define NUM_ROUNDS (1) // a.k.a points required to win
 #define DEFAULT_SCREENSHAKE_DECAY 1
 #define FUCK_YOU_DURATION 0.5
 
 #define NUM_ITEMS 19
 #define MAX_BALLS 32
 #define MAX_PADDLES 32
+
+// Victory State
+#define VICTORY_FLASH_DURATION 5
 
 // Animations
 #define CARD_ANIM_FRAMES 43

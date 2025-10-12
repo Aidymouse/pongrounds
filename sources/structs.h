@@ -49,7 +49,8 @@ enum GAME_STATES {
 	STATE_PONG=0,
 	STATE_PICK_ITEM=1,
 	STATE_PAUSE=2,
-	STATE_MENU=3
+	STATE_MENU=3,
+	STATE_VICTORY=4,
 };
 
 // How the paddle is controlled
@@ -194,7 +195,7 @@ typedef struct Explosion {
 } Explosion;
 
 struct PlayerData {
-	int rounds_won;
+	int num_points;
 	PaddleData *paddle;
 	struct PaddleControls controls;
 };
@@ -222,7 +223,9 @@ struct PongState {
 	int num_explosions;
 
 	float fuck_you_timer;
-	int fuck_you_idx;
+	char fuck_you_text[128];
+	int fuck_you_size;
+	int points_to_win;
 };
 
 struct PickItemsState {
@@ -268,6 +271,15 @@ typedef struct MenuState {
 	int ui_idx;
 } MenuState;
 
+// Victory
+typedef struct VictoryState {
+	struct PlayerData *victor;
+	int hovered_option;
+	bool deciding;
+	float flash_timer;
+} VictoryState;
+
+
 typedef struct WorldBorders {
 	float top;
 	float bottom;
@@ -284,6 +296,7 @@ struct GameState {
 	struct PongState *pong_state;
 	struct PickItemsState *pick_items_state;
 	MenuState *menu_state;
+	VictoryState *victory_state;
 	Camera2D *camera;
 	float screenshake_timer;
 	float screenshake_freq_timer;

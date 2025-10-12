@@ -5,9 +5,10 @@
 #include <stdio.h>
 #include "state_change.h"
 
-const int button_width = 100;
-const int button_height = 60;
+const int button_width = 200;
+const int button_height = 80;
 
+/** */
 void init_state_menu(MenuState *menu_state) {
 	menu_state->current_menu = MENU_MAIN;
 	menu_state->hovered = NULL;
@@ -35,6 +36,7 @@ void init_state_menu(MenuState *menu_state) {
 	menu_state->num_buttons = menu_state->num_main_buttons;
 }
 
+/** */
 void state_menu(struct GameState *state) {
 	MenuState *menu_state = state->menu_state;
 
@@ -52,6 +54,7 @@ void state_menu(struct GameState *state) {
 					printf("Play\n");
 				
 					change_state_to_pong(state);
+					menu_state->hovered = NULL;
 				} else if (btn->id == BTN_QUIT) {
 					printf("Quit\n");
 					state->quit_please = true;
@@ -62,12 +65,16 @@ void state_menu(struct GameState *state) {
 	
 }
 
+
+/** */
 void button_draw(Button *btn, bool hovered) {
+		Color h = btn->color;
+		h.a = 128;
 		if (hovered) {
-			DrawRectangleRec(btn->dims, btn->color);
+			DrawRectangleRec(btn->dims, h);
 		}
 		DrawRectangleLinesEx(btn->dims, 2, btn->color);
-		DrawTextCentered(btn->text, btn->dims.x + button_width/2, btn->dims.y+button_width/2-20/2, 20, btn->color);
+		DrawTextCentered(btn->text, btn->dims.x + btn->dims.width/2, btn->dims.y+btn->dims.height/2, 20, btn->color);
 }
 
 void draw_menu(MenuState *menu_state) {

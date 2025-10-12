@@ -321,13 +321,15 @@ void paddle_brain_clone(struct PaddleData *paddle, struct GameState *state) {
 
 	float MAX_DIST = paddle->cv_lag_dist;
 	if (dist * dist > MAX_DIST*MAX_DIST) {
+		paddle->speed.x = PADDLE_SPEED;
 		if (dist < 0) {
-			//paddle->vel.x = -1;
+			paddle->dir.x = -1;
 		} else {
-			//paddle->vel.x = 1;
+			paddle->dir.x = 1;
 		}
 	} else {
 		//paddle->vel.x = 0;
+		paddle->speed.x = 0;
 	}
 }
 
@@ -391,9 +393,10 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorder
 	}
 
 	// Cap position by number of bachelors of psychology
-	int y_cap = SCREEN_HEIGHT/2 + BACHELOR_DIST_FROM_CENTER * p->facing.y;
+	//// TODO: i think the negative fixes this but i never tested it
+	int y_cap = SCREEN_HEIGHT/2 + BACHELOR_DIST_FROM_CENTER * -p->facing.y;
 	if (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS] > 0) {
-		y_cap -= BACHELOR_ADDITIONAL_DISTANCE * (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS]-1) * p->facing.y;
+		y_cap -= BACHELOR_ADDITIONAL_DISTANCE * (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS]-1) * -p->facing.y;
 	}
 
 	if (p->facing.y == -1 && p->pos.y < y_cap) {

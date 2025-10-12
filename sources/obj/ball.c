@@ -12,6 +12,7 @@ void ball_init(struct BallData *b) {
 	b->pos.y = SCREEN_HEIGHT/2;
 	b->radius = 6;
 	b->vel.y = 1;
+	if (randInt(1, 2) == 2) { b->vel.y = -1; }
 	b->vel.x = 0;
 	b->speed = BALL_INIT_SPEED;
 	b->state = BS_NORMAL;

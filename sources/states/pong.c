@@ -45,8 +45,8 @@ const int fuck_you_size[] = {
 };
 
 void display_fuck_you(struct PongState *pong_state) {
-	const char* fy_string = fuck_you_strings[pong_state->fuck_you_idx];
-	int font_size = fuck_you_size[pong_state->fuck_you_idx];
+	const char* fy_string = pong_state->fuck_you_text;
+	int font_size = pong_state->fuck_you_size;
 	float string_width = MeasureText(fy_string, font_size);
 
 	Vector2 offset = { .x = 0, .y = 0 };
@@ -126,6 +126,12 @@ void display_health(struct PlayerData *p, int x, int y) {
 
 	DrawRectangleLines(x - width/2, y, width, 10, HACKER_GREEN);
 	DrawRectangle(x - width/2, y, paddle->hp, 10, HACKER_GREEN);
+}
+
+void display_score(struct PlayerData *pl, int x, int y) {
+	char score[32];
+	sprintf(score, "%d", pl->num_points);
+	DrawText(score, x, y, 20, HACKER_GREEN);
 }
 
 
@@ -226,8 +232,11 @@ void state_pong(float dt, struct GameState *state) {
 		
 		if (all_destroyed && state->pong_state->ball_respawn_timer <= 0) {
 				state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
-				state->pong_state->fuck_you_idx = randInt(0, NUM_FY_STRINGS-1);
+				int idx = randInt(0, NUM_FY_STRINGS-1);
 				state->pong_state->fuck_you_timer = FUCK_YOU_DURATION;
+				state->pong_state->fuck_you_size = fuck_you_size[idx];
+				sprintf(state->pong_state->fuck_you_text, "%s", fuck_you_strings[idx]);
+				//state->pong_state->fuck_you_text = 
 		}
 
 		// Respawn ball if timer's up
@@ -256,11 +265,23 @@ void state_pong(float dt, struct GameState *state) {
 				pong_state->end_round_timer = BALL_RESPAWN_DELAY;
 			}
 
-			if (pong_state->end_round_timer <= 0) {
-				if (player1->paddle->hp <= 0 && round_can_end) {
-					change_state_to_pick_items(state, player1->paddle);
-				} else if (player2->paddle->hp <= 0 && round_can_end) {
-					change_state_to_pick_items(state, player2->paddle);
+			if (pong_state->end_round_timer <= 0 && round_can_end) {
+				
+				// TODO: if both players go down (very possible) this favours p2 atm
+				if (player1->paddle->hp <= 0) {
+					player2->num_points += 1;
+					if (player2->num_points >= state->pong_state->points_to_win) {
+						change_state_to_victory(state, player2);
+					} else {
+						change_state_to_pick_items(state, player1->paddle);
+					}
+				} else if (player2->paddle->hp <= 0) {
+					player1->num_points += 1;
+					if (player1->num_points >= state->pong_state->points_to_win) {
+						change_state_to_victory(state, player1);
+					} else {
+						change_state_to_pick_items(state, player2->paddle);
+					}
 				} 	
 			}
 		}
@@ -272,7 +293,7 @@ void draw_pong(struct GameState *state) {
 
 		BeginMode2D(*state->camera);
 
-		// PADDLES
+		// Paddles
 		for (int p_idx=state->pong_state->num_paddles-1; p_idx>=0; p_idx--) {
 			PaddleData p = state->pong_state->paddles[p_idx];
 			paddle_draw(&p, false);
@@ -287,7 +308,7 @@ void draw_pong(struct GameState *state) {
 			explosion_draw(&state->pong_state->explosions[i], false);
 		}
 
-		// BALL
+		// Ball
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			struct BallData *ball = &(state->pong_state->balls[b_idx]);
 			if (ball->delete_me) { continue; }
@@ -296,13 +317,14 @@ void draw_pong(struct GameState *state) {
 
 		EndMode2D();
 	
-		if (state->pong_state->fuck_you_timer > 0) {
+		if (state->pong_state->fuck_you_timer > 0 && state->state == STATE_PONG) {
 			display_fuck_you(state->pong_state);
 		}
 
-		// UI (health, items) //
+		// UI (health, items, score) //
 		display_items(&state->pong_state->paddles[0], 0, 0, 1, tex_small_items);
 		display_health(state->player1, SCREEN_WIDTH/2, 10);
+		display_score(state->player1, 25, 0);
 
 		display_items(&state->pong_state->paddles[1], SCREEN_WIDTH-50, SCREEN_HEIGHT, -1, tex_small_items);
 		display_health(state->player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-10-10);
