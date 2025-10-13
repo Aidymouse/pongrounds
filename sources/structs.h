@@ -269,6 +269,8 @@ typedef struct MenuState {
 	int num_main_buttons;
 	
 	int ui_idx;
+
+	float bar_progress;
 } MenuState;
 
 // Victory

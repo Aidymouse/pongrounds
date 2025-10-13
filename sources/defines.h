@@ -15,6 +15,10 @@
 #define MAX_BALLS 32
 #define MAX_PADDLES 32
 
+// Menu State
+#define MENU_SPEED 10
+#define MENU_LINE_DIST 10
+
 // Victory State
 #define VICTORY_FLASH_DURATION 5
 

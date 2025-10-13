@@ -161,7 +161,7 @@ int main(void)
 		} else if (state.state == STATE_PICK_ITEM) {
 			state_pick_items(dt, state.pick_items_state, &state);
 		} else if (state.state == STATE_MENU) {
-			state_menu(&state);
+			state_menu(dt, &state);
 		} else if (state.state == STATE_VICTORY) {
 			state_victory(dt, &state);
 		}
