@@ -90,17 +90,20 @@ void draw_menu(MenuState *menu_state) {
 	int gradient_length = 200;
 	//int spacer = SCREEN_HEIGHT/2;
 	int spacer = 20;
-	//float space = (SCREEN_WIDTH) / (num_lines-1);
-	float space = 100;
+	float space = (SCREEN_WIDTH) / (num_lines-1);
+	//float space = 100;
 	//float innerspace = space/SCREEN_WIDTH
+	
+
 
 	float mid = SCREEN_WIDTH/2;
-	for (int l=-15; l<num_lines+15; l++) {
+	for (int l=-50; l<num_lines+50; l++) {
 		
 		float line_x = space * l;
 		float dist_from_mid = mid-line_x;
-		DrawLine(line_x, 0, mid - dist_from_mid/5, SCREEN_HEIGHT/2, HACKER_GREEN);
-		DrawLine(line_x, SCREEN_HEIGHT, mid - dist_from_mid/5, SCREEN_HEIGHT/2, HACKER_GREEN);
+		float inner_x = mid - dist_from_mid*0.002;
+		DrawLine(line_x, 0, inner_x, SCREEN_HEIGHT/2, HACKER_GREEN);
+		DrawLine(line_x, SCREEN_HEIGHT, inner_x, SCREEN_HEIGHT/2, HACKER_GREEN);
 	}
 
 
