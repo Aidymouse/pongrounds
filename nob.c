@@ -11,6 +11,9 @@
 
 #define PROGRAM_NAME "pongrounds"
 
+/* All paths assume target is created in the top level folder. */
+/* That is, to distribute, just delete all the C files n shit lmao */
+
 int main(int argc, char **argv) {
 
 	NOB_GO_REBUILD_URSELF(argc, argv);
