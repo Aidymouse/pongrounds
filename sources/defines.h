@@ -4,7 +4,7 @@
 
 #define WINDOW_TITLE "Prounds"
 #define HACKER_GREEN (Color){95, 247, 158, 255}
-#define BG_COLOR 0x12110f
+#define BG_COLOR 0x12110fff
 
 // State Vars
 #define NUM_ROUNDS (10) // a.k.a points required to win
