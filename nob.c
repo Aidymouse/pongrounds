@@ -4,8 +4,8 @@
 
 #define NOB_IMPLEMENTATION
 
-#define TARGET_WIN32
-//#define TARGET_UNIX
+//#define TARGET_WIN32
+#define TARGET_UNIX
 
 #include "nob.h"
 
@@ -66,12 +66,15 @@ int main(int argc, char **argv) {
 	#if defined(TARGET_UNIX)
 		nob_cmd_append(&cmd, "-L./lib/linux");
 		nob_cmd_append(&cmd, "-Wl,-rpath,./lib/linux");
+		nob_cmd_append(&cmd, "-lraylib");
+
 	#elif defined(TARGET_WIN32)
 		nob_cmd_append(&cmd, "-L./lib/win32");
 		nob_cmd_append(&cmd, "-Wl,-rpath,./lib/win32");
+		nob_cmd_append(&cmd, "-lraylibdll");
+
 	#endif
 
-	nob_cmd_append(&cmd, "-lraylibdll");
 
 	// Other stuff
 	nob_cmd_append(&cmd, "-D", "ASSETS_PATH=\"./assets/\"");
