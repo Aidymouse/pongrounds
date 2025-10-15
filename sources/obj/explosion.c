@@ -1,4 +1,4 @@
-#include "obj.h"
+#include "obj/obj.h"
 #include "structs.h"
 #include "raylib.h"
 #include "anim.h"

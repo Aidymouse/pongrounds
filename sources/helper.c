@@ -31,7 +31,7 @@ float get_angle_distance(float angle1, float angle2) {
 
 	float dist1 = angle2 - angle1;
 	float dist2 = (angle2+360) - angle1;
-	if (abs(dist1) < abs(dist2)) { return dist1; } else { return dist2; }
+	if (fabsf(dist1) < fabsf(dist2)) { return dist1; } else { return dist2; }
 }
 
 
@@ -40,5 +40,5 @@ bool is_heading_towards(Vector2 obj_pos, Vector2 obj_dir, Vector2 target_pos) {
 	Vector2 to_target = Vec2Sub(target_pos, obj_pos);
 	float ang_target = Vec2GetAngle(to_target);
 	float ang_dir = Vec2GetAngle(obj_dir);
-	return ( abs(get_angle_distance(ang_target, ang_dir)) < 90);
+	return ( fabsf(get_angle_distance(ang_target, ang_dir)) < 90);
 }

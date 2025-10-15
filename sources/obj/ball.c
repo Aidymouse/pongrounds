@@ -1,5 +1,5 @@
 #include "structs.h"
-#include "obj.h"
+#include "obj/obj.h"
 #include "Vec2.h"
 #include "helper.h"
 #include "defines.h"

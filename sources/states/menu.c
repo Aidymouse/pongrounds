@@ -1,4 +1,4 @@
-#include "states.h"
+#include "states/states.h"
 #include "structs.h"
 #include "helper.h"
 #include "raylib.h"

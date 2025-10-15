@@ -1,5 +1,5 @@
 #include "Vec2.h"
-#include "obj.h"
+#include "obj/obj.h"
 #include "raylib.h"
 #include "anim.h"
 #include "helper.h"
@@ -104,7 +104,7 @@ void rocket_fly(float dt, RocketData *r, struct GameState *state) {
 		if (r->ym_turn_speed > 0) {
 			gravitate_towards(dt, r->pos, &r->dir, r->ym_target, r->ym_turn_speed);
 		} else {
-			if (abs(ang_to_top) < abs(ang_to_bottom)) {
+			if (fabsf(ang_to_top) < fabsf(ang_to_bottom)) {
 				float ang_dir = 1;
 				if (ang_to_top < 0) { ang_dir = -1; }
 				r->dir = Vec2Rotate(r->dir, ROCKET_TURN_SPEED*ang_dir*r->speed_multiplier*dt);

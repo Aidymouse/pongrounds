@@ -1,4 +1,4 @@
-#include "pong.h"
+#include "states/pong.h"
 #include <stdio.h>
 #include "defines.h"
 #include "controls.h"
