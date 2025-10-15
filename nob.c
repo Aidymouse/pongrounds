@@ -17,12 +17,6 @@ int main(int argc, char **argv) {
 
 	Nob_Cmd cmd = { 0 };
 
-	#ifdef WIN32
-		//printf("Windows");
-	#else
-		//printf("Unix");
-	#endif
-
 	const char* source_files[] = {
 		"anim.c",
 		"init.c",
@@ -30,6 +24,7 @@ int main(int argc, char **argv) {
 		"Vec2.c",
 		"helper.c",
 		"items.c",
+		"textures.c",
 
 		"obj/ball.c",
 		"obj/explosion.c",
@@ -45,7 +40,7 @@ int main(int argc, char **argv) {
 
 		"main.c",
 	};
-	int NUM_SOURCE_FILES = 17;
+	int NUM_SOURCE_FILES = 18;
 	
 	nob_mkdir_if_not_exists("build");
 
@@ -64,6 +59,13 @@ int main(int argc, char **argv) {
 	nob_cmd_append(&cmd, "-Iinclude");
 
 	nob_cmd_append(&cmd, "-L./lib", "-lraylib", "-Wl,-rpath,./lib");
+
+	nob_cmd_append(&cmd, "-D", "ASSETS_PATH=\"./assets/\"");
+
+	
+	#ifdef __linux__
+		nob_cmd_append(&cmd, "-lm");
+	#endif
 
 	nob_cmd_run_sync(cmd);
 

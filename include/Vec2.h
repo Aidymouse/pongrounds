@@ -1,7 +1,6 @@
 #include "raylib.h"
 #include <math.h>
 
-
 double to_degrees(double radians);
 double to_radians(double degrees);
 Vector2 Vec2Add(Vector2 v1, Vector2 v2);
