@@ -54,7 +54,6 @@ void state_victory(float dt, struct GameState *state) {
 			change_state_to_menu(state);
 		}
 	}
-						// Vect
 }
 
 void draw_victory(VictoryState *victory_state) {
@@ -76,12 +75,11 @@ void draw_victory(VictoryState *victory_state) {
 		DrawText("Show mercy and prolong the game?", SCREEN_WIDTH/2-w/2, 320, 20, HACKER_GREEN);
 
 		Vector2 mouse = GetMousePosition();
-		button_draw(&btn_continue, CheckCollisionPointRec(mouse, btn_continue.dims));
-		button_draw(&btn_end, CheckCollisionPointRec(mouse, btn_end.dims));
+		button_draw((Button*)&btn_continue, CheckCollisionPointRec(mouse, btn_continue.dims));
+		button_draw((Button*)&btn_end, CheckCollisionPointRec(mouse, btn_end.dims));
 	} else {
 		unsigned int b = BG_COLOR;
 		Color bg = GetColor(b);
-		bg.a = 255;
 
 		DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, bg);
 

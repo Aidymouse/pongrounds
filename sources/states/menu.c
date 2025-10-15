@@ -11,7 +11,6 @@ const int button_height = 80;
 
 /** */
 void init_state_menu(MenuState *menu_state) {
-	menu_state->current_menu = MENU_MAIN;
 	menu_state->hovered = NULL;
 	menu_state->bar_progress = 0;
 
@@ -106,38 +105,26 @@ void draw_menu(MenuState *menu_state) {
 		DrawLine(line_x, SCREEN_HEIGHT, inner_x, SCREEN_HEIGHT/2, HACKER_GREEN);
 	}
 
-
-
 	float line_y = 0;
  	for (int l=0; line_y < (SCREEN_HEIGHT/2); l++) {
-		//line_y = log(l + menu_state->bar_progress) * 70; 
 		line_y = pow(1.02, l*MENU_LINE_DIST - menu_state->bar_progress);
-		//printf("%f\n", line_y);
-		//float top_y = 
+
 		DrawLine(0, SCREEN_HEIGHT/2-line_y, SCREEN_WIDTH, SCREEN_HEIGHT/2-line_y, HACKER_GREEN);
 		DrawLine(0, SCREEN_HEIGHT/2+line_y, SCREEN_WIDTH, SCREEN_HEIGHT/2+line_y, HACKER_GREEN);
-		//DrawLine(0, SCREEN_HEIGHT-line_y, SCREEN_WIDTH, SCREEN_HEIGHT-line_y, HACKER_GREEN);
-		//DrawLine(0, l*MENU_LINE_DIST, SCREEN_WIDTH, l*MENU_LINE_DIST, RED);
 	}
-	/*
-	*/
 
-	for (int i=0; i<10; i++) {
-	}
 
 
 	int bg = BG_COLOR;
 	Color bg_color = GetColor(bg);
-	bg_color.a = 255;
 	Color bg_trans = GetColor(bg);
 	bg_trans.a = 0;
 	DrawRectangleGradientV(0, SCREEN_HEIGHT/2 - spacer/2 - gradient_length, SCREEN_WIDTH, gradient_length, bg_trans, bg_color);
 	DrawRectangle(0, SCREEN_HEIGHT/2 - spacer/2, SCREEN_WIDTH, spacer, bg_color);
 	DrawRectangleGradientV(0, SCREEN_HEIGHT/2 + spacer/2, SCREEN_WIDTH, gradient_length, bg_color, bg_trans);
 
-
 	// Draw the menu
-	if (menu_state->current_menu == &menu_state->main_buttons) {
+	if (menu_state->current_menu == &menu_state->main_buttons[0]) {
 		DrawTextCentered("SUPER PONG", SCREEN_WIDTH/2, 110, 100, HACKER_GREEN);
 	}
 

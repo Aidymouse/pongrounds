@@ -4,7 +4,7 @@
 
 #define NOB_IMPLEMENTATION
 
-//#define TARGET_WIN32
+#define TARGET_WIN32
 //#define TARGET_UNIX
 
 #include "nob.h"
@@ -44,7 +44,11 @@ int main(int argc, char **argv) {
 	
 	nob_mkdir_if_not_exists("build");
 
-	nob_cmd_append(&cmd, "clang", "-o", PROGRAM_NAME);
+	#ifdef TARGET_UNIX
+		nob_cmd_append(&cmd, "clang", "-o", PROGRAM_NAME);
+	#elifdef TARGET_WIN32
+		nob_cmd_append(&cmd, "mingw", "-o", PROGRAM_NAME);
+	#endif
 
 	for (int s=0; s<NUM_SOURCE_FILES; s++) {
 		const char* file = source_files[s];
@@ -58,12 +62,21 @@ int main(int argc, char **argv) {
 
 	nob_cmd_append(&cmd, "-Iinclude");
 
-	nob_cmd_append(&cmd, "-L./lib", "-lraylib", "-Wl,-rpath,./lib");
+	// Libraries
+	#if defined(TARGET_UNIX)
+		nob_cmd_append(&cmd, "-L./lib/linux");
+		nob_cmd_append(&cmd, "-Wl,-rpath,./lib/linux");
+	#elif defined(TARGET_WIN32)
+		nob_cmd_append(&cmd, "-L./lib/win32");
+		nob_cmd_append(&cmd, "-Wl,-rpath,./lib/win32");
+	#endif
 
+	nob_cmd_append(&cmd, "-lraylibdll");
+
+	// Other stuff
 	nob_cmd_append(&cmd, "-D", "ASSETS_PATH=\"./assets/\"");
-
 	
-	#ifdef __linux__
+	#if defined(TARGET_UNIX)
 		nob_cmd_append(&cmd, "-lm");
 	#endif
 
