@@ -215,6 +215,12 @@ void state_pong(float dt, struct GameState *state) {
 			rocket_check_collisions(r, world_borders, state);
 		}
 
+		// Paddles
+		for (int pI = 0; pI < state->pong_state->num_paddles; pI++) {
+			PaddleData *paddle = &state->pong_state->paddles[pI];
+			paddle_check_collisions(paddle, state);
+		}
+
 		// Balls
 		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 			// Left and right of screen
@@ -224,11 +230,6 @@ void state_pong(float dt, struct GameState *state) {
 
 		}
 
-		// Paddles
-		for (int pI = 0; pI < state->pong_state->num_paddles; pI++) {
-			PaddleData *paddle = &state->pong_state->paddles[pI];
-			paddle_check_collisions(paddle, state);
-		}
 
 		/** /COLLISIONS **/		
 
@@ -345,5 +346,67 @@ void draw_pong(struct GameState *state) {
 
 		display_items(&state->pong_state->paddles[1], SCREEN_WIDTH-50, SCREEN_HEIGHT, -1, tex_small_items);
 		display_health(state->player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-10-10);
+
+
+
+
+
+	/*
+	PaddleData pa = state->pong_state->paddles[1];
+	struct BallData ba = state->pong_state->balls[0];
+	PaddleData *p = &pa;
+	struct BallData *b = &ba;
+
+	Vector2 center = paddle_center(p);
+
+	Vector2 tl_pos = Vec2Add(center, (Vector2){ -p->paddle_width/2, -p->paddle_thickness/2 });
+	Vector2 tr_pos = Vec2Add(center, (Vector2){ p->paddle_width/2, -p->paddle_thickness/2 });
+	Vector2 bl_pos = Vec2Add(center, (Vector2){ -p->paddle_width/2, p->paddle_thickness/2 });
+	Vector2 br_pos = Vec2Add(center, (Vector2){ p->paddle_width/2, p->paddle_thickness/2 });
+
+
+	Vector2 c_to_tl = Vec2Sub(tl_pos, center);
+	Vector2 c_to_tr = Vec2Sub(tr_pos, center);
+	Vector2 c_to_bl = Vec2Sub(bl_pos, center);
+	Vector2 c_to_br = Vec2Sub(br_pos, center);
+
+
+	printf("C_to_tl %.2f, %.2f", c_to_tl.x, c_to_tl.y);
+
+	float top_left_ang = Vec2GetAngle(c_to_tl);
+	float top_right_ang = Vec2GetAngle(c_to_tr);
+	float bottom_left_ang = Vec2GetAngle(c_to_bl);
+	float bottom_right_ang = Vec2GetAngle(c_to_br);
+
+	float down = Vec2GetAngle((Vector2){0, 1});
+	float up = Vec2GetAngle((Vector2){0, -1});
+	printf("Down %f\n", up);
+
+	Vector2 center_to_ball = Vec2Sub(b->pos, center);
+	float c_ang = Vec2GetAngle(center_to_ball);
+	float tl_dist = get_angle_distance(c_ang, top_left_ang);
+	float tr_dist = get_angle_distance(c_ang, top_right_ang);
+	float bl_dist = get_angle_distance(c_ang, bottom_left_ang);
+	float br_dist = get_angle_distance(c_ang, bottom_right_ang);
+
+	//printf("Cang %.2f\n", c_ang);
+	//printf("Angles to paddle: TL %.2f, TR %.2f, BL %.2f, BR %.2f\n", top_left_ang, top_right_ang, bottom_left_ang, bottom_right_ang);
+	//printf("TL %.2f, TR %.2f, BL %.2f, BR %.2f\n", tl_dist, tr_dist, bl_dist, br_dist);
+
+	
+	// Get pair of vectors the ball is between
+	if (tl_dist > 0 && tr_dist < 0) {
+		//printf("Top\n");
+	} else if (bl_dist < 0 && br_dist > 0) {
+		//printf("Bottom\n");
+	} else if (tl_dist < 0 && bl_dist > 0) {
+		//printf("Left\n");
+	} else if (tr_dist > 0 && br_dist < 0) {
+		//printf("Right\n");
+	}
+
+	b->vel.x = 0;
+	b->vel.y = 0;
+	*/
 
 }
