@@ -201,8 +201,8 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 
 	Vector2 to_fl = Vec2Add(Vec2MultScalar(facing_l, p->paddle_width/2), Vec2MultScalar(p->facing, p->paddle_thickness/2));
 	Vector2 to_fr = Vec2Add(Vec2MultScalar(facing_r, p->paddle_width/2), Vec2MultScalar(p->facing, p->paddle_thickness/2));
-	Vector2 to_bl = Vec2Add(Vec2MultScalar(facing_l, p->paddle_width/2), Vec2MultScalar(p->facing, -p->paddle_thickness/2));
-	Vector2 to_br = Vec2Add(Vec2MultScalar(facing_r, p->paddle_width/2), Vec2MultScalar(p->facing, -p->paddle_thickness/2));
+	Vector2 to_bl = Vec2Add(Vec2MultScalar(facing_l, (p->paddle_width/2 - 0)), Vec2MultScalar(p->facing, -p->paddle_thickness/2));
+	Vector2 to_br = Vec2Add(Vec2MultScalar(facing_r, (p->paddle_width/2 - 0)), Vec2MultScalar(p->facing, -p->paddle_thickness/2));
 
 	Vector2 fl = Vec2Add(center, to_fl);
 	Vector2 fr = Vec2Add(center, to_fr);
@@ -227,43 +227,79 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 	Vector2 c_to_ball = Vec2Sub(b->pos, center);
 	float c_ang = Vec2GetAngle(c_to_ball);
 
+	/*
 	printf("    %.2f\n", c_ang);
 	printf("%.2f    %.2f\n", fl_ang, fr_ang);
 	printf("%.2f    %.2f\n", bl_ang, br_ang);
-
+	*/
 
 	float fl_dist = get_angle_distance(c_ang, fl_ang);
 	float fr_dist = get_angle_distance(c_ang, fr_ang);
 	float bl_dist = get_angle_distance(c_ang, bl_ang);
 	float br_dist = get_angle_distance(c_ang, br_ang);
 
+	/*
 	printf("%.2f    %.2f\n", fl_dist, fr_dist);
 	printf("%.2f    %.2f\n", bl_dist, br_dist);
+	*/
 
 	int hit_face; // 1 = front, 2 = back, 3 = left, 4 = right
 
 	if (fl_dist < 0 && 0 < fr_dist) {
 		printf("Front\n");
 		hit_face = 1; // Front
-		b->pos.x = center.x + 150; b->pos.y = center.y;
-		b->vel.x = -1; b->vel.y = 0;
 	} else if (br_dist < 0 && 0 < bl_dist) {
 		printf("Back\n");
 		hit_face = 2; // Back
-	} else if (fr_dist < 0 && 0 < br_dist) {
-		printf("Right\n");
-		hit_face = 4; // Right
-		b->pos.x = center.x - 150; b->pos.y = center.y;
-		b->vel.x = 1; b->vel.y = 0;
 	} else if (bl_dist < 0 && 0 < fl_dist) {
 		printf("Left\n");
 		hit_face = 3; // Left
-		b->pos.x = center.x + 150; b->pos.y = center.y;
-		b->vel.x = -1; b->vel.y = 0;
+	} else if (fr_dist < 0 && 0 < br_dist) {
+		printf("Right\n");
+		hit_face = 4; // Right
 	}
-	
 
-	return;
+	// If we're suitably in the paddle y-wise, treat it as a side hit
+	
+	// If the top of the ball is 
+	//effective_wall_top = Vec2Add(center, Vec2MultScalar(p->facing, p->paddle_thickness/2)); // Top of paddle
+	//effective_wall_bottom = Vec2Add(center, Vec2MultScalar(p->facing, -1 * (p->paddle_thickness/2 + b->radius))); // Bottom of paddle
+
+	if (hit_face == 1 || hit_face == 2) {
+
+		// Adjust ball to by just barely touching the paddle
+		Vector2 base_dir = p->facing;
+
+		if (hit_face == 2) {
+			base_dir = Vec2MultScalar(base_dir, -1);
+		}
+
+		adjusted_pos.y = center.y + Vec2MultScalar(base_dir, b->radius+p->paddle_thickness/2).y;
+
+		// Find new dir
+		Vector2 new_dir = Vec2Rotate(base_dir, randInt(-60, 60));
+
+		b->vel = new_dir;
+
+	} else if (hit_face == 3) { // LEFT
+		adjusted_pos.x = center.x + Vec2MultScalar(facing_l, b->radius+p->paddle_width/2).x;
+		printf("Left DX: %.2f, %.2f\n", b->pos.x, adjusted_pos.x);
+
+		Vector2 new_dir = Vec2Rotate(facing_l, randInt(-30, 0));
+		b->vel = new_dir;
+
+		if (b->speed < p->speed.x) { b->speed = p->speed.x; }
+	} else if (hit_face == 4) { // RIGHT
+		adjusted_pos.x = center.x + Vec2MultScalar(facing_r, b->radius+p->paddle_width/2).x;
+		printf("Right DX: %.2f, %.2f\n", b->pos.x, adjusted_pos.x);
+
+		Vector2 new_dir = Vec2Rotate(facing_r, randInt(0, 30));
+		b->vel = new_dir;
+
+		if (b->speed < p->speed.x) { b->speed = p->speed.x; }
+	}
+
+
 	
 	/** Find new dir, away from the paddle! **/
 	/*
@@ -355,7 +391,7 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 	b->mm_speed_bonus = 0;
 
 	/** Apply position adjustment from earlier detection */
-	//b->pos = adjusted_pos;
+	b->pos = adjusted_pos;
 
 }
 
