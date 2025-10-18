@@ -38,9 +38,9 @@ void state_victory(float dt, struct GameState *state) {
 				
 				// Go on to pick items as expected
 				if (state->victory_state->victor == state->player1) {
-					change_state_to_pick_items(state, state->player2->paddle);
+					change_state_to_pick_items(state, state->player2);
 				} else {
-					change_state_to_pick_items(state, state->player1->paddle);
+					change_state_to_pick_items(state, state->player1);
 				}
 			} else if (CheckCollisionPointRec(mouse, btn_end.dims)) {
 				state->victory_state->deciding = false;

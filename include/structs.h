@@ -235,7 +235,8 @@ struct PickItemsState {
 	int item_choices[8]; // 3 by default but can do up
 	int num_item_choices; // 3 by default
 	int hovered_item; // Idx of the hovered item
-	PaddleData *choosing_paddle;
+	//PaddleData *choosing_paddle;
+	struct PlayerData *choosing_player;
 };
 
 // Menu

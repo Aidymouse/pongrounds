@@ -87,15 +87,6 @@ void init_state_pong(struct PongState *pong_state) {
 }
 
 void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {
-	/*
-	for (int i=0; i<16; i++) {
-		char s[16];
-		//sprintf(p1score, "%d", player1.score);
-		sprintf(s, "%d", p->items[i]);
-		DrawText(s, x, y+i*10, 10, WHITE);
-		
-	}
-	*/
 
 	int item_type_count = 0;
 	if (dir == -1) { item_type_count = 1; }
@@ -127,7 +118,7 @@ void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {
 		}
 
 
-		// TODO: stolen items
+		// TODO: color stolen items different
 		/**
 		char s2[16];
 		sprintf(s2, "x%f", p->item_cooldown_timers[i]);
@@ -156,155 +147,151 @@ void display_score(struct PlayerData *pl, int x, int y) {
 
 void state_pong(float dt, struct GameState *state) {
 
-		struct PongState *pong_state = state->pong_state;
+	struct PongState *pong_state = state->pong_state;
 
-		struct PlayerData *player1 = state->player1;
-		struct PlayerData *player2 = state->player2;
-		PaddleData *p1 = player1->paddle;
-		PaddleData *p2 = player2->paddle;
+	struct PlayerData *player1 = state->player1;
+	struct PlayerData *player2 = state->player2;
+	PaddleData *p1 = player1->paddle;
+	PaddleData *p2 = player2->paddle;
 
-		float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
-		float world_bottom = GetScreenToWorld2D((Vector2){0, SCREEN_HEIGHT}, *state->camera).y;
-		float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
-		float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
-		WorldBorders world_borders = {
-			.top = world_top,
-			.bottom = world_bottom,
-			.left = world_left,
-			.right = world_right
-		};
+	float world_top = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).y;
+	float world_bottom = GetScreenToWorld2D((Vector2){0, SCREEN_HEIGHT}, *state->camera).y;
+	float world_left = GetScreenToWorld2D((Vector2){0, 0}, *state->camera).x;
+	float world_right = GetScreenToWorld2D((Vector2){SCREEN_WIDTH, 0}, *state->camera).x;
+	WorldBorders world_borders = {
+		.top = world_top,
+		.bottom = world_bottom,
+		.left = world_left,
+		.right = world_right
+	};
 
-		// Update //
-		// Move balls
-		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
-			struct BallData *ball = &(state->pong_state->balls[b_idx]);
-			if (ball->delete_me) continue;
-			ball_move(dt, ball, state);
-		}
+	// Update //
+	// Move balls
+	for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
+		struct BallData *ball = &(state->pong_state->balls[b_idx]);
+		if (ball->delete_me) continue;
+		ball_move(dt, ball, state);
+	}
 
-		// Update paddles
-		for (int p_idx=0; p_idx < state->pong_state->num_paddles; p_idx++) {
-			paddle_update(dt, &state->pong_state->paddles[p_idx], state, world_borders);
-		}
-		
-		// Sword 
-		if (p1->items[ITEM_CEREMONIAL_SWORD] > 0) { sword_swing(dt, p1); }
-		if (p2->items[ITEM_CEREMONIAL_SWORD] > 0) { sword_swing(dt, p2); }
-
-		// Rockets 
-
-		for (int i=0; i<pong_state->num_rockets; i++) {
-			RocketData *r = &pong_state->rockets[i];	
-			rocket_fly(dt, r, state);
-		}
-
-		// Explosions 
-		for (int i=0; i<pong_state->num_explosions; i++) {
-			Explosion *e = &pong_state->explosions[i];	
-			explosion_update(dt, e);
-		}
-
-		// Clean up deleted things
-		paddle_cleanup(state->pong_state);
-		ball_cleanup(state->pong_state);
-		rocket_cleanup(pong_state);
-		explosion_cleanup(pong_state);
-
-		/** Collisions **/
-		// Rockets
-		for (int i=0; i<pong_state->num_rockets; i++) {
-			RocketData *r = &pong_state->rockets[i];	
-			rocket_check_collisions(r, world_borders, state);
-		}
-
-		// Paddles
-		for (int pI = 0; pI < state->pong_state->num_paddles; pI++) {
-			PaddleData *paddle = &state->pong_state->paddles[pI];
-			paddle_check_collisions(paddle, state);
-		}
-
-		// Balls
-		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
-			// Left and right of screen
-			struct BallData *ball = &(state->pong_state->balls[b_idx]);
+	// Update paddles
+	for (int p_idx=0; p_idx < state->pong_state->num_paddles; p_idx++) {
+		paddle_update(dt, &state->pong_state->paddles[p_idx], state, world_borders);
+	}
 	
-			ball_check_collisions(ball, state, world_borders);
+	// Sword 
+	if (p1->items[ITEM_CEREMONIAL_SWORD] > 0) { sword_swing(dt, p1); }
+	if (p2->items[ITEM_CEREMONIAL_SWORD] > 0) { sword_swing(dt, p2); }
 
+	// Rockets 
+	for (int i=0; i<pong_state->num_rockets; i++) {
+		RocketData *r = &pong_state->rockets[i];	
+		rocket_fly(dt, r, state);
+	}
+
+	// Explosions 
+	for (int i=0; i<pong_state->num_explosions; i++) {
+		Explosion *e = &pong_state->explosions[i];	
+		explosion_update(dt, e);
+	}
+
+	// Clean up deleted things
+	paddle_cleanup(state->pong_state);
+	ball_cleanup(state->pong_state);
+	rocket_cleanup(pong_state);
+	explosion_cleanup(pong_state);
+
+	/** Collisions */
+	// Rockets
+	for (int i=0; i<pong_state->num_rockets; i++) {
+		RocketData *r = &pong_state->rockets[i];	
+		rocket_check_collisions(r, world_borders, state);
+	}
+
+	// Paddles
+	for (int pI = 0; pI < state->pong_state->num_paddles; pI++) {
+		PaddleData *paddle = &state->pong_state->paddles[pI];
+		paddle_check_collisions(paddle, state);
+	}
+
+	// Balls
+	for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
+		// Left and right of screen
+		struct BallData *ball = &(state->pong_state->balls[b_idx]);
+
+		ball_check_collisions(ball, state, world_borders);
+	}
+	/* COLLISIONS **/		
+
+	if (state->pong_state->fuck_you_timer > 0) {
+		state->pong_state->fuck_you_timer -= dt;
+	}
+
+
+	// If all balls are destroyed, set the timer to respawn the ball
+	bool all_destroyed = true;
+	for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
+		struct BallData *ball = &(state->pong_state->balls[b_idx]);
+		if (ball->delete_me == false) {
+			all_destroyed = false;
+			break;
 		}
+	}
+	
+	if (all_destroyed && state->pong_state->ball_respawn_timer <= 0) {
+			state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
+			int idx = randInt(0, NUM_FY_STRINGS-1);
+			state->pong_state->fuck_you_timer = FUCK_YOU_DURATION;
+			state->pong_state->fuck_you_size = fuck_you_size[idx];
+			sprintf(state->pong_state->fuck_you_text, "%s", fuck_you_strings[idx]);
+			//state->pong_state->fuck_you_text = 
+	}
 
-
-		/** /COLLISIONS **/		
-
-		if (state->pong_state->fuck_you_timer > 0) {
-			state->pong_state->fuck_you_timer -= dt;
+	// Respawn ball if timer's up
+	if (pong_state->ball_respawn_timer > 0 && pong_state->end_round_timer <= 0) {
+		pong_state->ball_respawn_timer -= dt;
+		if (pong_state->ball_respawn_timer <= 0) {
+			pong_state->num_balls = 1;
+			ball_respawn(&(state->pong_state->balls[0]));
 		}
+	}
 
+	if ((player1->paddle->hp <= 0 || player2->paddle->hp <= 0) && pong_state->end_round_timer <= 0) {
+		pong_state->end_round_timer = BALL_RESPAWN_DELAY;
+	} 
 
-		// If all balls are destroyed, set the timer to respawn the ball
-		bool all_destroyed = true;
-		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
-			struct BallData *ball = &(state->pong_state->balls[b_idx]);
-			if (ball->delete_me == false) {
-				all_destroyed = false;
-				break;
-			}
-		}
-		
-		if (all_destroyed && state->pong_state->ball_respawn_timer <= 0) {
-				state->pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
-				int idx = randInt(0, NUM_FY_STRINGS-1);
-				state->pong_state->fuck_you_timer = FUCK_YOU_DURATION;
-				state->pong_state->fuck_you_size = fuck_you_size[idx];
-				sprintf(state->pong_state->fuck_you_text, "%s", fuck_you_strings[idx]);
-				//state->pong_state->fuck_you_text = 
-		}
+	// Detect end of round
+	if (pong_state->end_round_timer > 0) {
 
-		// Respawn ball if timer's up
-		if (pong_state->ball_respawn_timer > 0 && pong_state->end_round_timer <= 0) {
-			pong_state->ball_respawn_timer -= dt;
-			if (pong_state->ball_respawn_timer <= 0) {
-				pong_state->num_balls = 1;
-				ball_respawn(&(state->pong_state->balls[0]));
-			}
-		}
+		// If the round can't actually end, don't!
+		bool round_can_end = all_destroyed 
+			&& pong_state->num_rockets == 0
+			&& pong_state->num_explosions == 0;
 
-		if ((player1->paddle->hp <= 0 || player2->paddle->hp <= 0) && pong_state->end_round_timer <= 0) {
+		pong_state->end_round_timer -= dt;
+		if (!round_can_end) {
 			pong_state->end_round_timer = BALL_RESPAWN_DELAY;
-		} 
-
-		// Detect end of round
-		if (pong_state->end_round_timer > 0) {
-
-			// If the round can't actually end, don't!
-			bool round_can_end = all_destroyed 
-				&& pong_state->num_rockets == 0
-				&& pong_state->num_explosions == 0;
-
-			pong_state->end_round_timer -= dt;
-			if (!round_can_end) {
-				pong_state->end_round_timer = BALL_RESPAWN_DELAY;
-			}
-
-			if (pong_state->end_round_timer <= 0 && round_can_end) {
-				
-				// TODO: if both players go down (very possible) this favours p2 atm
-				if (player1->paddle->hp <= 0) {
-					player2->num_points += 1;
-					if (player2->num_points >= state->pong_state->points_to_win) {
-						change_state_to_victory(state, player2);
-					} else {
-						change_state_to_pick_items(state, player1->paddle);
-					}
-				} else if (player2->paddle->hp <= 0) {
-					player1->num_points += 1;
-					if (player1->num_points >= state->pong_state->points_to_win) {
-						change_state_to_victory(state, player1);
-					} else {
-						change_state_to_pick_items(state, player2->paddle);
-					}
-				} 	
-			}
 		}
+
+		if (pong_state->end_round_timer <= 0 && round_can_end) {
+			
+			// TODO: if both players go down (very possible) this favours p2 atm
+			if (player1->paddle->hp <= 0) {
+				player2->num_points += 1;
+				if (player2->num_points >= state->pong_state->points_to_win) {
+					change_state_to_victory(state, player2);
+				} else {
+					change_state_to_pick_items(state, player1);
+				}
+			} else if (player2->paddle->hp <= 0) {
+				player1->num_points += 1;
+				if (player1->num_points >= state->pong_state->points_to_win) {
+					change_state_to_victory(state, player1);
+				} else {
+					change_state_to_pick_items(state, player2);
+				}
+			} 	
+		}
+	}
 
 
 }
