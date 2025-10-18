@@ -196,63 +196,77 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 	// Four vecs to the paddles corners determine what the ball is bouncing off of
 	Vector2 center = paddle_center(p);
 
-	Vector2 tl_pos = Vec2Add(center, (Vector2){ -p->paddle_width/2, -p->paddle_thickness/2 });
-	Vector2 tr_pos = Vec2Add(center, (Vector2){ p->paddle_width/2, -p->paddle_thickness/2 });
-	Vector2 bl_pos = Vec2Add(center, (Vector2){ -p->paddle_width/2, p->paddle_thickness/2 });
-	Vector2 br_pos = Vec2Add(center, (Vector2){ p->paddle_width/2, p->paddle_thickness/2 });
+	Vector2 facing_l = Vec2Rotate(p->facing, -90);
+	Vector2 facing_r = Vec2Rotate(p->facing, 90);
 
-	Vector2 c_to_tl = Vec2Sub(tl_pos, center);
-	Vector2 c_to_tr = Vec2Sub(tr_pos, center);
-	Vector2 c_to_bl = Vec2Sub(bl_pos, center);
-	Vector2 c_to_br = Vec2Sub(br_pos, center);
+	Vector2 to_fl = Vec2Add(Vec2MultScalar(facing_l, p->paddle_width/2), Vec2MultScalar(p->facing, p->paddle_thickness/2));
+	Vector2 to_fr = Vec2Add(Vec2MultScalar(facing_r, p->paddle_width/2), Vec2MultScalar(p->facing, p->paddle_thickness/2));
+	Vector2 to_bl = Vec2Add(Vec2MultScalar(facing_l, p->paddle_width/2), Vec2MultScalar(p->facing, -p->paddle_thickness/2));
+	Vector2 to_br = Vec2Add(Vec2MultScalar(facing_r, p->paddle_width/2), Vec2MultScalar(p->facing, -p->paddle_thickness/2));
 
-	//printf("C_to_tl %.2f, %.2f", c_to_tl.x, c_to_tl.y);
+	Vector2 fl = Vec2Add(center, to_fl);
+	Vector2 fr = Vec2Add(center, to_fr);
+	Vector2 bl = Vec2Add(center, to_bl);
+	Vector2 br = Vec2Add(center, to_br);
 
-	float top_left_ang = Vec2GetAngle(c_to_tl);
-	float top_right_ang = Vec2GetAngle(c_to_tr);
-	float bottom_left_ang = Vec2GetAngle(c_to_bl);
-	float bottom_right_ang = Vec2GetAngle(c_to_br);
+	//printf("Corners: FL (%.2f, %.2f), FR (%.2f, %.2f), BL (%.2f, %.2f), BR (%.2f, %.2f)\n", fl.x, fl.y, fr.x, fr.y, bl.x, bl.y, br.x, br.y);
 
-	Vector2 center_to_ball = Vec2Sub(b->pos, center);
-	float c_ang = Vec2GetAngle(center_to_ball);
-	float tl_dist = get_angle_distance(c_ang, top_left_ang);
-	float tr_dist = get_angle_distance(c_ang, top_right_ang);
-	float bl_dist = get_angle_distance(c_ang, bottom_left_ang);
-	float br_dist = get_angle_distance(c_ang, bottom_right_ang);
-
-	printf("Cang %.2f\n", c_ang);
-	//printf("Angles to paddle: TL %.2f, TR %.2f, BL %.2f, BR %.2f\n", top_left_ang, top_right_ang, bottom_left_ang, bottom_right_ang);
-	printf("TL %.2f, TR %.2f, BL %.2f, BR %.2f\n", tl_dist, tr_dist, bl_dist, br_dist);
-
-	
 	Vector2 adjusted_pos = b->pos;
 
-	// Get pair of vectors the ball is between to figure out what side of the paddle we hit
-	// Store the adjusted position of the ball and only apply it at the end of the fn, because some items might depend on the current position of the ball (e.g. russian secrets)
-	// NOTE: this doesn't apply to collisiosn with other objects but screw it ig
-	int top_bottom = 0; // -1 = top, 1 = bottom
-	int left_right = 0; // -1 = left, 1 = right
-	if (tl_dist < 0 && tr_dist > 0) {
-		printf("Top\n");
-		adjusted_pos.y = center.y - p->paddle_thickness/2 - b->radius;
-		top_bottom = -1;
-	} else if (bl_dist > 0 && br_dist < 0) {
-		printf("Bottom\n");
-		adjusted_pos.y = center.y + p->paddle_thickness/2 + b->radius;
-		top_bottom = 1;
-	} else if (tl_dist > 0 && bl_dist < 0) {
-		printf("Left\n");
-		adjusted_pos.x = center.x - p->paddle_width/2 - b->radius;
-		left_right = -1;
-	} else if (tr_dist < 0 && br_dist > 0) {
-		printf("Right\n");
-		adjusted_pos.x = center.x + p->paddle_width/2 + b->radius;
-		left_right = 1;
-	}
+	Vector2 c_to_fl = Vec2Sub(fl, center);
+	Vector2 c_to_fr = Vec2Sub(fr, center);
+	Vector2 c_to_bl = Vec2Sub(bl, center);
+	Vector2 c_to_br = Vec2Sub(br, center);
 
+	float fl_ang = Vec2GetAngle(c_to_fl);
+	float fr_ang = Vec2GetAngle(c_to_fr);
+	float bl_ang = Vec2GetAngle(c_to_bl);
+	float br_ang = Vec2GetAngle(c_to_br);
+
+	// Do some adjusting if the ball is to the side of the paddle
+	Vector2 c_to_ball = Vec2Sub(b->pos, center);
+	float c_ang = Vec2GetAngle(c_to_ball);
+
+	printf("    %.2f\n", c_ang);
+	printf("%.2f    %.2f\n", fl_ang, fr_ang);
+	printf("%.2f    %.2f\n", bl_ang, br_ang);
+
+
+	float fl_dist = get_angle_distance(c_ang, fl_ang);
+	float fr_dist = get_angle_distance(c_ang, fr_ang);
+	float bl_dist = get_angle_distance(c_ang, bl_ang);
+	float br_dist = get_angle_distance(c_ang, br_ang);
+
+	printf("%.2f    %.2f\n", fl_dist, fr_dist);
+	printf("%.2f    %.2f\n", bl_dist, br_dist);
+
+	int hit_face; // 1 = front, 2 = back, 3 = left, 4 = right
+
+	if (fl_dist < 0 && 0 < fr_dist) {
+		printf("Front\n");
+		hit_face = 1; // Front
+		b->pos.x = center.x + 150; b->pos.y = center.y;
+		b->vel.x = -1; b->vel.y = 0;
+	} else if (br_dist < 0 && 0 < bl_dist) {
+		printf("Back\n");
+		hit_face = 2; // Back
+	} else if (fr_dist < 0 && 0 < br_dist) {
+		printf("Right\n");
+		hit_face = 4; // Right
+		b->pos.x = center.x - 150; b->pos.y = center.y;
+		b->vel.x = 1; b->vel.y = 0;
+	} else if (bl_dist < 0 && 0 < fl_dist) {
+		printf("Left\n");
+		hit_face = 3; // Left
+		b->pos.x = center.x + 150; b->pos.y = center.y;
+		b->vel.x = -1; b->vel.y = 0;
+	}
 	
+
+	return;
 	
 	/** Find new dir, away from the paddle! **/
+	/*
 	if (top_bottom != 0) {
 		//Vector2 away = Vec2Sub(b->pos, center);	
 		//Vector2 new_dir = Vec2Rotate(away, randInt(-60, 60));
@@ -273,6 +287,8 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 		} else {
 		}
 	}
+	*/
+
 
 	if (b->last_hit_by != 0 && b->last_hit_by->id != p->id) {
 		b->speed += 20;
@@ -339,7 +355,7 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 	b->mm_speed_bonus = 0;
 
 	/** Apply position adjustment from earlier detection */
-	b->pos = adjusted_pos;
+	//b->pos = adjusted_pos;
 
 }
 
