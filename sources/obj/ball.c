@@ -190,7 +190,6 @@ void ball_reflect_wall(struct BallData *b) {
 }
 
 void ball_paddle_hit(struct BallData *b, PaddleData *p) {
-
 	
 	/** Push ball out of the paddle **/
 	// Four vecs to the paddles corners determine what the ball is bouncing off of
@@ -265,6 +264,15 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 	//effective_wall_top = Vec2Add(center, Vec2MultScalar(p->facing, p->paddle_thickness/2)); // Top of paddle
 	//effective_wall_bottom = Vec2Add(center, Vec2MultScalar(p->facing, -1 * (p->paddle_thickness/2 + b->radius))); // Bottom of paddle
 
+	// TODO: the zone for collision for sides should be triangles
+	// This might be as simple as moving the center point in the corner calculations
+	// Wait, but actually.... the angles are just 45... I could maybe shortcut the whole thing
+	// hmm but the angle needs to be calculated from the foci not the center.
+	// ---------------------
+	// |\                 /|
+	// | >---------------< |
+	// |/                 \|
+	// ---------------------
 	if (hit_face == 1 || hit_face == 2) {
 
 		// Adjust ball to by just barely touching the paddle
@@ -289,6 +297,7 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 		b->vel = new_dir;
 
 		if (b->speed < p->speed.x) { b->speed = p->speed.x; }
+
 	} else if (hit_face == 4) { // RIGHT
 		adjusted_pos.x = center.x + Vec2MultScalar(facing_r, b->radius+p->paddle_width/2).x;
 		printf("Right DX: %.2f, %.2f\n", b->pos.x, adjusted_pos.x);
@@ -298,32 +307,6 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 
 		if (b->speed < p->speed.x) { b->speed = p->speed.x; }
 	}
-
-
-	
-	/** Find new dir, away from the paddle! **/
-	/*
-	if (top_bottom != 0) {
-		//Vector2 away = Vec2Sub(b->pos, center);	
-		//Vector2 new_dir = Vec2Rotate(away, randInt(-60, 60));
-		Vector2 base_dir = p->facing;
-		if ( (top_bottom < 0 && base_dir.y > 0) || (top_bottom > 0 && base_dir.y < 0) ) {
-			base_dir.y = -base_dir.y;
-		} 
-		//base_dir.y *= top_bottom;
-		Vector2 new_dir = Vec2Rotate(base_dir, randInt(-60, 60));
-		b->vel = Vec2Normalize(new_dir);
-	} else if (left_right != 0) {
-
-		// TODO
-		
-		// Left
-		if (left_right == -1) { 
-		// Right
-		} else {
-		}
-	}
-	*/
 
 
 	if (b->last_hit_by != 0 && b->last_hit_by->id != p->id) {
