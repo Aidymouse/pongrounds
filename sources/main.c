@@ -7,6 +7,7 @@
 
 #include "anim.h"
 #include "textures.h"
+#include "audio.h"
 
 #include "defines.h"
 #include "controls.h"
@@ -69,11 +70,20 @@ struct PaddleControls p2_controls = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY, P2
 int main(void)
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
+	InitAudioDevice();
     SetTargetFPS(60);
 
 
+	// Loading Screen
+	BeginDrawing();
+	DrawText("Loading...", SCREEN_HEIGHT/2, SCREEN_WIDTH/2, 50, HACKER_GREEN);
+	EndDrawing();
+
+
 	// Load Textures //
+	// TODO: make this a program state
 	load_textures();
+	load_audio();
 
 	// Init State //
 	enum GAME_STATES game_state = STATE_MENU;
@@ -147,6 +157,8 @@ int main(void)
 
 	unsigned int b = BG_COLOR;
 	Color bg = GetColor(b);
+
+	PlayMusicStream(theme);
 	
 	// Game loop //
     while (!WindowShouldClose() && !state.quit_please)
@@ -154,6 +166,7 @@ int main(void)
 		// TODO how to reset this on the first frame cos it takes ages to load the textures
 		dt = GetFrameTime();
 
+		UpdateMusicStream(theme);
 		// Update
 		if (state.state == STATE_PONG) {
 			update_screenshake(dt, &state);
@@ -192,7 +205,9 @@ int main(void)
 
 	// Unload textures //
 	unload_textures();
+	unload_audio();
 
+	CloseAudioDevice();
     CloseWindow();
 
     return 0;

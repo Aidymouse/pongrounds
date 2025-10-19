@@ -1,4 +1,5 @@
 #include "structs.h"
+#include "audio.h"
 
 #include "states/pick_item.h"
 #include "states/pong.h"
@@ -103,4 +104,7 @@ void change_state_to_victory(struct GameState *state, struct PlayerData *victor)
 
 void change_state_to_menu(struct GameState *state) {
 	state->state = STATE_MENU;
+
+	PlayMusicStream(theme);
+	
 }
