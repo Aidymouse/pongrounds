@@ -222,6 +222,8 @@ struct PongState {
 	Explosion explosions[MAX_EXPLOSIONS];
 	int num_explosions;
 
+	float score_timer;
+
 	float fuck_you_timer;
 	char fuck_you_text[128];
 	int fuck_you_size;

@@ -74,6 +74,7 @@ void init_state_pong(struct PongState *pong_state) {
 	ball_init(&(pong_state->balls[0]));
 	//init_ball(&(pong_state->balls[1]));
 	pong_state->ball_respawn_timer = 0;
+	pong_state->score_timer = 0;
 	pong_state->end_round_timer = 0;
 	pong_state->num_rockets = 0;
 	pong_state->num_explosions = 0;
@@ -293,10 +294,20 @@ void state_pong(float dt, struct GameState *state) {
 		}
 	}
 
+	if (state->pong_state->score_timer > 0) {
+		state->pong_state->score_timer -= dt;
+	}
+
 
 }
 
 void draw_pong(struct GameState *state) {
+
+		// UI in the background: score
+		if (state->pong_state->score_timer > 0) {
+			display_score(state->player1, SCREEN_WIDTH/2, SCREEN_HEIGHT*0.25);
+			display_score(state->player2, SCREEN_WIDTH/2, SCREEN_HEIGHT*0.75);
+		}
 
 		BeginMode2D(*state->camera);
 
@@ -331,10 +342,8 @@ void draw_pong(struct GameState *state) {
 		// UI (health, items, score) //
 		display_items(&state->pong_state->paddles[0], 0, 0, 1, tex_small_items);
 		display_health(state->player1, SCREEN_WIDTH/2, 10);
-		display_score(state->player1, SCREEN_WIDTH/2, SCREEN_HEIGHT*0.25);
 
 		display_items(&state->pong_state->paddles[1], SCREEN_WIDTH-50, SCREEN_HEIGHT, -1, tex_small_items);
 		display_health(state->player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-10-10);
-		display_score(state->player2, SCREEN_WIDTH/2, SCREEN_HEIGHT*0.75);
 
 }

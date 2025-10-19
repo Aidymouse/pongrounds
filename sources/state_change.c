@@ -91,6 +91,8 @@ void change_state_to_pong(struct GameState *state) {
 		handle_sentient_hand(state->player2->paddle, state->player1->paddle);
 	}
 
+	state->pong_state->score_timer = BALL_RESPAWN_DELAY;
+
 	state->state = STATE_PONG;
 }
 

@@ -22,6 +22,9 @@
 // Victory State
 #define VICTORY_FLASH_DURATION 5
 
+// Pong State
+#define SCORE_TIMER 1.5
+
 // Animations
 #define CARD_ANIM_FRAMES 43
 #define FRAME_TIME 0.016
