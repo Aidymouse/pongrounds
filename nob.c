@@ -28,6 +28,7 @@ int main(int argc, char **argv) {
 		"helper.c",
 		"items.c",
 		"textures.c",
+		"audio.c",
 
 		"obj/ball.c",
 		"obj/explosion.c",
@@ -43,7 +44,7 @@ int main(int argc, char **argv) {
 
 		"main.c",
 	};
-	int NUM_SOURCE_FILES = 18;
+	int NUM_SOURCE_FILES = 19;
 	
 	nob_mkdir_if_not_exists("build");
 
