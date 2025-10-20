@@ -71,7 +71,10 @@ void change_state_to_pong(struct GameState *state) {
 		init_player(state->player2);
 		init_state_pong(state->pong_state);
 		init_state_pick_items(state->pick_items_state);
-		queue_track(state->music_mind, &msc_tracks[0], 0);
+
+		int track_idx = randInt(0, NUM_TRACKS-1);
+		state->music_mind->track_idx = track_idx;
+		queue_track(state->music_mind, &msc_tracks[track_idx], 0);
 	}
 
 	// Get rid of paddle clones

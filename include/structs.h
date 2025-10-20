@@ -295,11 +295,12 @@ typedef struct WorldBorders {
 typedef struct MusicMind {
 	Music *playing;
 	Music *fade;
+	int track_idx;
 
-	float volume[2]; // 0 is playing, 1 is fade
-	float fade_timer[2];
+	//float volume[2]; // 0 is playing, 1 is fade
+	float fade_timer;
 	// Used to figure out how far we are to 0 volume
-	float fade_timer_start[2];
+	float fade_timer_start;
 } MusicMind;
 
 struct GameState {

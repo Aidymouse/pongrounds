@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 
 #include "string.h"
 #include "states/states.h"
@@ -70,6 +71,8 @@ struct PaddleControls p2_controls = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY, P2
 // MAIN //
 int main(void)
 {
+	srand(time(NULL));
+
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
 	InitAudioDevice();
     SetTargetFPS(60);
