@@ -41,6 +41,7 @@ void init_camera(Camera2D *camera) {
 	camera->rotation = 0.0;
 }
 
+// Misc
 void update_screenshake (float dt, struct GameState *state) {
 	// Screenshake
 	if (state->screenshake_timer > 0 || state->screenshake_amplitude > 0) {
@@ -91,6 +92,9 @@ int main(void)
 	Camera2D camera;
 	init_camera(&camera);
 
+	MusicMind music_mind;
+	init_music_mind(&music_mind);
+	
 	struct GameState state;
 	init_gamestate(&state);
 
@@ -151,6 +155,7 @@ int main(void)
 	state.pick_items_state = &pick_items_state;
 	state.menu_state = &menu_state;
 	state.victory_state = &victory_state;
+	state.music_mind = &music_mind;
 	state.camera = &camera;
 
 	float dt = 0;
@@ -158,7 +163,8 @@ int main(void)
 	unsigned int b = BG_COLOR;
 	Color bg = GetColor(b);
 
-	PlayMusicStream(theme);
+	// Start theme plaing
+	queue_track(&music_mind, &msc_theme, 0);
 	
 	// Game loop //
     while (!WindowShouldClose() && !state.quit_please)
@@ -166,8 +172,9 @@ int main(void)
 		// TODO how to reset this on the first frame cos it takes ages to load the textures
 		dt = GetFrameTime();
 
-		UpdateMusicStream(theme);
 		// Update
+		music_mind_update(dt, &music_mind);
+
 		if (state.state == STATE_PONG) {
 			update_screenshake(dt, &state);
 			state_pong(dt, &state);

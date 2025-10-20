@@ -292,6 +292,16 @@ typedef struct WorldBorders {
 	float right;
 } WorldBorders;
 
+typedef struct MusicMind {
+	Music *playing;
+	Music *fade;
+
+	float volume[2]; // 0 is playing, 1 is fade
+	float fade_timer[2];
+	// Used to figure out how far we are to 0 volume
+	float fade_timer_start[2];
+} MusicMind;
+
 struct GameState {
 	int state; // GAME_STATE
 
@@ -303,12 +313,12 @@ struct GameState {
 	MenuState *menu_state;
 	VictoryState *victory_state;
 	Camera2D *camera;
+	MusicMind *music_mind;
 	float screenshake_timer;
 	float screenshake_freq_timer;
 	float screenshake_decay; // Screenshake will shake at amplitude until the timer runs out, then amplitude will reduce by decay until it reaches 0
 	float screenshake_amplitude; // How much to shake by
 };
-
 
 
 

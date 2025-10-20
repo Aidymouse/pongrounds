@@ -71,6 +71,7 @@ void change_state_to_pong(struct GameState *state) {
 		init_player(state->player2);
 		init_state_pong(state->pong_state);
 		init_state_pick_items(state->pick_items_state);
+		queue_track(state->music_mind, &msc_tracks[0], 0);
 	}
 
 	// Get rid of paddle clones
@@ -94,6 +95,7 @@ void change_state_to_pong(struct GameState *state) {
 
 	state->pong_state->score_timer = BALL_RESPAWN_DELAY;
 
+
 	state->state = STATE_PONG;
 }
 
@@ -104,7 +106,5 @@ void change_state_to_victory(struct GameState *state, struct PlayerData *victor)
 
 void change_state_to_menu(struct GameState *state) {
 	state->state = STATE_MENU;
-
-	PlayMusicStream(theme);
 	
 }

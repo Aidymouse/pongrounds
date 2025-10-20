@@ -466,15 +466,14 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 	// Expired panadol edge of screen collision
 	PaddleData *p1 = state->player1->paddle;
 	PaddleData *p2 = state->player2->paddle;
-	// TODO: make it get the item from the paddle currently on that side
 	if (ball->pos.y - ball->radius < world_borders.top && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
 		p1->items[ITEM_EXPIRED_PANADOL] -= 1;
 		p1->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
-		ball->vel.y = -ball->vel.y; // TODO: better reflection fn
+		ball->vel.y = -ball->vel.y; // TODO: better reflection fn ?
 	} else if (ball->pos.y + ball->radius > world_borders.bottom && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
 		p2->items[ITEM_EXPIRED_PANADOL] -= 1;
 		p2->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
-		ball->vel.y = -ball->vel.y; // TODO: better reflection fn
+		ball->vel.y = -ball->vel.y; // TODO: better reflection fn ?
 	}
 
 	// Scoring
