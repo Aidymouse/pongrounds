@@ -275,16 +275,22 @@ void state_pong(float dt, struct GameState *state) {
 
 		if (pong_state->end_round_timer <= 0 && round_can_end) {
 			
-			// TODO: if both players go down (very possible) this favours p2 atm
 			if (player1->paddle->hp <= 0) {
 				player2->num_points += 1;
+			}
+
+			if (player2->paddle->hp <= 0) {
+				player1->num_points += 1;
+			}
+			
+			// TODO: if both players surpass the score threshold at the same time, player 1 will get to choose if they win before player 2
+			if (player1->paddle->hp <= 0) {
 				if (player2->num_points >= state->pong_state->points_to_win) {
 					change_state_to_victory(state, player2);
 				} else {
 					change_state_to_pick_items(state, player1);
 				}
 			} else if (player2->paddle->hp <= 0) {
-				player1->num_points += 1;
 				if (player1->num_points >= state->pong_state->points_to_win) {
 					change_state_to_victory(state, player1);
 				} else {
