@@ -104,6 +104,9 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 				if (new_ball == NULL) { continue; }
 				new_ball->radius = new_ball->radius * 0.3;
 				if ( new_ball->radius < 1 ) { new_ball->radius = 1; }
+				new_ball->score_damage = new_ball->score_damage / HYDRAULIC_DIVISOR;
+				if (new_ball->score_damage < 1) { new_ball->score_damage = 1; }
+
 				new_ball->vel = Vec2Rotate(new_ball->vel, randInt(-20, 20));
 				new_ball->hp_timer = 0;
 			}
