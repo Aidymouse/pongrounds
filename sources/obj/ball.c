@@ -405,6 +405,11 @@ void ball_sword_hit(struct BallData *ball, struct PongState *pong_state) {
 	
 	pong_state->balls[pong_state->num_balls] = copy;
 	pong_state->num_balls += 1;
+
+	Decoration *dec = decoration_spawn(DE_SLICE, pong_state);
+	if (dec != NULL) {
+		dec->pos = ball->pos;
+	}
 }
 
 

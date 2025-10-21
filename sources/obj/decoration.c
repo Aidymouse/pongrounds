@@ -5,12 +5,23 @@
 #include <stdio.h>
 
 FrameAnimation fa_reflect = {
-	.tex_width = 32,
-	.tex_height = 32,
-	.frames_width = 256/32,
-	.frames_height = 1,
-	.frame_start_x = 0, // offset
-	.frame_start_y = 0, // offset from top left in frames
+	.tex_width = 32, .tex_height = 32,
+	.frames_width = 256/32, .frames_height = 1,
+	.frame_start_x = 0, .frame_start_y = 0, 
+	.frame_duration = 1/60,
+};
+
+FrameAnimation fa_slice = {
+	.tex_width = 128, .tex_height = 128,
+	.frames_width = 1028/128, .frames_height = 1,
+	.frame_start_x = 0, .frame_start_y = 0, 
+	.frame_duration = 1/60,
+};
+
+FrameAnimation fa_clink = {
+	.tex_width = 128, .tex_height = 128,
+	.frames_width = 768/128, .frames_height = 1,
+	.frame_start_x = 0, .frame_start_y = 0, 
 	.frame_duration = 1/60,
 };
 
@@ -41,7 +52,13 @@ Decoration* decoration_spawn(enum Decorations dec_type, PongState *pong_state) {
 		// Set texture and animation
 		dec->animation = fa_reflect;
 		dec->tex = &tex_dec_reflect;
-	}	
+	} else if (dec_type == DE_SLICE) {
+		dec->animation = fa_slice;
+		dec->tex = &tex_dec_slice;
+	} else if (dec_type == DE_CLINK) {
+		dec->animation = fa_clink;
+		dec->tex = &tex_dec_clink;
+	}
 
 	pong_state->num_decorations += 1;
 

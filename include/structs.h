@@ -48,6 +48,7 @@ typedef struct FrameAnimation {
 enum Decorations {
 	DE_REFLECT,
 	DE_SLICE,
+	DE_CLINK,
 };
 
 typedef struct Deocration {

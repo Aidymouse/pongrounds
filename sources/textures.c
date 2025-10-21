@@ -12,6 +12,8 @@ Texture2D tex_missile;
 Texture2D tex_explosion;
 
 Texture2D tex_dec_reflect;
+Texture2D tex_dec_slice;
+Texture2D tex_dec_clink;
 
 void load_textures() {
 
@@ -20,6 +22,8 @@ void load_textures() {
 	tex_explosion = LoadTexture(ASSETS_PATH"explosion.png");
 
 	tex_dec_reflect = LoadTexture(ASSETS_PATH"reflect.png");
+	tex_dec_slice = LoadTexture(ASSETS_PATH"slice.png");
+	tex_dec_clink = LoadTexture(ASSETS_PATH"clink.png");
 
 	for (int i=0; i<NUM_ITEMS; i++) {
 		if (strcmp(item_filenames[i], "") != 0) {

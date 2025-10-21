@@ -142,7 +142,7 @@ int main(void)
 
 	/* DEBUG: hard code in some items
 	*/
-	int debug_item = ITEM_ANTIQUE_GAME_CONSOLE;
+	int debug_item = ITEM_CEREMONIAL_SWORD;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
 	p1->items[debug_item] += 1;

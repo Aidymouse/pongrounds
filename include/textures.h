@@ -10,6 +10,8 @@ extern Texture2D tex_sword;
 extern Texture2D tex_missile;
 extern Texture2D tex_explosion;
 extern Texture2D tex_dec_reflect;
+extern Texture2D tex_dec_slice;
+extern Texture2D tex_dec_clink;
 
 void load_textures();
 void unload_textures();
