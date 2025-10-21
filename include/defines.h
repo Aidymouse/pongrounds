@@ -92,7 +92,7 @@
 #define ROCKET_TURN_SPEED (5) // Speed at which rocket tries to correct to going straight up
 #define MISSILE_DEATH_TIME (1)
 #define MISSILE_SHAKE_DUR (0.5) // Missile screenshake duration
-#define MISSILE_SHAKE_AMPL (2) // missile screenshake amplitude
+#define MISSILE_SHAKE_AMPL (10) // missile screenshake amplitude
 #define MISSILE_COOLDOWN (2)
 
 // Explosions

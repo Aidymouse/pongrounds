@@ -245,8 +245,8 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 				r->detonation_timer = 1;
 
 				state->hitstop_timer = SWORD_MISSILE_HITSTOP;
-				state->screenshake_timer = SWORD_MISSILE_HITSTOP*5;
-				state->screenshake_amplitude = 10;
+				state->screenshake_timer = MISSILE_SHAKE_DUR;
+				state->screenshake_amplitude = MISSILE_SHAKE_AMPL;
 				
 				Decoration *dec = decoration_spawn(DE_CLINK, state->pong_state);
 				if (dec != NULL) {
