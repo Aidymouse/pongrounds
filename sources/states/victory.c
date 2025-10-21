@@ -54,6 +54,9 @@ void state_victory(float dt, struct GameState *state) {
 	} else {
 		state->victory_state->flash_timer -= dt;
 		if (state->victory_state->flash_timer <= 0) {
+
+			state->victory_state->deciding = true; // Reset state
+
 			change_state_to_menu(state);
 		}
 	}
