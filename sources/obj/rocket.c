@@ -243,6 +243,15 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 			if (CheckCollisionCircleRec(c_head_pos, c_head.radius, sword_box)) {
 				r->dir = Vec2Rotate(r->dir, 180);
 				r->detonation_timer = 1;
+
+				state->hitstop_timer = SWORD_MISSILE_HITSTOP;
+				state->screenshake_timer = SWORD_MISSILE_HITSTOP*5;
+				state->screenshake_amplitude = 10;
+				
+				Decoration *dec = decoration_spawn(DE_CLINK, state->pong_state);
+				if (dec != NULL) {
+					dec->pos = c_head_pos;
+				}
 			}
 		}
 	}

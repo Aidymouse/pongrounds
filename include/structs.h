@@ -339,6 +339,8 @@ typedef struct MusicMind {
 struct GameState {
 	int state; // GAME_STATE
 
+	float hitstop_timer;
+
 	bool quit_please; // Allows access to quitting the window from anywhere
 	struct PlayerData *player1;
 	struct PlayerData *player2;

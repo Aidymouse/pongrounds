@@ -27,6 +27,7 @@ void init_gamestate(struct GameState *gs) {
 	gs->screenshake_timer = 0;
 	gs->screenshake_amplitude = 2;
 	gs->screenshake_decay = DEFAULT_SCREENSHAKE_DECAY;
+	gs->hitstop_timer = 0;
 }
 
 
@@ -141,12 +142,13 @@ int main(void)
 	player2.controls = p2_controls;
 
 	/* DEBUG: hard code in some items
-	*/
-	int debug_item = ITEM_CEREMONIAL_SWORD;
+	int debug_item = ITEM_CLONING_VAT;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
+	debug_item = ITEM_NUCLEAR_LAUNCH_CODES;
 	p1->items[debug_item] += 1;
 	p1->items_total[debug_item] += 1;
+	*/
 	// /DEBUG
 
 	struct BallData ball;
@@ -178,15 +180,19 @@ int main(void)
 		// Update
 		music_mind_update(dt, &music_mind);
 
-		if (state.state == STATE_PONG) {
-			update_screenshake(dt, &state);
-			state_pong(dt, &state);
-		} else if (state.state == STATE_PICK_ITEM) {
-			state_pick_items(dt, state.pick_items_state, &state);
-		} else if (state.state == STATE_MENU) {
-			state_menu(dt, &state);
-		} else if (state.state == STATE_VICTORY) {
-			state_victory(dt, &state);
+		if (state.hitstop_timer > 0) {
+			state.hitstop_timer -= dt;
+		} else {
+			if (state.state == STATE_PONG) {
+				update_screenshake(dt, &state);
+				state_pong(dt, &state);
+			} else if (state.state == STATE_PICK_ITEM) {
+				state_pick_items(dt, state.pick_items_state, &state);
+			} else if (state.state == STATE_MENU) {
+				state_menu(dt, &state);
+			} else if (state.state == STATE_VICTORY) {
+				state_victory(dt, &state);
+			}
 		}
 	
 

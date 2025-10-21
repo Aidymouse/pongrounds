@@ -343,24 +343,27 @@ void paddle_brain_clone(struct PaddleData *paddle, struct GameState *state) {
 /** */
 void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorders borders) {
 
-	if (p->destroyed_timer > 0) { 
-		p->destroyed_timer -= dt;
-		if (p->destroyed_timer <= 0) {
-			p->invincibility_timer = DAMAGE_INVINCIBILITY_TIME;
-		}
-		return;
-	}
 
 	if (p->invincibility_timer > 0) { p->invincibility_timer -= dt; }
 
 	if (p->brain == PB_PLAYER) {
+		if (p->destroyed_timer > 0) { 
+			p->destroyed_timer -= dt;
+			if (p->destroyed_timer <= 0) {
+				p->invincibility_timer = DAMAGE_INVINCIBILITY_TIME;
+			}
+			return;
+		}
+
 		struct PaddleControls controls = state->player1->controls;
 		if (p->id == 2) { controls = state->player2->controls; }
 
 		paddle_player_control(dt, p, controls, state);
 
 	} else if (p->brain == PB_CLONE) {
-		if (p->destroyed_timer > 0) { p->delete_me = true; }
+		if (p->destroyed_timer > 0) { 
+			printf("Marked for death\n");
+			p->delete_me = true; }
 
 		paddle_brain_clone(p, state);
 	}
@@ -499,6 +502,7 @@ void paddle_cleanup(struct PongState *pong_state) {
 		if (pong_state->num_paddles <= 2) { return; }
 
 		if (paddle->delete_me) {
+			printf("Deleting %d\n", p);
 			pong_state->paddles[p] = pong_state->paddles[pong_state->num_paddles-1];
 			pong_state->num_paddles -= 1;
 			p -= 1;
