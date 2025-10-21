@@ -10,14 +10,14 @@
 #define NUM_TRACKS 3
 
 // State Vars
-//#define NUM_ROUNDS (10) // a.k.a points required to win
-#define NUM_ROUNDS (1) // a.k.a points required to win
+#define NUM_ROUNDS (10) // a.k.a points required to win
 #define DEFAULT_SCREENSHAKE_DECAY 1
 #define FUCK_YOU_DURATION 0.5
 
 #define NUM_ITEMS 19
 #define MAX_BALLS 32
 #define MAX_PADDLES 32
+#define MAX_DECORATIONS 32
 
 // Menu State
 #define MENU_SPEED 10

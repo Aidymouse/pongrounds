@@ -56,3 +56,10 @@ void explosion_update(float dt, Explosion *e);
 void explosion_spawn(Vector2 pos, struct PongState *pong_state);
 void explosion_draw(Explosion *e, bool debug);
 void explosion_cleanup(struct PongState *pong_state);
+
+/** Decorations **/
+void decoration_init(Decoration *d);
+void decoration_update(float dt, Decoration *d);
+void decoration_draw(Decoration *d);
+Decoration* decoration_spawn(enum Decorations dec_type, PongState *pong_state);
+void decoration_cleanup(PongState *pong_state);

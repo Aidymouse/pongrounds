@@ -85,6 +85,8 @@ void init_state_pong(struct PongState *pong_state) {
 	pong_state->fuck_you_size = 100;
 	pong_state->points_to_win = NUM_ROUNDS;
 	pong_state->ball_respawn_timer = BALL_RESPAWN_DELAY;
+
+	pong_state->num_decorations = 0;
 }
 
 void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {
@@ -195,11 +197,20 @@ void state_pong(float dt, struct GameState *state) {
 		explosion_update(dt, e);
 	}
 
+	// Decorations
+	for (int d_idx = 0; d_idx < pong_state->num_decorations; d_idx++) {
+		// Left and right of screen
+		Decoration *de = &(pong_state->decorations[d_idx]);
+
+		decoration_update(dt, de);
+	}
+
 	// Clean up deleted things
 	paddle_cleanup(state->pong_state);
 	ball_cleanup(state->pong_state);
 	rocket_cleanup(pong_state);
 	explosion_cleanup(pong_state);
+	decoration_cleanup(pong_state);
 
 	/** Collisions */
 	// Rockets
@@ -221,7 +232,10 @@ void state_pong(float dt, struct GameState *state) {
 
 		ball_check_collisions(ball, state, world_borders);
 	}
-	/* COLLISIONS **/		
+
+
+
+	/** /COLLISIONS **/		
 
 	if (state->pong_state->fuck_you_timer > 0) {
 		state->pong_state->fuck_you_timer -= dt;
@@ -316,6 +330,11 @@ void draw_pong(struct GameState *state) {
 		}
 
 		BeginMode2D(*state->camera);
+
+		for (int d_idx=state->pong_state->num_decorations-1; d_idx>=0; d_idx--) {
+			Decoration d = state->pong_state->decorations[d_idx];
+			decoration_draw(&d);
+		}
 
 		// Paddles
 		for (int p_idx=state->pong_state->num_paddles-1; p_idx>=0; p_idx--) {

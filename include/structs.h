@@ -45,6 +45,20 @@ typedef struct FrameAnimation {
 	float frame_duration;
 } FrameAnimation;
 
+enum Decorations {
+	DE_REFLECT,
+	DE_SLICE,
+};
+
+typedef struct Deocration {
+	FrameAnimation animation;
+	Texture *tex;
+	Vector2 pos;
+	float anim_timer;
+	int anim_frame;
+	bool delete_me;
+} Decoration;
+
 enum GAME_STATES {
 	STATE_PONG=0,
 	STATE_PICK_ITEM=1,
@@ -200,6 +214,10 @@ struct PlayerData {
 	struct PaddleControls controls;
 };
 
+
+
+
+
 /** Util **/
 typedef struct Circle {
 	float x;
@@ -207,8 +225,13 @@ typedef struct Circle {
 	float radius;
 } Circle;
 
+
+
+
+
+
 /** States **/
-struct PongState {
+typedef struct PongState {
 	int current_round;
 	float ball_respawn_timer; // Time that delays the ball respawn
 	float end_round_timer;
@@ -228,7 +251,10 @@ struct PongState {
 	char fuck_you_text[128];
 	int fuck_you_size;
 	int points_to_win;
-};
+
+	Decoration decorations[MAX_DECORATIONS];
+	int num_decorations;
+} PongState;
 
 struct PickItemsState {
 	float item_anim_timers[8];

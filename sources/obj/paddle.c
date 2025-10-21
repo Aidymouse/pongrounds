@@ -197,10 +197,17 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 		for (int i=0; i<pong_state->num_balls; i++) {
 			pong_state->balls[i].vel.x *= -1;
 			pong_state->balls[i].kb_dir.x *= -1;
+
+			// Spawn decoration
+			Decoration *new_dec = decoration_spawn(DE_REFLECT, pong_state);
+			if (new_dec != NULL) {
+				new_dec->pos = pong_state->balls[i].pos;
+			}
 		}
 
 		p->items[ITEM_ANTIQUE_GAME_CONSOLE] -= 1;
 		p->item_use_timers[ITEM_ANTIQUE_GAME_CONSOLE] = ITEM_USE_BUMP_TIME;
+
 	}
 
 	// Cloning Vat

@@ -20,6 +20,6 @@ void draw_from_animation(Texture2D texture, Animation anim, Rectangle target);
 
 //void update_animation(float dt, FrameAnimation anim, int *anim_timer, int *anim_frame);
 Rectangle get_rect_from_animation(FrameAnimation anim, int frame);
-void update_animation(float dt, FrameAnimation anim, int *frame, float *anim_timer);
+bool update_animation(float dt, FrameAnimation anim, int *frame, float *anim_timer);
 
 #endif

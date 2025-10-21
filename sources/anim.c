@@ -44,14 +44,17 @@ Rectangle get_rect_from_animation(FrameAnimation anim, int frame) {
 }
 
 // Updates predefined animation data for some obj
-void update_animation(float dt, FrameAnimation anim, int *frame, float *anim_timer) {
+// Returns true if the animation finished this frame
+bool update_animation(float dt, FrameAnimation anim, int *frame, float *anim_timer) {
 	*anim_timer -= dt;
 	if (*anim_timer <= 0) {
 		*anim_timer = anim.frame_duration;
 		*frame += 1;
 		if (*frame >= (anim.frames_width) * (anim.frames_height)) {
 			*frame = 0; // TODO: maybe we dont only loop?
+			return true;
 		}
 	}
+	return false;
 		
 }

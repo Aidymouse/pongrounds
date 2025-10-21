@@ -141,13 +141,13 @@ int main(void)
 	player2.controls = p2_controls;
 
 	/* DEBUG: hard code in some items
-	int debug_item = ITEM_CLONING_VAT;
+	*/
+	int debug_item = ITEM_ANTIQUE_GAME_CONSOLE;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
 	p1->items[debug_item] += 1;
 	p1->items_total[debug_item] += 1;
 	// /DEBUG
-	*/
 
 	struct BallData ball;
 	ball_init(&ball);
@@ -194,6 +194,7 @@ int main(void)
 		// Draw
         BeginDrawing();
         ClearBackground(bg);
+
 
 		if (state.state == STATE_PONG) {
 			draw_pong(&state);

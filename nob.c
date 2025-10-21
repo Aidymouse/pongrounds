@@ -36,6 +36,7 @@ int main(int argc, char **argv) {
 		"obj/paddle.c",
 		"obj/rocket.c",
 		"obj/sword.c",
+		"obj/decoration.c",
 
 		"states/menu.c",
 		"states/pick_item.c",
@@ -44,7 +45,7 @@ int main(int argc, char **argv) {
 
 		"main.c",
 	};
-	int NUM_SOURCE_FILES = 19;
+	int NUM_SOURCE_FILES = 20;
 	
 	nob_mkdir_if_not_exists("build");
 

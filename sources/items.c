@@ -58,7 +58,7 @@ const char *item_filenames[] = {
 	"cards/bachelor of psychology.png", // Bachelor of psychology (hons)
 	"cards/niekro.png", // Niekro Trading Card
 	"cards/missile.png", // Nuclear Launch Codes
-	"cards/todo.png", // Russian Secrets
+	"cards/russian secrets.png", // Russian Secrets
 	"cards/hydraulic press.png", // Hydraulic Press 
 	"cards/antique game console.png", // Antique Game Console 
 	"cards/cloning vat.png", // Cloning Vat 
