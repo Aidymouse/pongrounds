@@ -10,7 +10,8 @@
 #define NUM_TRACKS 3
 
 // State Vars
-#define NUM_ROUNDS (10) // a.k.a points required to win
+//#define NUM_ROUNDS (10) // a.k.a points required to win
+#define NUM_ROUNDS (1) // a.k.a points required to win
 #define DEFAULT_SCREENSHAKE_DECAY 1
 #define FUCK_YOU_DURATION 0.5
 

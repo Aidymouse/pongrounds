@@ -10,15 +10,17 @@ void init_state_victory(VictoryState *victory_state) {
 
 const int bw = 200;
 const int bh = 80;
+const Rectangle rect_continue = { SCREEN_WIDTH/2 - bw - 30, 400, bw, bh};
 const Button btn_continue = {
-	.dims = (Rectangle){ SCREEN_WIDTH/2 - bw - 30, 400, bw, bh},
+	.dims = rect_continue,
 	.color = HACKER_GREEN,
 	.text = "Let it continue.\n",
 	.id = 0,
 };
 
+const Rectangle rect_end = { SCREEN_WIDTH/2 + 30, 400, bw, bh};
 const Button btn_end = {
-	.dims = (Rectangle){ SCREEN_WIDTH/2 + 30, 400, bw, bh},
+	.dims = rect_end,
 	.color = HACKER_GREEN,
 	.text = "It's over.",
 	.id = 0,
@@ -43,6 +45,7 @@ void state_victory(float dt, struct GameState *state) {
 					change_state_to_pick_items(state, state->player1);
 				}
 			} else if (CheckCollisionPointRec(mouse, btn_end.dims)) {
+				SetMusicVolume(*state->music_mind->playing, 0);
 				state->victory_state->deciding = false;
 				state->victory_state->flash_timer = VICTORY_FLASH_DURATION;
 			
@@ -84,10 +87,10 @@ void draw_victory(VictoryState *victory_state) {
 		DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, bg);
 
 		if (victory_state->flash_timer > 1) {
+			DrawTextCentered(pn, SCREEN_WIDTH/2, SCREEN_HEIGHT/2-100, 100, victory_state->victor->paddle->color);
 			if ((int)(victory_state->flash_timer / 0.5) % 2 == 1) {
-				DrawTextCentered(pn, SCREEN_WIDTH/2, SCREEN_HEIGHT/2-100, 100, victory_state->victor->paddle->color);
+				DrawTextCentered("GLORIOUS VICTOR", SCREEN_WIDTH/2, SCREEN_HEIGHT/2+100, 80, HACKER_GREEN);
 			}
-			DrawTextCentered("GLORIOUS VICTOR", SCREEN_WIDTH/2, SCREEN_HEIGHT/2+100, 80, HACKER_GREEN);
 		}
 	}
 }

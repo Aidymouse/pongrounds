@@ -28,6 +28,7 @@ void init_music_mind(MusicMind *mind) {
 
 	mind->fade_timer = 0;
 	mind->fade_timer_start = 0;
+	mind->mode = MM_REPEAT;
 }
 
 /** 
@@ -44,6 +45,7 @@ void queue_track(MusicMind *mind, Music *new, float fade_duration) {
 	PlayMusicStream(*mind->playing);
 
 	if (mind->fade != 0 && fade_duration == 0) {
+		SetMusicVolume(*mind->fade, 1); // Reset volume to 1 for next time
 		StopMusicStream(*mind->fade);
 	}
 
@@ -53,6 +55,7 @@ void queue_track(MusicMind *mind, Music *new, float fade_duration) {
 }
 
 void music_mind_update(float dt, MusicMind *mind) {
+
 	if (mind->fade_timer > 0) {
 		mind->fade_timer -= dt;
 		float volume = mind->fade_timer / mind->fade_timer_start;
@@ -62,7 +65,7 @@ void music_mind_update(float dt, MusicMind *mind) {
 	
 		if (mind->fade_timer <= 0) {
 			StopMusicStream(*mind->fade);
-			SetMusicVolume(*mind->fade, 0);
+			SetMusicVolume(*mind->fade, 1);
 			SetMusicVolume(*mind->playing, 1);
 			
 		}
@@ -74,7 +77,7 @@ void music_mind_update(float dt, MusicMind *mind) {
 		UpdateMusicStream(*mind->playing);
 
 		// Change track if we're getting toward the end of this one
-		if (GetMusicTimeLength(*mind->playing) - GetMusicTimePlayed(*mind->playing) < 15) {
+		if (mind->mode == MM_PLAYLIST && GetMusicTimeLength(*mind->playing) - GetMusicTimePlayed(*mind->playing) < 15) {
 			int new_idx = randInt(0, NUM_TRACKS-1);
 			// TODO: i can do better than this. but not now
 			while (new_idx == mind->track_idx) {
@@ -82,10 +85,13 @@ void music_mind_update(float dt, MusicMind *mind) {
 			}
 			mind->track_idx = new_idx;
 			queue_track(mind, &msc_tracks[new_idx], 10);
+		} else if (mind->mode == MM_REPEAT) {
+			
 		}
 	}
 
 	if (mind->fade != 0 && IsMusicStreamPlaying(*mind->fade)) { 
 		UpdateMusicStream(*mind->fade);
 	}
+
 }

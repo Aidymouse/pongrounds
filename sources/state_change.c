@@ -16,8 +16,9 @@ void change_state_plain(enum GAME_STATES new_state, struct GameState *state) {
 				
 	} else if (new_state == STATE_PONG) {
 		state->state = new_state;
-
 	}
+
+
 }
 
 void change_state_to_pick_items(struct GameState *state, struct PlayerData *choosing) {
@@ -25,6 +26,9 @@ void change_state_to_pick_items(struct GameState *state, struct PlayerData *choo
 	roll_items(pick_items_state);
 
 	choosing->paddle->hp = 1;
+
+	// If we came from victory sound will be lower so increase it back to one here
+	SetMusicVolume(*state->music_mind->playing, 1);
 
 	pick_items_state->choosing_player = choosing;
 	state->state = STATE_PICK_ITEM;
@@ -74,7 +78,11 @@ void change_state_to_pong(struct GameState *state) {
 
 		int track_idx = randInt(0, NUM_TRACKS-1);
 		state->music_mind->track_idx = track_idx;
+
+		// Music
 		queue_track(state->music_mind, &msc_tracks[track_idx], 0);
+		state->music_mind->mode = MM_PLAYLIST;
+
 	}
 
 	// Get rid of paddle clones
@@ -105,9 +113,17 @@ void change_state_to_pong(struct GameState *state) {
 void change_state_to_victory(struct GameState *state, struct PlayerData *victor) {
 	state->victory_state->victor = victor;
 	state->state = STATE_VICTORY;
+
+	//queue_track(state->music_mind, &msc_theme, 0);
+	SetMusicVolume(*state->music_mind->playing, 0.5);
 }
 
 void change_state_to_menu(struct GameState *state) {
 	state->state = STATE_MENU;
+
+	SetMusicVolume(*state->music_mind->playing, 1);
+
+	queue_track(state->music_mind, &msc_theme, 0);
+	state->music_mind->mode = MM_REPEAT;
 	
 }

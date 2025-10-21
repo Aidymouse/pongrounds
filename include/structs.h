@@ -292,7 +292,13 @@ typedef struct WorldBorders {
 	float right;
 } WorldBorders;
 
+enum MusicMode {
+	MM_PLAYLIST,
+	MM_REPEAT
+};
+
 typedef struct MusicMind {
+	enum MusicMode mode;
 	Music *playing;
 	Music *fade;
 	int track_idx;
