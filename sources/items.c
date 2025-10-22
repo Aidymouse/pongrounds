@@ -43,7 +43,7 @@ const char *item_descriptions[] = {
 	"Gives your paddle gravity", // Yo Momma
 	"Switch sides with opponent", // Broken Mind Control Machine
 	//"", // Underwear (Used)
-	"Ball speeds up as it moves away from you", // Mutant Mouse
+	"Ball may run away from you", // Mutant Mouse
 	"Steal a random item from opponent at the start of the round", // Sentient Hand
 };
 
