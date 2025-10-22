@@ -47,7 +47,6 @@ void paddle_init(PaddleData *p) {
 	p->cv_creator = NULL;
 	//p->cv_clone = false;
 	p->cv_health = 0;
-	p->cv_num_clones = 0;
 	p->cv_lag_dist = 0;
 
 }
@@ -141,8 +140,6 @@ void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state
 		}
 	}
 
-	// Handle cloning vat
-	p->cv_num_clones = 0; // State change handles deleting extra paddles
 
 }
 
@@ -153,10 +150,11 @@ void clone_paddle_init(struct PaddleData *c, struct PaddleData *creator) {
 	c->brain = PB_CLONE;
 	c->cv_creator = creator;
 	//c->cv_clone = true;
-	c->cv_lag_dist = CV_DEFAULT_LAG_DISTANCE * creator->cv_num_clones;
+	c->cv_lag_dist = CV_DEFAULT_LAG_DISTANCE;
 	c->cv_health = CV_CLONE_HEALTH + (c->items[ITEM_CLONING_VAT] - 1) * CV_CLONE_HEALTH_ADDITIONAL;
 
 	c->color = GRAY;
+	
 	// Clones dont get items
 	for (int i=0; i<NUM_ITEMS; i++) {
 		c->items[i] = 0;
@@ -219,11 +217,10 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 		PaddleData *c = paddle_spawn(pong_state);
 		if (c != NULL) { 
 			PaddleData clone = *p;
-			p->cv_num_clones += 1;
 			clone_paddle_init(&clone,p);
 			*c = clone;
 			// Find pos
-			c->pos = Vec2Add(p->pos, Vec2MultScalar(p->facing, (p->paddle_thickness + 10) * p->cv_num_clones));
+			c->pos = Vec2Add(p->pos, Vec2MultScalar(p->facing, (p->paddle_thickness + 10)));
 			// TODO: how to stop paddles layering on top of one another
 		}
 	}
