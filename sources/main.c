@@ -66,6 +66,7 @@ void update_screenshake (float dt, struct GameState *state) {
 	}
 }
 
+// TODO: load controls
 struct PaddleControls p1_controls = { P1_LEFT_KEY, P1_RIGHT_KEY, P1_DASH_KEY, P1_UP_KEY, P1_DOWN_KEY, P1_ITEM_KEY };
 struct PaddleControls p2_controls = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY, P2_UP_KEY, P2_DOWN_KEY, P2_ITEM_KEY };
 
@@ -143,10 +144,10 @@ int main(void)
 
 	/* DEBUG: hard code in some items
 	*/
-	int debug_item = ITEM_BROKEN_MIND_CONTROL_MACHINE;
+	int debug_item = ITEM_MUTANT_MOUSE;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
-	debug_item = ITEM_CEREMONIAL_SWORD;
+	//debug_item = ITEM_BROKEN_MIND_CONTROL_MACHINE;
 	p1->items[debug_item] += 1;
 	p1->items_total[debug_item] += 1;
 	// /DEBUG

@@ -75,11 +75,12 @@
 
 // Niekro
 #define NIEKRO_KB_TURN_SPEED 100
+#define NIEKRO_CHANCE 20
 
 // Time Wizards Chronometer
 #define CHRONOMETER_SIZE (200)
 #define BASE_TIME_POWER 0.7
-#define CUMULATIVE_TIME_POWER 0.95 // Additional multiplier on speed for each additional chronometer
+#define CUMULATIVE_TIME_POWER 0.90 // Additional multiplier on speed for each additional chronometer
 
 // Rockets
 #define HANG_TIME (0.5)
@@ -129,5 +130,11 @@
 
 // Underwear (used)
 
+// Broken Mind Control Machine
+#define MIND_CONTROL_COOLDOWN 15
+#define MIND_CONTROL_DURATION 3
+
 // Mutant Mouse
 #define MUTANT_MOUSE_ACCEL 5
+#define MUTANT_MOUSE_COOLDOWN 5
+#define MUTANT_MOUSE_CHANCE 20

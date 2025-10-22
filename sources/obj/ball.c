@@ -29,6 +29,7 @@ void ball_init(struct BallData *b) {
 	b->ym_gravity_turn_speed = 0;
 
 	b->mm_speed_bonus = 0;
+	b->mutant_moused = false;
 
 }
 
@@ -115,14 +116,19 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 
 	
 	// Mutant mouse speed accrual
-	for (int pI = 0; pI < 2; pI++) {
-		PaddleData *paddle = &state->pong_state->paddles[pI];
-		if (paddle->items[ITEM_MUTANT_MOUSE] > 0) {
-			if ((ball->vel.y > 0 && paddle->facing.y > 0) ||
-				(ball->vel.y < 0 && paddle->facing.y < 0)
-			) {
-				ball->mm_speed_bonus += MUTANT_MOUSE_ACCEL;
-			} 	
+	if (ball->mutant_moused) {
+		for (int pI = 0; pI < 2; pI++) {
+			PaddleData *paddle = &state->pong_state->paddles[pI];
+
+			if (paddle != ball->last_hit_by) { continue; }
+
+			if (paddle->items[ITEM_MUTANT_MOUSE] > 0) {
+				if ((ball->vel.y > 0 && paddle->facing.y > 0) ||
+					(ball->vel.y < 0 && paddle->facing.y < 0)
+				) {
+					ball->mm_speed_bonus += MUTANT_MOUSE_ACCEL;
+				} 	
+			}
 		}
 	}
 	
@@ -325,7 +331,7 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 	}
 
 	if (p->items[ITEM_NIEKRO_CARD] > 0) {
-		int knuckleball_chance = 20 + 5 * p->items[ITEM_NIEKRO_CARD]-1;
+		int knuckleball_chance = p->items[ITEM_NIEKRO_CARD] * NIEKRO_CHANCE; 
 		if (randInt(1, 100) < knuckleball_chance) {
 			//printf("Knuckleball!\n");
 			p->item_use_timers[ITEM_NIEKRO_CARD] = ITEM_USE_BUMP_TIME;
@@ -350,8 +356,8 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 
 	// Hydraulic Press
 	if (p->items[ITEM_HYDRAULIC_PRESS] > 0 && b->hp_timer == 0) {
-		int press_chance = p->items[ITEM_HYDRAULIC_PRESS] * HYDRAULIC_PRESS_CHANCE + p->items[ITEM_HYDRAULIC_PRESS]-1 * HYDRAULIC_PRESS_CHANCE_ADDITIONAL;
-		if (randInt(1, 100) < press_chance) {
+		int press_chance = p->items[ITEM_HYDRAULIC_PRESS] * HYDRAULIC_PRESS_CHANCE;
+		if (randInt(1, 100) <= press_chance) {
 			b->hp_timer = HYDRAULIC_PRESS_TIMER;
 			p->item_use_timers[ITEM_HYDRAULIC_PRESS] = HYDRAULIC_PRESS_TIMER;
 		}
@@ -364,8 +370,8 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 
 	// Snotch
 	if (p->items[ITEM_SNOTCH] > 0) {
-		int snotch_chance = SNOTCH_CHANCE + p->items[ITEM_SNOTCH]-1 * SNOTCH_CHANCE_ADDITIONAL;
-		if (randInt(1, 100) < snotch_chance) {
+		int snotch_chance = SNOTCH_CHANCE * p->items[ITEM_SNOTCH];
+		if (randInt(1, 100) <= snotch_chance) {
 			b->score_damage *= 2;
 			p->item_use_timers[ITEM_SNOTCH] = ITEM_USE_BUMP_TIME;
 			if (b->color.b - 60 <= 0) { b->color.b = 0; } else { b->color.b -= 60; }
@@ -375,6 +381,14 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 
 	// Mutant Mouse
 	b->mm_speed_bonus = 0;
+	b->mutant_moused = false;
+	if (p->items[ITEM_MUTANT_MOUSE] > 0) {
+		int mm_chance = p->items[ITEM_MUTANT_MOUSE] * MUTANT_MOUSE_CHANCE;
+		if (randInt(0, 100) < mm_chance) {
+			b->mutant_moused = true;
+			p->item_use_timers[ITEM_MUTANT_MOUSE] = ITEM_USE_BUMP_TIME;
+		}
+	}
 
 	/** Apply position adjustment from earlier detection */
 	b->pos = adjusted_pos;

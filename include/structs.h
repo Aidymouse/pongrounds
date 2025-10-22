@@ -176,6 +176,7 @@ struct BallData {
 	Vector2 ym_gravity_center;
 
 	float mm_speed_bonus;
+	bool mutant_moused; // If true, the ball will accrue speed
 	
 };
 
