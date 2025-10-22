@@ -30,14 +30,14 @@ void load_textures() {
 			char b[100];
 			sprintf(b,"%s%s", ASSETS_PATH, item_filenames[i]);
 			tex_item_cards[i] = LoadTexture(b);
-			printf("Would load %s (%d, %s)\n", b, i, item_labels[i]);
+			//printf("Would load %s (%d, %s)\n", b, i, item_labels[i]);
 		}
 
 		if (strcmp(small_item_filenames[i], "") != 0) {
 			char b[100];
 			sprintf(b,"%s%s", ASSETS_PATH, small_item_filenames[i]);
 			tex_small_items[i] = LoadTexture(b);
-			printf("Would load small %s (%d, %s)\n", b, i, item_labels[i]);
+			//printf("Would load small %s (%d, %s)\n", b, i, item_labels[i]);
 		}
 	}
 }
