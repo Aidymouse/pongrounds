@@ -21,7 +21,7 @@ void paddle_init(PaddleData *p) {
 	p->pos.x = SCREEN_WIDTH/2 - PADDLE_DEFAULT_WIDTH/2;
 	p->paddle_width = PADDLE_DEFAULT_WIDTH;
 	p->delete_me = false;
-	p->paddle_thickness = 10;
+	p->paddle_thickness = PADDLE_DEFAULT_THICKNESS;
 	p->color = WHITE;
 	p->hp = PADDLE_DEFAULT_HP;
 	p->max_hp = PADDLE_DEFAULT_HP;
