@@ -139,11 +139,11 @@ void display_health(struct PlayerData *p, int x, int y) {
 	DrawRectangle(x - width/2, y, paddle->hp, 10, HACKER_GREEN);
 }
 
-void display_score(struct PlayerData *pl, int x, int y) {
+void display_score(struct PlayerData *pl, int x, int y, float alpha) {
 	char score[32];
 	sprintf(score, "%d", pl->num_points);
 	Color score_color = HACKER_GREEN;
-	score_color.a = 64;
+	score_color.a = alpha;
 	DrawTextCentered(score, x, y, 200, score_color);
 }
 
@@ -325,9 +325,9 @@ void draw_pong(struct GameState *state) {
 
 		// UI in the background: score
 		if (state->pong_state->score_timer > 0) {
-			display_score(state->player1, SCREEN_WIDTH/2, SCREEN_HEIGHT*0.25);
-			display_score(state->player2, SCREEN_WIDTH/2, SCREEN_HEIGHT*0.75);
-		}
+			display_score(state->player1, SCREEN_WIDTH/2, SCREEN_HEIGHT*0.25, 64);
+			display_score(state->player2, SCREEN_WIDTH/2, SCREEN_HEIGHT*0.75, 64);
+		} 
 
 		BeginMode2D(*state->camera);
 
