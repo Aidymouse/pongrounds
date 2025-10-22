@@ -122,7 +122,7 @@
 #define CV_CLONE_SPEED_MULT 0.8
 #define CV_CLONE_HEALTH 2
 #define CV_CLONE_HEALTH_ADDITIONAL 1 // Additional health for each paddle item
-#define CV_CLONE_COOLDOWN 1
+#define CV_CLONE_COOLDOWN 7
 #define CV_CLONE_DIRE (Color){ 255, 0, 0, 255 } // Color of paddle when it has 1 health left
 
 // Snotch

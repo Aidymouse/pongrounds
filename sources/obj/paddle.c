@@ -477,23 +477,25 @@ Circle paddle_get_gravity_circle(PaddleData *p) {
 
 void paddle_check_collisions(PaddleData *p, struct GameState *state) {
 	struct PongState *pong_state = state->pong_state;
-	if (p->invincibility_timer <= 0) {
-		// Swords
-		for (int pI=0; pI<pong_state->num_paddles; pI++) {
-			PaddleData *paddle = &pong_state->paddles[pI];
-			if (paddle == p) { continue; }
-			Rectangle sword = sword_get_hitbox(paddle);
-			Rectangle me = paddle_get_rect(p);
-			if ( CheckCollisionRecs(sword, me) && paddle->sword_timer > 0 ) {
-				if (p->brain == PB_CLONE) {
-					p->delete_me = true;
-				} else {
-					p->hp -= SWORD_DAMAGE;
-					p->invincibility_timer = DAMAGE_INVINCIBILITY_TIME;
+	if (p->invincibility_timer > 0) { return; }
+	// Swords
+	for (int pI=0; pI<pong_state->num_paddles; pI++) {
+		PaddleData *paddle = &pong_state->paddles[pI];
+		if (paddle == p) { continue; }
+		Rectangle sword = sword_get_hitbox(paddle);
+		Rectangle me = paddle_get_rect(p);
+		if ( CheckCollisionRecs(sword, me) && paddle->sword_timer > 0 ) {
+			if (p->brain == PB_CLONE) {
+				if (p->cv_creator != paddle) {
+					p->cv_health -= 5;
 				}
+			} else {
+				p->hp -= SWORD_DAMAGE;
+				p->invincibility_timer = DAMAGE_INVINCIBILITY_TIME;
 			}
 		}
 	}
+	
 }
 
 void paddle_draw(PaddleData *p, bool debug) {
