@@ -84,7 +84,7 @@ void music_mind_update(float dt, MusicMind *mind) {
 				new_idx = randInt(0, NUM_TRACKS-1);
 			}
 			mind->track_idx = new_idx;
-			queue_track(mind, &msc_tracks[new_idx], 10);
+			queue_track(mind, &msc_tracks[new_idx], 5);
 		} else if (mind->mode == MM_REPEAT) {
 			
 		}
