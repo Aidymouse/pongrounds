@@ -37,8 +37,7 @@ void sword_swing(float dt, PaddleData *p) {
 
 Rectangle sword_get_hitbox(PaddleData *p) {
 	Rectangle r = (Rectangle){p->pos.x, 0, p->paddle_width, 50};
-	// TODO make this facing
-	if (p->id == 1) {
+	if (p->facing.y == 1) {
 		r.y = p->pos.y + p->paddle_thickness;
 	} else {
 		r.y = p->pos.y - r.height;
@@ -65,7 +64,7 @@ void sword_draw(PaddleData *p, bool debug) {
 		.y = p->pos.y
 	};
 
-	if (p->id == 1) {
+	if (p->facing.y == 1) {
 		sword_tex_rect.height = SWORD_TEX_DIMS_PX*-1;
 		sword_origin.y = 16;
 		sword_pos.y += p->paddle_thickness;

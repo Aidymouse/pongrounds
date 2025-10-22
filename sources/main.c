@@ -142,13 +142,13 @@ int main(void)
 	player2.controls = p2_controls;
 
 	/* DEBUG: hard code in some items
-	int debug_item = ITEM_CLONING_VAT;
+	*/
+	int debug_item = ITEM_BROKEN_MIND_CONTROL_MACHINE;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
-	debug_item = ITEM_NUCLEAR_LAUNCH_CODES;
+	debug_item = ITEM_CEREMONIAL_SWORD;
 	p1->items[debug_item] += 1;
 	p1->items_total[debug_item] += 1;
-	*/
 	// /DEBUG
 
 	struct BallData ball;
