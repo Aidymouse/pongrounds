@@ -292,7 +292,8 @@ void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls
 		p->speed.y = PADDLE_SPEED * 0.6;
 	}
 
-	if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && IsKeyPressed(controls.dash)) {
+	if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && p->item_cooldown_timers[ITEM_CHERRY_BLOSSOM_CLOAK
+] <= 0 && IsKeyPressed(controls.dash)) {
 		if (moving_impulse.x != 0) {
 			p->speed.x = CLOAK_DASH_SPEED + CLOAK_DASH_SPEED_BONUS*p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1;
 		}
@@ -301,6 +302,7 @@ void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls
 		}
 		//p->speed.y = 
 		p->item_use_timers[ITEM_CHERRY_BLOSSOM_CLOAK] = ITEM_USE_BUMP_TIME;
+		p->item_cooldown_timers[ITEM_CHERRY_BLOSSOM_CLOAK] = CLOAK_COOLDOWN;
 	}
 
 	if (state->pong_state->end_round_timer <= 0) {

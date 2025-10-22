@@ -63,6 +63,7 @@
 #define CLOAK_DASH_SPEED (2200)
 #define CLOAK_DASH_SPEED_BONUS (200) // Additional
 #define CLOAK_DECELLERATION (250)
+#define CLOAK_COOLDOWN 7
 
 // Sword
 #define SWORD_DURATION (0.2)
@@ -79,7 +80,7 @@
 
 // Time Wizards Chronometer
 #define CHRONOMETER_SIZE (200)
-#define BASE_TIME_POWER 0.7
+#define BASE_TIME_POWER 0.7 // Speed multiplier applied to items in time wizards zone
 #define CUMULATIVE_TIME_POWER 0.90 // Additional multiplier on speed for each additional chronometer
 
 // Rockets
@@ -91,7 +92,7 @@
 #define MISSILE_TEX_DIMS_PX (128)
 #define MAX_ROCKETS (8)
 #define ROCKET_TURN_SPEED (5) // Speed at which rocket tries to correct to going straight up
-#define MISSILE_DEATH_TIME (1)
+#define MISSILE_DEATH_TIME (3) // How long a paddle stays dead after being blown up by a missile
 #define MISSILE_SHAKE_DUR (0.5) // Missile screenshake duration
 #define MISSILE_SHAKE_AMPL (10) // missile screenshake amplitude
 #define MISSILE_COOLDOWN (2)
@@ -121,8 +122,8 @@
 #define CV_CLONE_SPEED_MULT 0.8
 #define CV_CLONE_HEALTH 2
 #define CV_CLONE_HEALTH_ADDITIONAL 1 // Additional health for each paddle item
-#define CV_CLONE_COOLDOWN 15
-#define CV_CLONE_DIRE (Color){ 255, 0, 0, 255 }
+#define CV_CLONE_COOLDOWN 1
+#define CV_CLONE_DIRE (Color){ 255, 0, 0, 255 } // Color of paddle when it has 1 health left
 
 // Snotch
 #define SNOTCH_CHANCE 20
