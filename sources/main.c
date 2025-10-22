@@ -122,7 +122,7 @@ int main(void)
 	paddle_init( &pong_state.paddles[1] );
 	struct PaddleData *p2 = &pong_state.paddles[1];
 	p2->id = 2;
-	p2->pos.y = SCREEN_HEIGHT - p2->paddle_thickness - 40;
+	p2->pos.y = SCREEN_HEIGHT - (p2->paddle_thickness - 40);
 	p2->color = ORANGE;
 	p2->facing = (Vector2){ 0, -1 };
 
@@ -144,7 +144,7 @@ int main(void)
 
 	/* DEBUG: hard code in some items
 	*/
-	int debug_item = ITEM_MUTANT_MOUSE;
+	int debug_item = ITEM_BROKEN_MIND_CONTROL_MACHINE;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
 	//debug_item = ITEM_BROKEN_MIND_CONTROL_MACHINE;

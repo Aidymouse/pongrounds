@@ -132,9 +132,8 @@
 
 // Broken Mind Control Machine
 #define MIND_CONTROL_COOLDOWN 15
-#define MIND_CONTROL_DURATION 3
+#define MIND_CONTROL_DURATION 1
 
 // Mutant Mouse
 #define MUTANT_MOUSE_ACCEL 5
-#define MUTANT_MOUSE_COOLDOWN 5
 #define MUTANT_MOUSE_CHANCE 20

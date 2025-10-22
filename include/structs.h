@@ -122,6 +122,8 @@ typedef struct PaddleData {
 	// Not every item has a timer but i'm gonna keep this around anyway
 	float item_cooldown_timers[NUM_ITEMS]; 
 
+	float mind_control_timer; // While above 0, the paddles are flipped
+
 	// How long the sword hitbox lasts
 	float sword_timer;
 	float sword_anim_timer;
@@ -134,6 +136,7 @@ typedef struct PaddleData {
 	int cv_lag_dist;
 
 	bool bmcm_flipped; // false if not flipped, true if flipped
+	float bmcm_timer; // When this runs out, mind control stops
 
 } PaddleData;
 

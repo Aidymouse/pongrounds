@@ -164,7 +164,7 @@ void clone_paddle_init(struct PaddleData *c, struct PaddleData *creator) {
 void paddle_flip_across_axis(PaddleData *paddle) {
 	Vector2 pc = paddle_center(paddle);
 	float dist_to_center = SCREEN_HEIGHT/2 - pc.y;
-	paddle->pos.y = SCREEN_HEIGHT/2 + dist_to_center;
+	paddle->pos.y = SCREEN_HEIGHT/2 + dist_to_center - paddle->paddle_thickness/2;
 	paddle->facing = Vec2Rotate(paddle->facing, 180);
 	paddle->bmcm_flipped = !paddle->bmcm_flipped;
 }
@@ -227,9 +227,10 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 
 
 	// Broken Mind Control Machine
-	if (p->items[ITEM_BROKEN_MIND_CONTROL_MACHINE] > 0) {
+	if (p->items[ITEM_BROKEN_MIND_CONTROL_MACHINE] > 0 && p->item_cooldown_timers[ITEM_BROKEN_MIND_CONTROL_MACHINE] <= 0 ) {
 		p->item_use_timers[ITEM_BROKEN_MIND_CONTROL_MACHINE] = ITEM_USE_BUMP_TIME;
 		p->items[ITEM_BROKEN_MIND_CONTROL_MACHINE] -= 1;
+		p->bmcm_timer = MIND_CONTROL_DURATION;
 
 		for (int pI = 0; pI < pong_state->num_paddles; pI++) {
 			struct PaddleData *paddle = &pong_state->paddles[pI];
@@ -415,6 +416,17 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorder
 		p->pos.y = y_cap - p->paddle_thickness;
 	}
 	
+	// Update broken mind control machine 
+	if (p->bmcm_timer > 0) {
+		p->bmcm_timer -= dt;
+		if (p->bmcm_timer <= 0) {
+			for (int p_idx = 0; p_idx<state->pong_state->num_paddles; p_idx++) {
+				paddle_flip_across_axis(&state->pong_state->paddles[p_idx]);
+			}
+			p->item_cooldown_timers[ITEM_BROKEN_MIND_CONTROL_MACHINE] = MIND_CONTROL_COOLDOWN;
+		}
+	}
+	
 	// Cap position by world border
 	if (p->pos.x + p->paddle_width > borders.right) {
 		p->pos.x = borders.right - p->paddle_width;
@@ -428,6 +440,9 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorder
 		p->pos.y = borders.top;
 	}
 
+
+
+	// Update item timers
 	for (int i=0; i<NUM_ITEMS; i++) {
 		p->item_cooldown_timers[i] -= dt;
 		p->item_use_timers[i] -= dt;
