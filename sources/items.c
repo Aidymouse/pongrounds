@@ -17,7 +17,7 @@ const char *item_labels[] = {
 	"Antique Game Console",
 	"Cloning Vat",
 	"Legally Distinct Golden Snotch",
-	"Yo Momma", 
+	"Yo Mama", 
 	"Broken Mind Control Machine",
 	//"Underwear (Used)" 
 	"Mutant Mouse",
@@ -63,10 +63,10 @@ const char *item_filenames[] = {
 	"cards/antique game console.png", // Antique Game Console 
 	"cards/cloning vat.png", // Cloning Vat 
 	"cards/legally distinct golden snotch.png", // Legally Distinct Golden Snotch 
-	"cards/todo.png", // Yo Momma
-	"cards/todo.png", // Broken Mind Control Machine
+	"cards/yo mama.png", // Yo Momma
+	"cards/broken mind control machine.png", // Broken Mind Control Machine
 	//"cards/todo.png", // Underwear (Used)
-	"cards/todo.png", // Mutant Mouse
+	"cards/mutant mouse.png", // Mutant Mouse
 	"cards/sentient hand.png", // Sentient Hand
 };
 
@@ -84,11 +84,11 @@ const char *small_item_filenames[] = {
 	"small/russian secrets.png", // Russian Secrets
 	"small/press.png", // Hydraulic Press 
 	"small/antique game console.png", // Antique Game Console 
-	"small/todo.png", // Cloning Vat 
-	"small/todo.png", // Snotch 
+	"small/vat.png", // Cloning Vat 
+	"small/snotch.png", // Snotch 
 	"small/yo mama.png", // Yo Momma
-	"small/todo.png", // Broken Mind Control Machine
+	"small/mind control.png", // Broken Mind Control Machine
 	//"small/todo.png", // Underwear (Used)
-	"small/todo.png", // Mutant Mouse
+	"small/mutant mouse.png", // Mutant Mouse
 	"small/hand.png", // Sentient Hand
 };
