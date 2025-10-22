@@ -128,6 +128,9 @@ void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state
 	float width_penalty = CHASTITY_CAGE_WIDTH_PENALTY * opponent->items[ITEM_CHASTITY_CAGE];
 
 	p->paddle_width = PADDLE_DEFAULT_WIDTH + width_bonus - width_penalty;
+	if (p->paddle_width < PADDLE_MIN_WIDTH) {
+		p->paddle_width = PADDLE_MIN_WIDTH;
+	}
 
 	// Update Y Position (in case screen zoom has changed via nerd glasses). But only if you don't have omnidirectional movement
 	if (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS] == 0) {
