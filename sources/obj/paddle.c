@@ -45,7 +45,8 @@ void paddle_init(PaddleData *p) {
 	} 
 
 	p->cv_creator = NULL;
-	p->cv_clone = false;
+	//p->cv_clone = false;
+	p->cv_health = 0;
 	p->cv_num_clones = 0;
 	p->cv_lag_dist = 0;
 
@@ -151,8 +152,10 @@ void clone_paddle_init(struct PaddleData *c, struct PaddleData *creator) {
 	//paddle_init(c);
 	c->brain = PB_CLONE;
 	c->cv_creator = creator;
-	c->cv_clone = true;
+	//c->cv_clone = true;
 	c->cv_lag_dist = CV_DEFAULT_LAG_DISTANCE * creator->cv_num_clones;
+	c->cv_health = CV_CLONE_HEALTH + (c->items[ITEM_CLONING_VAT] - 1) * CV_CLONE_HEALTH_ADDITIONAL;
+
 	c->color = GRAY;
 	// Clones dont get items
 	for (int i=0; i<NUM_ITEMS; i++) {
@@ -193,7 +196,7 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 	}
 
 	// Antique Gaming Console
-	if (p->items[ITEM_ANTIQUE_GAME_CONSOLE] > 0) {
+	if (p->items[ITEM_ANTIQUE_GAME_CONSOLE] > 0 && p->item_cooldown_timers[ITEM_ANTIQUE_GAME_CONSOLE] <= 0) {
 		for (int i=0; i<pong_state->num_balls; i++) {
 			pong_state->balls[i].vel.x *= -1;
 			pong_state->balls[i].kb_dir.x *= -1;
@@ -207,12 +210,12 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 
 		p->items[ITEM_ANTIQUE_GAME_CONSOLE] -= 1;
 		p->item_use_timers[ITEM_ANTIQUE_GAME_CONSOLE] = ITEM_USE_BUMP_TIME;
+		p->item_cooldown_timers[ITEM_ANTIQUE_GAME_CONSOLE] = GAME_CONSOLE_COOLDOWN;
 
 	}
 
 	// Cloning Vat
-	if (p->items[ITEM_CLONING_VAT] > 0) {
-		p->items[ITEM_CLONING_VAT] -= 1;
+	if (p->items[ITEM_CLONING_VAT] > 0 && p->item_cooldown_timers[ITEM_CLONING_VAT] <= 0) {
 		PaddleData *c = paddle_spawn(pong_state);
 		if (c != NULL) { 
 			PaddleData clone = *p;
@@ -324,8 +327,13 @@ void paddle_brain_clone(struct PaddleData *paddle, struct GameState *state) {
 	struct BallData ball = pong_state->balls[0];
 
 	struct PaddleData *following = paddle->cv_creator;
+	following->item_cooldown_timers[ITEM_CLONING_VAT] = CV_CLONE_COOLDOWN;
 
 	float dist = following->pos.x - paddle->pos.x;
+
+	if (paddle->destroyed_timer > 0) { 
+		paddle->cv_health -= 5;
+	}
 
 	float MAX_DIST = paddle->cv_lag_dist;
 	if (dist * dist > MAX_DIST*MAX_DIST) {
@@ -338,6 +346,15 @@ void paddle_brain_clone(struct PaddleData *paddle, struct GameState *state) {
 	} else {
 		//paddle->vel.x = 0;
 		paddle->speed.x = 0;
+	}
+
+	if (paddle->cv_health <= 0) {
+		paddle->delete_me = true;
+		//following->item_cooldown_timers[ITEM_CLONING_VAT] = CV_CLONE_COOLDOWN;
+	}
+
+	if (paddle->cv_health == 1) {
+		paddle->color = CV_CLONE_DIRE;
 	}
 }
 
@@ -362,9 +379,6 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorder
 		paddle_player_control(dt, p, controls, state);
 
 	} else if (p->brain == PB_CLONE) {
-		if (p->destroyed_timer > 0) { 
-			printf("Marked for death\n");
-			p->delete_me = true; }
 
 		paddle_brain_clone(p, state);
 	}

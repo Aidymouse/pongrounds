@@ -144,7 +144,7 @@ int main(void)
 
 	/* DEBUG: hard code in some items
 	*/
-	int debug_item = ITEM_BROKEN_MIND_CONTROL_MACHINE;
+	int debug_item = ITEM_CLONING_VAT;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
 	//debug_item = ITEM_BROKEN_MIND_CONTROL_MACHINE;

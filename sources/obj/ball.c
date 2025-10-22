@@ -103,9 +103,9 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 			for (int i=0; i<HYDRAULIC_PRESS_NUM_BALLS; i++) {
 				struct BallData *new_ball = ball_clone(ball, state->pong_state);
 				if (new_ball == NULL) { continue; }
-				new_ball->radius = new_ball->radius * 0.3;
+				new_ball->radius = new_ball->radius * 0.5;
 				if ( new_ball->radius < 1 ) { new_ball->radius = 1; }
-				new_ball->score_damage = new_ball->score_damage / HYDRAULIC_DIVISOR;
+				new_ball->score_damage = new_ball->score_damage / HYDRAULIC_PRESS_NUM_BALLS + 1;
 				if (new_ball->score_damage < 1) { new_ball->score_damage = 1; }
 
 				new_ball->vel = Vec2Rotate(new_ball->vel, randInt(-20, 20));
@@ -343,6 +343,7 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 	}
 
 	// Russian secrets spiking
+	// This code is fine to stay here because we don't actually push the ball until the end
 	b->rs_spiked_speed_mult = 1;
 	if (p->items[ITEM_RUSSIAN_SECRETS] > 0) {
 		Rectangle rs_area = paddle_get_russian_secrets_rect(p);
@@ -363,9 +364,9 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 		}
 	}
 
-	// Cloning vat - destroy this paddle if it's a clone
+	// Cloning vat - lose some clone health
 	if (p->brain == PB_CLONE) {
-		p->delete_me = true;
+		p->cv_health -= 1;
 	}
 
 	// Snotch

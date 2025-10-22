@@ -130,10 +130,12 @@ typedef struct PaddleData {
 	int sword_frame;
 	int sword_anim_dir; // -1 if back, 1 if forward
 
-	bool cv_clone; // Clone paddles are destroyed when the ball hits them or their destroyed timer goes up by one
+	//bool cv_clone; // Clone paddles are destroyed when the ball hits them or their destroyed timer goes up by one
 	struct PaddleData *cv_creator;
 	int cv_num_clones;
 	int cv_lag_dist;
+
+	int cv_health;
 
 	bool bmcm_flipped; // false if not flipped, true if flipped
 	float bmcm_timer; // When this runs out, mind control stops

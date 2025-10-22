@@ -119,10 +119,17 @@
 // Cloning vat
 #define CV_DEFAULT_LAG_DISTANCE 100
 #define CV_CLONE_SPEED_MULT 0.8
+#define CV_CLONE_HEALTH 2
+#define CV_CLONE_HEALTH_ADDITIONAL 1 // Additional health for each paddle item
+#define CV_CLONE_COOLDOWN 15
+#define CV_CLONE_DIRE (Color){ 255, 0, 0, 255 }
 
 // Snotch
 #define SNOTCH_CHANCE 20
 #define SNOTCH_CHANCE_ADDITIONAL 20
+
+// Antique Game Console
+#define GAME_CONSOLE_COOLDOWN 5
 
 // Yo momma
 #define YM_RADIUS 120 // gravity strength is always 100% if the ball is in the gravity zone
