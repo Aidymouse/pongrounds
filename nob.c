@@ -51,7 +51,8 @@ int main(int argc, char **argv) {
 
 	#ifdef TARGET_UNIX
 		nob_cmd_append(&cmd, "clang", "-o", PROGRAM_NAME);
-	#elifdef TARGET_WIN32
+	#endif
+	#ifdef TARGET_WIN32
 		nob_cmd_append(&cmd, "mingw", "-o", PROGRAM_NAME);
 	#endif
 
