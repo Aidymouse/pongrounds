@@ -147,7 +147,7 @@ enum BallState {
 	BS_DESTROYED, // Doesn't update at all
 };
 
-struct BallData {
+typedef struct BallData {
 	Vector2 pos;
 	int radius;
 	// Actually the unit vector direction of velocity
@@ -181,7 +181,7 @@ struct BallData {
 	float mm_speed_bonus;
 	bool mutant_moused; // If true, the ball will accrue speed
 	
-};
+} BallData;
 
 typedef struct RocketData {
 	Vector2 pos;

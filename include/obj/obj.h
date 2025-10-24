@@ -36,7 +36,7 @@ void ball_respawn(struct BallData *b);
 void ball_reflect_wall(struct BallData *b);
 void ball_paddle_hit(struct BallData *b, PaddleData *p);
 void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct PlayerData *opponent);
-void ball_sword_hit(struct BallData *b, struct PongState *pong_state);
+void ball_sword_hit(struct BallData *b, struct PongState *pong_state, PaddleData *wielder);
 
 /** Sword **/
 void sword_swing(float dt, PaddleData *p);

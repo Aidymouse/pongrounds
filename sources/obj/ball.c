@@ -198,6 +198,17 @@ void ball_reflect_wall(struct BallData *b) {
 	}
 }
 
+/** Takes the normal from the plane to reflect on (a.k.a the base dir of the balls new random angle) */
+void ball_reflect(BallData *b, Vector2 norm) {
+		
+
+		// Find new dir
+		Vector2 new_dir = Vec2Rotate(norm, randInt(-60, 60));
+
+		b->vel = new_dir;
+	
+}
+
 void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 	
 	/** Push ball out of the paddle **/
@@ -293,10 +304,7 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 
 		adjusted_pos.y = center.y + Vec2MultScalar(base_dir, b->radius+p->paddle_thickness/2).y;
 
-		// Find new dir
-		Vector2 new_dir = Vec2Rotate(base_dir, randInt(-60, 60));
-
-		b->vel = new_dir;
+		ball_reflect(b, base_dir);
 
 	} else if (hit_face == 3) { // LEFT
 		adjusted_pos.x = center.x + Vec2MultScalar(facing_l, b->radius+p->paddle_width/2).x;
@@ -407,9 +415,10 @@ void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct Player
 }
 
 
-void ball_sword_hit(struct BallData *ball, struct PongState *pong_state) {
+void ball_sword_hit(struct BallData *ball, struct PongState *pong_state, PaddleData *wielder) {
 	// Split into two balls!
 	// Make this ball half, duplicate self
+	ball_reflect(ball, wielder->facing);
 	ball->radius = ball->radius*0.75;
 	if (ball->radius < 1) { ball->radius = 1; }
 	ball->score_damage /= 2;
@@ -464,7 +473,7 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 		// Sword
 		if (paddle->items[ITEM_CEREMONIAL_SWORD] > 0 && paddle->sword_timer > 0) {
 			if (CheckCollisionCircleRec(ball->pos, ball->radius, sword_get_hitbox(paddle))) {
-				ball_sword_hit(ball, state->pong_state);
+				ball_sword_hit(ball, state->pong_state, paddle);
 				paddle->sword_timer = 0;
 			}
 		}

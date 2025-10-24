@@ -143,6 +143,7 @@ int main(void)
 	player2.controls = p2_controls;
 
 	/* DEBUG: hard code in some items
+	*/
 	int debug_item = ITEM_CEREMONIAL_SWORD;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
@@ -153,7 +154,6 @@ int main(void)
 	p1->items[debug_item] += 1;
 	p1->items_total[debug_item] += 1;
 	// /DEBUG
-	*/
 
 	struct BallData ball;
 	ball_init(&ball);
