@@ -64,3 +64,14 @@ int singf(float f) {
 	if (f == 0) { return 0; }
 	return 1;
 }
+
+/** Returns true if the angle is between the shortest distance between two other angles */
+bool angle_is_between_two_others(float angle, float other1, float other2) {
+	
+	float shortest_dist = get_angle_distance(other1, other2);
+
+	float dist1 = get_angle_distance(angle, other1);
+	float dist2 = get_angle_distance(angle, other2);
+
+	return (fabsf(dist1) < fabsf(shortest_dist) && fabsf(dist2) < fabsf(shortest_dist));
+}

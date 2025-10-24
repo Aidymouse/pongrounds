@@ -215,84 +215,51 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 	// Four vecs to the paddles corners determine what the ball is bouncing off of
 	Vector2 center = paddle_center(p);
 
+	Vector2 adjusted_pos = b->pos;
+
+	// Determine which face of the 
 	Vector2 facing_l = Vec2Rotate(p->facing, -90);
 	Vector2 facing_r = Vec2Rotate(p->facing, 90);
 
-	Vector2 to_fl = Vec2Add(Vec2MultScalar(facing_l, p->paddle_width/2), Vec2MultScalar(p->facing, p->paddle_thickness/2));
-	Vector2 to_fr = Vec2Add(Vec2MultScalar(facing_r, p->paddle_width/2), Vec2MultScalar(p->facing, p->paddle_thickness/2));
-	Vector2 to_bl = Vec2Add(Vec2MultScalar(facing_l, (p->paddle_width/2 - 0)), Vec2MultScalar(p->facing, -p->paddle_thickness/2));
-	Vector2 to_br = Vec2Add(Vec2MultScalar(facing_r, (p->paddle_width/2 - 0)), Vec2MultScalar(p->facing, -p->paddle_thickness/2));
-
-	Vector2 fl = Vec2Add(center, to_fl);
-	Vector2 fr = Vec2Add(center, to_fr);
-	Vector2 bl = Vec2Add(center, to_bl);
-	Vector2 br = Vec2Add(center, to_br);
-
-	//printf("Corners: FL (%.2f, %.2f), FR (%.2f, %.2f), BL (%.2f, %.2f), BR (%.2f, %.2f)\n", fl.x, fl.y, fr.x, fr.y, bl.x, bl.y, br.x, br.y);
-
-	Vector2 adjusted_pos = b->pos;
-
-	Vector2 c_to_fl = Vec2Sub(fl, center);
-	Vector2 c_to_fr = Vec2Sub(fr, center);
-	Vector2 c_to_bl = Vec2Sub(bl, center);
-	Vector2 c_to_br = Vec2Sub(br, center);
-
-	float fl_ang = Vec2GetAngle(c_to_fl);
-	float fr_ang = Vec2GetAngle(c_to_fr);
-	float bl_ang = Vec2GetAngle(c_to_bl);
-	float br_ang = Vec2GetAngle(c_to_br);
-
-	// Do some adjusting if the ball is to the side of the paddle
-	Vector2 c_to_ball = Vec2Sub(b->pos, center);
-	float c_ang = Vec2GetAngle(c_to_ball);
-
-	/*
-	printf("    %.2f\n", c_ang);
-	printf("%.2f    %.2f\n", fl_ang, fr_ang);
-	printf("%.2f    %.2f\n", bl_ang, br_ang);
-	*/
-
-	float fl_dist = get_angle_distance(c_ang, fl_ang);
-	float fr_dist = get_angle_distance(c_ang, fr_ang);
-	float bl_dist = get_angle_distance(c_ang, bl_ang);
-	float br_dist = get_angle_distance(c_ang, br_ang);
-
-	/*
-	printf("%.2f    %.2f\n", fl_dist, fr_dist);
-	printf("%.2f    %.2f\n", bl_dist, br_dist);
-	*/
-
-	int hit_face; // 1 = front, 2 = back, 3 = left, 4 = right
-
-	if (fl_dist < 0 && 0 < fr_dist) {
-		printf("Front\n");
-		hit_face = 1; // Front
-	} else if (br_dist < 0 && 0 < bl_dist) {
-		printf("Back\n");
-		hit_face = 2; // Back
-	} else if (bl_dist < 0 && 0 < fl_dist) {
-		printf("Left\n");
-		hit_face = 3; // Left
-	} else if (fr_dist < 0 && 0 < br_dist) {
-		printf("Right\n");
-		hit_face = 4; // Right
-	}
-
-	// If we're suitably in the paddle y-wise, treat it as a side hit
-	
-	// If the top of the ball is 
-	//effective_wall_top = Vec2Add(center, Vec2MultScalar(p->facing, p->paddle_thickness/2)); // Top of paddle
-	//effective_wall_bottom = Vec2Add(center, Vec2MultScalar(p->facing, -1 * (p->paddle_thickness/2 + b->radius))); // Bottom of paddle
-
-	// TODO: the zone for collision for sides should be triangles
-	// This might be as simple as moving the center point in the corner calculations
-	// Wait, but actually.... the angles are just 45... I could maybe shortcut the whole thing
-	// hmm but the angle needs to be calculated from the foci not the center.
+	// The foci are at the point in the paddle you get if you follow the corners 45 degrees inwards
 	// ---------------------
 	// |\                 /|
 	// | >---------------< |
 	// |/                 \|
 	// ---------------------
+	Vector2 focus_l = Vec2Add(center, Vec2MultScalar(facing_l, (p->paddle_width/2) - p->paddle_thickness));
+	Vector2 focus_r = Vec2Add(center, Vec2MultScalar(facing_r, (p->paddle_width/2) - p->paddle_thickness));
+
+	float ang_l_front_left = Vec2GetAngle(facing_l) + 45;
+	float ang_l_back_left = Vec2GetAngle(facing_l)  - 45;
+
+	printf("Angles of Left Foci: FL %.2f, BL %.2f\n", ang_l_front_left, ang_l_back_left);
+
+	float ang_r_front_right = Vec2GetAngle(Vec2Rotate(facing_r, -45)); float ang_r_back_right = Vec2GetAngle(Vec2Rotate(facing_r, 45));
+
+	float ang_ball_l = Vec2GetAngle(Vec2Sub(b->pos, focus_l));
+	printf("Angles Ball->Left Focus: %.2f\n", ang_ball_l);
+	float ang_ball_r = Vec2GetAngle(Vec2Sub(b->pos, focus_r));
+
+	float ang_ball_center = Vec2GetAngle(Vec2Sub(b->pos, center));
+	float ang_facing = Vec2GetAngle(p->facing);
+	float facing_dist = get_angle_distance(ang_ball_center, ang_facing);
+
+	int hit_face = 0;
+
+	if (angle_is_between_two_others(ang_ball_l, ang_l_front_left, ang_l_back_left)) {
+		hit_face = 3;
+	} else if (angle_is_between_two_others(ang_ball_r, ang_r_front_right, ang_r_back_right)) {
+		hit_face = 4;
+	} else if (fabsf(facing_dist) > 90) {
+		hit_face = 2;
+	} else {
+		hit_face = 1;
+	}
+	
+	
+
+
 	if (hit_face == 1 || hit_face == 2) {
 
 		// Adjust ball to by just barely touching the paddle

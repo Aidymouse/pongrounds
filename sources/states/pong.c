@@ -371,4 +371,6 @@ void draw_pong(struct GameState *state) {
 		display_items(&state->pong_state->paddles[1], SCREEN_WIDTH-50, SCREEN_HEIGHT, -1, tex_small_items);
 		display_health(state->player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-10-10);
 
+		
+
 }
