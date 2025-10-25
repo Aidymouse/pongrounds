@@ -58,6 +58,38 @@ struct BallData *ball_clone(struct BallData *ball, struct PongState *pong_state)
 }
 
 
+// Game is sloooow if the ball ends up at a shallow angle. We limit it to no more than 
+// Note: Exceptions are hydraulic press balls or sword cut balls. I think if there's more than one it's okay for it to take ages
+void limit_ball_angle(BallData *ball) {
+	const float MAX_FROM_CENTER = 60;
+
+	float allowed_upper_l = -90 - MAX_FROM_CENTER;
+	float allowed_upper_r = -90 + MAX_FROM_CENTER;
+
+	float allowed_lower_l = 90 + MAX_FROM_CENTER;
+	float allowed_lower_r = 90 - MAX_FROM_CENTER;
+
+	float ball_angle = Vec2GetAngle(ball->vel);
+
+	if (angle_is_between_two_others(ball_angle, allowed_upper_r, allowed_lower_r)) {
+		float dist_up = get_angle_distance(ball_angle, allowed_upper_r);
+		float dist_down = get_angle_distance(ball_angle, allowed_lower_r);
+		if (dist_up < dist_down) {
+			ball->vel = Vec2Rotate(ball->vel, dist_up);
+		} else {
+			ball->vel = Vec2Rotate(ball->vel, dist_up);
+		}
+	} else if (angle_is_between_two_others(ball_angle, allowed_upper_l, allowed_lower_l)) {
+		float dist_up = get_angle_distance(ball_angle, allowed_upper_l);
+		float dist_down = get_angle_distance(ball_angle, allowed_lower_l);
+		if (dist_up < dist_down) {
+			ball->vel = Vec2Rotate(ball->vel, dist_up);
+		} else {
+			ball->vel = Vec2Rotate(ball->vel, dist_up);
+		}
+	}
+}
+
 /**
  */
 void ball_move(float dt, struct BallData *ball, struct GameState *state) {
@@ -233,12 +265,10 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 	float ang_l_front_left = Vec2GetAngle(facing_l) + 45;
 	float ang_l_back_left = Vec2GetAngle(facing_l)  - 45;
 
-	printf("Angles of Left Foci: FL %.2f, BL %.2f\n", ang_l_front_left, ang_l_back_left);
 
 	float ang_r_front_right = Vec2GetAngle(Vec2Rotate(facing_r, -45)); float ang_r_back_right = Vec2GetAngle(Vec2Rotate(facing_r, 45));
 
 	float ang_ball_l = Vec2GetAngle(Vec2Sub(b->pos, focus_l));
-	printf("Angles Ball->Left Focus: %.2f\n", ang_ball_l);
 	float ang_ball_r = Vec2GetAngle(Vec2Sub(b->pos, focus_r));
 
 	float ang_ball_center = Vec2GetAngle(Vec2Sub(b->pos, center));
@@ -275,7 +305,6 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 
 	} else if (hit_face == 3) { // LEFT
 		adjusted_pos.x = center.x + Vec2MultScalar(facing_l, b->radius+p->paddle_width/2).x;
-		printf("Left DX: %.2f, %.2f\n", b->pos.x, adjusted_pos.x);
 
 		Vector2 new_dir = Vec2Rotate(facing_l, randInt(-30, 0));
 		b->vel = new_dir;
@@ -284,7 +313,6 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 
 	} else if (hit_face == 4) { // RIGHT
 		adjusted_pos.x = center.x + Vec2MultScalar(facing_r, b->radius+p->paddle_width/2).x;
-		printf("Right DX: %.2f, %.2f\n", b->pos.x, adjusted_pos.x);
 
 		Vector2 new_dir = Vec2Rotate(facing_r, randInt(0, 30));
 		b->vel = new_dir;
@@ -324,7 +352,6 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 		Rectangle rs_area = paddle_get_russian_secrets_rect(p);
 		if (CheckCollisionCircleRec(b->pos, b->radius, rs_area)) {
 			b->rs_spiked_speed_mult = RUSSIAN_SECRETS_SPEED_MULT + p->items[ITEM_RUSSIAN_SECRETS]-1 * RUSSIAN_SECRETS_SPEED_ADDITIONAL;
-			printf("Spiked! %f\n", b->rs_spiked_speed_mult);
 			b->vel = p->facing;
 			p->item_use_timers[ITEM_RUSSIAN_SECRETS] = ITEM_USE_BUMP_TIME;
 			
@@ -371,6 +398,8 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 
 	/** Apply position adjustment from earlier detection */
 	b->pos = adjusted_pos;
+
+	limit_ball_angle(b);
 
 }
 
