@@ -91,22 +91,25 @@ void init_state_pong(struct PongState *pong_state) {
 
 void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {
 
+	const int SMALL_ITEM_SIZE = 32;
+
 	int item_type_count = 0;
 	if (dir == -1) { item_type_count = 1; }
 	for (int i=0; i<NUM_ITEMS; i++) {
 		int item_x = x;
-		int item_y = y+item_type_count*50*dir;
+		int item_y = y+item_type_count*SMALL_ITEM_SIZE*dir;
 
 		Color item_color = WHITE;
-		if (p->items[i] <= 0) { item_color = RED; }
-		if (p->item_use_timers[i] > 0) { item_color = BLUE; }
-		if (p->item_cooldown_timers[i] > 0) { item_color = GRAY; }
+		Color text_color = HACKER_GREEN;
+		if (p->items[i] <= 0) { item_color = RED; text_color = RED; }
+		if (p->item_use_timers[i] > 0) { item_color = BLUE; text_color = BLUE; }
+		if (p->item_cooldown_timers[i] > 0) { item_color = GRAY; text_color = GRAY; }
 
 		if (p->items_total[i] > 0 || p->items[i] > 0) {
 			DrawTexturePro(
 				textures[i], 
 				(Rectangle){0, 0, SMALL_ITEM_DIMS_PX, SMALL_ITEM_DIMS_PX},
-				(Rectangle){item_x, item_y, 50, 50},
+				(Rectangle){item_x, item_y, SMALL_ITEM_SIZE, SMALL_ITEM_SIZE},
 				(Vector2){0, 0},
 				0,
 				item_color
@@ -114,19 +117,15 @@ void display_items(PaddleData *p, int x, int y, int dir, Texture2D *textures) {
 			item_type_count += 1;
 		}
 
+
 		if (p->items_total[i] > 1 || (p->items_total[i] != 0 && p->items[i] != 1)) {
 			char s[16];
 			sprintf(s, "x%d", p->items[i]);
-			DrawText(s, item_x, item_y, 9, item_color);
+			DrawText(s, item_x, item_y, 9, text_color);
 		}
 
 
 		// TODO: color stolen items different
-		/**
-		char s2[16];
-		sprintf(s2, "x%f", p->item_cooldown_timers[i]);
-		DrawText(s2, item_x-50, item_y, 9, item_color);
-		*/
 	}
 }
 
@@ -368,7 +367,7 @@ void draw_pong(struct GameState *state) {
 		display_items(&state->pong_state->paddles[0], 0, 0, 1, tex_small_items);
 		display_health(state->player1, SCREEN_WIDTH/2, 10);
 
-		display_items(&state->pong_state->paddles[1], SCREEN_WIDTH-50, SCREEN_HEIGHT, -1, tex_small_items);
+		display_items(&state->pong_state->paddles[1], SCREEN_WIDTH-32, SCREEN_HEIGHT, -1, tex_small_items);
 		display_health(state->player2, SCREEN_WIDTH/2, SCREEN_HEIGHT-10-10);
 
 		
