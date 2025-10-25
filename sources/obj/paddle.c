@@ -503,11 +503,21 @@ void paddle_check_collisions(PaddleData *p, struct GameState *state) {
 
 void paddle_draw(PaddleData *p, bool debug) {
 			if (p->destroyed_timer > 0) { return; }
-			DrawRectangle(p->pos.x, p->pos.y, p->paddle_width, p->paddle_thickness, p->color);
+
+			Color draw_color = p->color;
+			if (p->invincibility_timer > 0) {
+				if (fmod(p->invincibility_timer, 0.5) < 0.25) {
+					draw_color = WHITE;
+				}
+			}
+
+			DrawRectangle(p->pos.x, p->pos.y, p->paddle_width, p->paddle_thickness, draw_color);
 
 			if (p->items[ITEM_CEREMONIAL_SWORD] > 0) {
 				sword_draw(p, debug);
 			}
+
+			
 
 			if (debug) {
 
