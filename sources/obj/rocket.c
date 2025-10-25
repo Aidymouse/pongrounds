@@ -54,7 +54,7 @@ void rocket_init(RocketData *r, PaddleData *spawner) {
 		r->speed = ROCKET_INIT_SPEED;
 		r->fall_timer = HANG_TIME; 
 		r->fall_vel = ROCKET_INIT_SPEED;
-		r->rot_force = randInt(-20, 20);
+		r->rot_force = randInt(-5, 5);
 		r->anim_frame = 1;
 		r->animation = &missile_init;
 		r->anim_timer = r->animation->frame_duration;
@@ -277,12 +277,7 @@ void rocket_draw(RocketData *r, bool debug) {
 
 
 	if (debug) {
-		DrawCircle(
-			r->pos.x,
-			r->pos.y,
-			3,
-			RED
-		);
+		DrawCircle(r->pos.x, r->pos.y, 3, RED);
 
 		// draw hitbox
 		Circle hit_circle = get_missile_head_hitbox(r);
