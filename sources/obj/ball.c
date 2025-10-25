@@ -209,7 +209,7 @@ void ball_reflect(BallData *b, Vector2 norm) {
 	
 }
 
-void ball_paddle_hit(struct BallData *b, PaddleData *p) {
+void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 	
 	/** Push ball out of the paddle **/
 	// Four vecs to the paddles corners determine what the ball is bouncing off of
@@ -327,6 +327,9 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p) {
 			printf("Spiked! %f\n", b->rs_spiked_speed_mult);
 			b->vel = p->facing;
 			p->item_use_timers[ITEM_RUSSIAN_SECRETS] = ITEM_USE_BUMP_TIME;
+			
+			game_state->screenshake_amplitude += RUSSIAN_SECRETS_SHAKE_AMPL;
+			game_state->screenshake_timer += RUSSIAN_SECRETS_SHAKE_TIME;
 		}
 	}
 
@@ -434,7 +437,7 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 		// Paddle Ball Collisions
 		struct Rectangle pRect = {paddle->pos.x, paddle->pos.y, paddle->paddle_width, paddle->paddle_thickness};
 		if (CheckCollisionCircleRec(ball->pos, ball->radius, pRect)) {
-			ball_paddle_hit(ball, paddle);
+			ball_paddle_hit(ball, paddle, state);
 		}
 
 		// Sword

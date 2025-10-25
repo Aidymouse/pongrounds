@@ -340,7 +340,7 @@ typedef struct MusicMind {
 	float fade_timer_start;
 } MusicMind;
 
-struct GameState {
+typedef struct GameState {
 	int state; // GAME_STATE
 
 	float hitstop_timer;
@@ -358,7 +358,7 @@ struct GameState {
 	float screenshake_freq_timer;
 	float screenshake_decay; // Screenshake will shake at amplitude until the timer runs out, then amplitude will reduce by decay until it reaches 0
 	float screenshake_amplitude; // How much to shake by
-};
+} GameState;
 
 
 

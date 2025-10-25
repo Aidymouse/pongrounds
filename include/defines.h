@@ -88,7 +88,7 @@
 // Rockets
 #define HANG_TIME (0.5)
 #define ROCKET_INIT_SPEED (200) // Speed rocket is thrust out of the paddle with
-#define ROCKET_FLY_INIT_SPEED (400) // Speed the rocket becomes when its thrusters activate
+#define ROCKET_FLY_INIT_SPEED (700) // Speed the rocket becomes when its thrusters activate
 #define ROCKET_ACCELERATION (20)
 #define GRAVITY (9.8) // Missile falls due to gravity while it's hanging
 #define MISSILE_TEX_DIMS_PX (128)
@@ -111,6 +111,8 @@
 #define RUSSIAN_SECRETS_SPEED_MULT 3
 #define RUSSIAN_SECRETS_SPEED_ADDITIONAL 0.5
 #define RS_SPIKE_DECELLERATION 0.2
+#define RUSSIAN_SECRETS_SHAKE_TIME 1
+#define RUSSIAN_SECRETS_SHAKE_AMPL 6
 
 // Hydraulic Press
 #define HYDRAULIC_PRESS_CHANCE 20

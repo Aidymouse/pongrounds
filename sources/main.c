@@ -61,6 +61,7 @@ void update_screenshake (float dt, struct GameState *state) {
 			if (state->screenshake_amplitude <= 0 || state->screenshake_decay <= 0) {
 				state->camera->offset = center;
 				state->screenshake_amplitude = 0;
+				state->screenshake_timer = 0;
 			}
 		}
 	}
@@ -145,7 +146,7 @@ int main(void)
 
 	/* DEBUG: hard code in some items
 	*/
-	int debug_item = ITEM_CEREMONIAL_SWORD;
+	int debug_item = ITEM_NUCLEAR_LAUNCH_CODES;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
 	debug_item = ITEM_CLONING_VAT;

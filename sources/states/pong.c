@@ -12,7 +12,7 @@
 #include "Vec2.h"
 #include "helper.h"
 
-#define NUM_FY_STRINGS 10
+#define NUM_FY_STRINGS 11
 
 const char* fuck_you_strings[] = {
 	"VICTORY",
