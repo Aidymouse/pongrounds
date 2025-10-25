@@ -1,3 +1,5 @@
+#include "structs.h"
+
 // TODO: these should be user defined somewhere
 #define P1_LEFT_KEY KEY_A // A Key
 #define P1_RIGHT_KEY KEY_D // D Key
@@ -12,3 +14,7 @@
 #define P2_ITEM_KEY KEY_P
 #define P2_UP_KEY KEY_UP 
 #define P2_DOWN_KEY KEY_DOWN
+
+void load_controls(PlayerData *p1, PlayerData *p2);
+
+void remap_control();

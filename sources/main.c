@@ -68,8 +68,6 @@ void update_screenshake (float dt, struct GameState *state) {
 }
 
 // TODO: load controls from file
-struct PaddleControls p1_controls = { P1_LEFT_KEY, P1_RIGHT_KEY, P1_DASH_KEY, P1_UP_KEY, P1_DOWN_KEY, P1_ITEM_KEY };
-struct PaddleControls p2_controls = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY, P2_UP_KEY, P2_DOWN_KEY, P2_ITEM_KEY };
 
 // MAIN //
 int main(void)
@@ -128,6 +126,7 @@ int main(void)
 	p2->color = ORANGE;
 	p2->facing = (Vector2){ 0, -1 };
 
+
 	struct PickItemsState pick_items_state;
 	init_state_pick_items(&pick_items_state);
 
@@ -136,19 +135,21 @@ int main(void)
 	struct PlayerData player1;
 	init_player(&player1);
 	player1.paddle = &pong_state.paddles[0];
-	player1.controls = p1_controls;
+	//player1.controls = p1_controls;
 
 	// Player 2
 	struct PlayerData player2;
 	init_player(&player2);
 	player2.paddle = &pong_state.paddles[1];
-	player2.controls = p2_controls;
+	//player2.controls = p2_controls;
+
+	load_controls(&player1, &player2);
 
 	/* DEBUG: hard code in some items
 	*/
 	int debug_item = ITEM_NUCLEAR_LAUNCH_CODES;
-	p2->items[debug_item] += 1;
-	p2->items_total[debug_item] += 1;
+	p2->items[debug_item] += 2;
+	p2->items_total[debug_item] += 2;
 	debug_item = ITEM_CLONING_VAT;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
@@ -182,6 +183,13 @@ int main(void)
     {
 		// TODO how to reset this on the first frame cos it takes ages to load the textures
 		dt = GetFrameTime();
+
+		/*
+		int key = GetKeyPressed();
+		if (key != 0) {
+			printf("Key: %d\n", key);
+		}
+		*/
 
 		// Update
 		music_mind_update(dt, &music_mind);

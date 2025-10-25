@@ -73,14 +73,14 @@ enum GAME_STATES {
 //}
 
 /** Objects **/
-struct PaddleControls {
+typedef struct PaddleControls {
 	int left;
 	int right;
 	int dash;
 	int up;
 	int down;
 	int item;
-};
+} PaddleControls;
 
 // Paddle
 typedef enum PaddleBrain {
@@ -213,11 +213,11 @@ typedef struct Explosion {
 	bool delete_me;
 } Explosion;
 
-struct PlayerData {
+typedef struct PlayerData {
 	int num_points;
 	PaddleData *paddle;
 	struct PaddleControls controls;
-};
+} PlayerData;
 
 
 
