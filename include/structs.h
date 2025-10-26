@@ -273,37 +273,54 @@ struct PickItemsState {
 };
 
 // Menu
-typedef struct MenuButton {
-	Rectangle dims;
-} MenuButton;
 
 typedef enum {
-	MENU_MAIN=0,
-	MENU_CONTROLS=1,
+	MENU_MAIN,
+	MENU_CONTROLS,
+	MENU_CREDITS,
 } MENU;
 
 typedef enum {
+	BTN_NULL, 
+
+	BTN_TITLE, // No really a button but idgaf
 	BTN_PLAY,
+	BTN_CREDITS,
 	BTN_QUIT,
+
+	BTN_TO_MAIN_MENU,
+	BTN_TO_KEYBINDS,
+
+	/*
+	BTN_REBIND_LEFT,
+	BTN_REBIND_RIGHT,
+	BTN_REBIND_UP,
+	BTN_REBIND_DOWN,
+	BTN_REBIND_ITEM,
+	BTN_REBIND_DASH,
+	*/
 } BUTTON;
 
-typedef struct Button {
+typedef struct MenuButton {
 	Rectangle dims;
 	Color color;
 	const char *text;
 	BUTTON id;
-} Button;
+} MenuButton;
+
+typedef enum CONTROL {
+	LEFT, RIGHT, UP, DOWN, ITEM, DASH, CTRL_NULL
+} CONTROL;
 
 typedef struct MenuState {
-	Button *current_menu;
-	int num_buttons;
-	Button *hovered; // Often NULL
-
-	Button main_buttons[32];
-	int num_main_buttons;
 	
-	int ui_idx;
+	MENU menu_id;
+	BUTTON hovered_id; // Often NULL
 
+	// Keybinds menu state
+	CONTROL rebinding;
+
+	/** Progress of the bars floating in the background */
 	float bar_progress;
 } MenuState;
 

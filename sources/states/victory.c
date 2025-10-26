@@ -11,7 +11,7 @@ void init_state_victory(VictoryState *victory_state) {
 const int bw = 200;
 const int bh = 80;
 const Rectangle rect_continue = { SCREEN_WIDTH/2 - bw - 30, 400, bw, bh};
-const Button btn_continue = {
+const MenuButton btn_continue = {
 	.dims = rect_continue,
 	.color = HACKER_GREEN,
 	.text = "Let it continue.\n",
@@ -19,7 +19,7 @@ const Button btn_continue = {
 };
 
 const Rectangle rect_end = { SCREEN_WIDTH/2 + 30, 400, bw, bh};
-const Button btn_end = {
+const MenuButton btn_end = {
 	.dims = rect_end,
 	.color = HACKER_GREEN,
 	.text = "It's over.",
@@ -81,8 +81,8 @@ void draw_victory(VictoryState *victory_state) {
 		DrawText("Show mercy and prolong the game?", SCREEN_WIDTH/2-w/2, 320, 20, HACKER_GREEN);
 
 		Vector2 mouse = GetMousePosition();
-		button_draw((Button*)&btn_continue, CheckCollisionPointRec(mouse, btn_continue.dims));
-		button_draw((Button*)&btn_end, CheckCollisionPointRec(mouse, btn_end.dims));
+		button_draw((MenuButton*)&btn_continue, CheckCollisionPointRec(mouse, btn_continue.dims));
+		button_draw((MenuButton*)&btn_end, CheckCollisionPointRec(mouse, btn_end.dims));
 	} else {
 		unsigned int b = BG_COLOR;
 		Color bg = GetColor(b);

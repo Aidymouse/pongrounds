@@ -22,6 +22,7 @@
 // Menu State
 #define MENU_SPEED 10
 #define MENU_LINE_DIST 10
+#define MAX_MENU_BUTTONS 8
 
 // Victory State
 #define VICTORY_FLASH_DURATION 5
