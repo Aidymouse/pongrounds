@@ -6,12 +6,17 @@
 struct PaddleControls p1_default = { P1_LEFT_KEY, P1_RIGHT_KEY, P1_DASH_KEY, P1_UP_KEY, P1_DOWN_KEY, P1_ITEM_KEY };
 struct PaddleControls p2_default = { P2_LEFT_KEY, P2_RIGHT_KEY, P2_DASH_KEY, P2_UP_KEY, P2_DOWN_KEY, P2_ITEM_KEY };
 
-void fallback_to_default_controls(PlayerData *p1, PlayerData *p2, FILE *file) {
-	printf("!!! FAILED TO PARSE CONFIG, USING DEFAULT !!!\n");
+void use_default_controls(PlayerData *p1, PlayerData *p2) {
 	p1->controls = p1_default;
 	p2->controls = p2_default;
+}
+
+void fallback_to_default_controls(PlayerData *p1, PlayerData *p2, FILE *file) {
+	printf("!!! FAILED TO PARSE CONFIG, USING DEFAULT !!!\n");
+	use_default_controls(p1, p2);
 	fclose(file);
 }
+
 
 /** Reads 7 lines, emitting controls into PaddleControls.
  * Returns the control code on success. 0 if there's no control
@@ -62,6 +67,11 @@ int parse_control(char line[200]) {
 
 /** Loads paddle controls into paddles by reference */
 void load_controls(PlayerData *p1, PlayerData *p2) {
+
+	// I couldn't be bothered getting rebindable controls working so I commented out the code that reads in from a file.
+	use_default_controls(p1, p2);
+
+	/*
 	FILE *ini;
 	ini = fopen("superpong.ini", "r");
 
@@ -121,6 +131,7 @@ void load_controls(PlayerData *p1, PlayerData *p2) {
 	p2->controls = pc2;
 	//fallback_to_default_controls(p1, p2, ini);
 	//fclose(ini);
+	*/
 }
 
 
