@@ -31,9 +31,7 @@ void roll_items(struct PickItemsState *state) {
 
 	
 
-	state->item_choices[0] = ITEM_EXPIRED_PANADOL;
-	state->item_choices[1] = ITEM_CHERRY_BLOSSOM_CLOAK;
-	state->item_choices[2] = ITEM_HYPERGONADISM;
+	state->item_choices[0] = ITEM_SENTIENT_HAND;
 }
 
 Rectangle get_rect_for_item_idx(int idx, int num_cards) {

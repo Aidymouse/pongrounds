@@ -23,7 +23,7 @@ const ItemData item_info[] = {
 	},
 	{
 		.label = "Chastity Cage",
-		.description = "Makes your opponents paddle shorter", // Chastity Cage
+		.description = "Shortens the\nopponents paddle", // Chastity Cage
 		.label_offset = 0,
 		.description_offset = 0,
 	},
@@ -35,73 +35,73 @@ const ItemData item_info[] = {
 	},
 	{
 		.label = "Ceremonial Sword",
-		.description = "Gives you a sword", // Ceremonial Sword
+		.description = "Gives the paddle\na sword", // Ceremonial Sword
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
-		.label = "Time Wizards Chronometer",
-		.description = "Slows down the ball in a zone", // Time Wizards Chronometer
+		.label = "Time Wizards\nChronometer",
+		.description = "Slows time near\nthe paddle", // Time Wizards Chronometer
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
-		.label = "Bachelor of Psychology (Hons)",
-		.description = "Lets you move vertically", // Bachelor of psychology (hons)
+		.label = "Bachelor of\nPsychology (Hons)",
+		.description = "Enables up and down\nmovement", // Bachelor of psychology (hons)
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
 		.label = "Niekro Trading Card",
-		.description = "Chance to launch a knuckeball on bounce", // Niekro Trading Card
+		.description = "Each hit has a\nchance to launch\na knuckeball", // Niekro Trading Card
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
-		.label = "Nuclear Launch Codes",
-		.description = "Lets you shoot a missile", // Nuclear Launch Codes
+		.label = "Nuclear Launch\nCodes",
+		.description = "Gives the paddle\na missile", // Nuclear Launch Codes
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
 		.label = "Russian Secrets",
-		.description = "Spikes the ball if it hits dead center of the paddle", // Russian Secrets
+		.description = "Hitting the paddle\ndead-center spikes\nthe ball", // Russian Secrets
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
 		.label = "Hydraulic Press",
-		.description = "Chance to crush the ball", // Hydraulic Press
+		.description = "Each hit has a chance\nto crush the ball", // Hydraulic Press
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
-		.label = "Antique Game Console",
-		.description = "Lets you reflect the balls movement", // Antique game console
+		.label = "Antique Game\nConsole",
+		.description = "Reflects the balls\nhorizontal movement\nwhen activated", // Antique game console
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
 		.label = "Cloning Vat",
-		.description = "Lets you create another paddle", // Cloning Vat
+		.description = "Lets the paddle\nspawn a clone", // Cloning Vat
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
-		.label = "Legally Distinct Golden Snotch",
-		.description = "Chance of doubling ball damage on paddle hit", // Legally Distinct Golden Snotch
+		.label = "Legally Distinct\nGolden Snotch",
+		.description = "Each hit has a\nchance of doubling\nthe balls damage.", // Legally Distinct Golden Snotch
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
 		.label = "Yo Mama",
-		.description = "Gives your paddle gravity", // Yo Momma
+		.description = "Gives the paddle\ngravity", // Yo Momma
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
-		.label = "Broken Mind Control Machine",
-		.description = "Switch sides with opponent", // Broken Mind Control Machine
+		.label = "Broken Mind\nControl Machine",
+		.description = "Switches sides with\nthe opponent when\nactivated", // Broken Mind Control Machine
 		.label_offset = 0,
 		.description_offset = 0,
 	},
@@ -115,13 +115,13 @@ const ItemData item_info[] = {
 	*/
 	{
 		.label = "Mutant Mouse",
-		.description = "Ball may run away from you", // Mutant Mouse
+		.description = "Each hit has a\nchance of making the\nball run away", // Mutant Mouse
 		.label_offset = 0,
 		.description_offset = 0,
 	},
 	{
 		.label = "Sentient Hand",
-		.description = "Steal a random item from opponent at the start of the round", // Sentient Hand
+		.description = "Steal a random item\nfrom opponent at the\nstart of the round", // Sentient Hand
 		.label_offset = 0,
 		.description_offset = 0,
 	},
