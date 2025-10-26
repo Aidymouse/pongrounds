@@ -1,7 +1,13 @@
 #include "raylib.h"
 
+typedef enum TextAnchor {
+	TA_CENTER,
+	TA_BOTTOM,
+	TA_TOP,
+} TextAnchor;
+
 int randInt(int lower, int higher);
-void DrawTextCentered(const char* t, int x, int y, int fontSize, Color color);
+void DrawTextCentered(const char* t, int x, int y, int fontSize, Color color, TextAnchor anchor);
 float get_angle_distance(float angle1, float angle2);
 const char *strconcat(const char *s1, const char *s2);
 void DrawPolygon(const Vector2 *points, int num_points, float thickness, Color color);

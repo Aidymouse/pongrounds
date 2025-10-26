@@ -5,6 +5,7 @@
 #include "raylib.h"
 #include "defines.h"
 
+
 enum Items {
 	ITEM_EXPIRED_PANADOL=0, // Higher than 0 and the ball will respawn on score, decrementing this number
 	ITEM_CHERRY_BLOSSOM_CLOAK=1, // Let's the paddle dash
@@ -27,6 +28,13 @@ enum Items {
 	ITEM_MUTANT_MOUSE=17,
 	ITEM_SENTIENT_HAND=18,
 };
+
+typedef struct ItemData {
+	const char* label;
+	const char* description;
+	const char* label_offset;
+	const char* description_offset;
+} ItemData;
 
  
 typedef struct Animation {

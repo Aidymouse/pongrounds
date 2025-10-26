@@ -1,50 +1,130 @@
 
 #include "items.h"
+#include "structs.h"
 
-const char *item_labels[] = {
-	"Expired Panadol",
-	"Cherry Blossom Cloak",
-	"Hyper Gonadism",
-	"Chastity Cage",
-	"Nerd Glasses",
-	"Ceremonial Sword",
-	"Time Wizards Chronometer",
-	"Bachelor of Psychology (Hons)",
-	"Niekro Trading Card",
-	"Nuclear Launch Codes",
-	"Russian Secrets",
-	"Hydraulic Press",
-	"Antique Game Console",
-	"Cloning Vat",
-	"Legally Distinct Golden Snotch",
-	"Yo Mama", 
-	"Broken Mind Control Machine",
-	//"Underwear (Used)" 
-	"Mutant Mouse",
-	"Sentient Hand",
-};
-
-const char *item_descriptions[] = {
-	"Prevents you from losing, once", // Expired Panadol
-	"Lets you dash", // Cherry Blossom Cloak
-	"Makes your paddle wider",
-	"Makes your opponents paddle shorter", // Chastity Cage
-	"Zooms out", // Nerd Glasses
-	"Gives you a sword", // Ceremonial Sword
-	"Slows down the ball in a zone", // Time Wizards Chronometer
-	"Lets you move vertically", // Bachelor of psychology (hons)
-	"Chance to launch a knuckeball on bounce", // Niekro Trading Card
-	"Lets you shoot a missile", // Nuclear Launch Codes
-	"Spikes the ball if it hits dead center of the paddle", // Russian Secrets
-	"Chance to crush the ball", // Hydraulic Press
-	"Lets you reflect the balls movement", // Antique game console
-	"Lets you create another paddle", // Cloning Vat
-	"Chance of doubling ball damage on paddle hit", // Legally Distinct Golden Snotch
-	"Gives your paddle gravity", // Yo Momma
-	"Switch sides with opponent", // Broken Mind Control Machine
-	//"", // Underwear (Used)
-	"Ball may run away from you", // Mutant Mouse
-	"Steal a random item from opponent at the start of the round", // Sentient Hand
+const ItemData item_info[] = {
+	{
+		.label = "Expired Panadol",
+		.description = "Prevents you from\nlosing, once", // Expired Panadol
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Cherry Blossom Cloak",
+		.description = "Lets you dash", // Cherry Blossom Cloak
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Hyper Gonadism",
+		.description = "Makes your paddle\nwider",
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Chastity Cage",
+		.description = "Makes your opponents paddle shorter", // Chastity Cage
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Nerd Glasses",
+		.description = "Zooms out", // Nerd Glasses
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Ceremonial Sword",
+		.description = "Gives you a sword", // Ceremonial Sword
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Time Wizards Chronometer",
+		.description = "Slows down the ball in a zone", // Time Wizards Chronometer
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Bachelor of Psychology (Hons)",
+		.description = "Lets you move vertically", // Bachelor of psychology (hons)
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Niekro Trading Card",
+		.description = "Chance to launch a knuckeball on bounce", // Niekro Trading Card
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Nuclear Launch Codes",
+		.description = "Lets you shoot a missile", // Nuclear Launch Codes
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Russian Secrets",
+		.description = "Spikes the ball if it hits dead center of the paddle", // Russian Secrets
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Hydraulic Press",
+		.description = "Chance to crush the ball", // Hydraulic Press
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Antique Game Console",
+		.description = "Lets you reflect the balls movement", // Antique game console
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Cloning Vat",
+		.description = "Lets you create another paddle", // Cloning Vat
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Legally Distinct Golden Snotch",
+		.description = "Chance of doubling ball damage on paddle hit", // Legally Distinct Golden Snotch
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Yo Mama",
+		.description = "Gives your paddle gravity", // Yo Momma
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Broken Mind Control Machine",
+		.description = "Switch sides with opponent", // Broken Mind Control Machine
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	/* 
+	{
+		.label = //"Underwear (Used)",
+		.description = //"", // Underwear (Used)
+		.label_offset = 0,
+		.description_offset = 0,
+	}
+	*/
+	{
+		.label = "Mutant Mouse",
+		.description = "Ball may run away from you", // Mutant Mouse
+		.label_offset = 0,
+		.description_offset = 0,
+	},
+	{
+		.label = "Sentient Hand",
+		.description = "Steal a random item from opponent at the start of the round", // Sentient Hand
+		.label_offset = 0,
+		.description_offset = 0,
+	},
 };
 
 const char *item_filenames[] = {

@@ -55,7 +55,7 @@ void display_fuck_you(struct PongState *pong_state) {
 		
 	}
 	
-	DrawTextCentered(fy_string, SCREEN_WIDTH/2+offset.x, SCREEN_HEIGHT/2+offset.y, font_size, RED);
+	DrawTextCentered(fy_string, SCREEN_WIDTH/2+offset.x, SCREEN_HEIGHT/2+offset.y, font_size, RED, TA_CENTER);
 	DrawRectangleLinesEx((Rectangle){
 		SCREEN_WIDTH/2-(string_width+60)/2,
 		SCREEN_HEIGHT/2-(font_size+20)/2,
@@ -143,7 +143,7 @@ void display_score(struct PlayerData *pl, int x, int y, float alpha) {
 	sprintf(score, "%d", pl->num_points);
 	Color score_color = HACKER_GREEN;
 	score_color.a = alpha;
-	DrawTextCentered(score, x, y, 200, score_color);
+	DrawTextCentered(score, x, y, 200, score_color, TA_CENTER);
 }
 
 

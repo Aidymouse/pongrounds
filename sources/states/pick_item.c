@@ -31,7 +31,9 @@ void roll_items(struct PickItemsState *state) {
 
 	
 
-	//state->item_choices[0] = ITEM_RUSSIAN_SECRETS;
+	state->item_choices[0] = ITEM_EXPIRED_PANADOL;
+	state->item_choices[1] = ITEM_CHERRY_BLOSSOM_CLOAK;
+	state->item_choices[2] = ITEM_HYPERGONADISM;
 }
 
 Rectangle get_rect_for_item_idx(int idx, int num_cards) {
@@ -92,9 +94,9 @@ void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 
 	// Who is picking
 	if (choosing_paddle->id == 1) {
-		DrawTextCentered("Player 1 To Choose", SCREEN_WIDTH/2, 120, 40, choosing_paddle->color);
+		DrawTextCentered("Player 1 To Choose", SCREEN_WIDTH/2, 120, 40, choosing_paddle->color, TA_CENTER);
 	} else if (choosing_paddle->id == 2) {
-		DrawTextCentered("Player 2 To Choose", SCREEN_WIDTH/2, 120, 40, choosing_paddle->color);
+		DrawTextCentered("Player 2 To Choose", SCREEN_WIDTH/2, 120, 40, choosing_paddle->color, TA_CENTER);
 	}
 
 	// Show items
@@ -103,7 +105,7 @@ void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 		Rectangle item_rect = get_rect_for_item_idx(i, state->num_item_choices);
 		Color card_color = HACKER_GREEN;
 
-		if (is_hovered) { card_color = RED; } 
+		if (is_hovered) { card_color = state->choosing_player->paddle->color; } 
 
 		DrawRectangleLines(item_rect.x, item_rect.y, item_rect.width, item_rect.height, card_color);
 
@@ -119,9 +121,23 @@ void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 		);
 
 		if (is_hovered) {
-			DrawTextCentered( item_descriptions[state->item_choices[i]], item_rect.x+item_rect.width/2, item_rect.y+item_rect.height-50, 11, card_color );
+			DrawTextCentered(
+				item_info[state->item_choices[i]].description,
+				item_rect.x+item_rect.width/2,
+				item_rect.y+item_rect.height-15,
+				14,
+				card_color,
+				TA_BOTTOM
+			);
 		} else {
-			DrawTextCentered( item_labels[state->item_choices[i]], item_rect.x+item_rect.width/2, item_rect.y+item_rect.height-25, 15, card_color );
+			DrawTextCentered(
+				item_info[state->item_choices[i]].label, 
+				item_rect.x+item_rect.width/2,
+				item_rect.y+item_rect.height-15,
+				15,
+				card_color,
+				TA_BOTTOM
+			 );
 		}
 
 	}

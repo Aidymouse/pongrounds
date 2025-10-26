@@ -188,7 +188,7 @@ void button_draw(MenuButton *btn, bool hovered) {
 			DrawRectangleRec(btn->dims, h);
 		}
 		DrawRectangleLinesEx(btn->dims, 2, btn->color);
-		DrawTextCentered(btn->text, btn->dims.x + btn->dims.width/2, btn->dims.y+btn->dims.height/2, 20, btn->color);
+		DrawTextCentered(btn->text, btn->dims.x + btn->dims.width/2, btn->dims.y+btn->dims.height/2, 20, btn->color, TA_CENTER);
 }
 
 void draw_menu(MenuState *menu_state) {
@@ -206,7 +206,7 @@ void draw_menu(MenuState *menu_state) {
 	for (int b=0; b<num_buttons; b++) {
 		MenuButton btn = buttons[b];
 		if (btn.id == BTN_TITLE) {
-			DrawTextCentered("SUPER PONG", SCREEN_WIDTH/2, 110, 100, HACKER_GREEN);
+			DrawTextCentered("SUPER PONG", SCREEN_WIDTH/2, 110, 100, HACKER_GREEN, TA_CENTER);
 		} else {
 			MenuButton copy = btn;
 			Vector2 inferred = infer_button_pos(menu_state, &btn, b, num_buttons);
@@ -281,16 +281,16 @@ void draw_menu(MenuState *menu_state) {
 	if (menu_state->menu_id == MENU_CREDITS) {
 		DrawRectangle(50, 50, SCREEN_WIDTH-100, SCREEN_HEIGHT - 100 - button_height - 50, bg_controls);
 
-		DrawTextCentered("PROGRAMMING", SCREEN_WIDTH/2, y, 40, HACKER_GREEN);
-		DrawTextCentered("Aidan Habedank", SCREEN_WIDTH/2, y+40, 40, HACKER_GREEN);
+		DrawTextCentered("PROGRAMMING", SCREEN_WIDTH/2, y, 40, HACKER_GREEN, TA_CENTER);
+		DrawTextCentered("Aidan Habedank", SCREEN_WIDTH/2, y+40, 40, HACKER_GREEN, TA_CENTER);
 
 		y += 130;
-		DrawTextCentered("GRAPHICS", SCREEN_WIDTH/2, y, 40, HACKER_GREEN);
-		DrawTextCentered("Jeffrey Yu", SCREEN_WIDTH/2, y+40, 40, HACKER_GREEN);
+		DrawTextCentered("GRAPHICS", SCREEN_WIDTH/2, y, 40, HACKER_GREEN, TA_CENTER);
+		DrawTextCentered("Jeffrey Yu", SCREEN_WIDTH/2, y+40, 40, HACKER_GREEN, TA_CENTER);
 
 		y += 130;
-		DrawTextCentered("MUSIC", SCREEN_WIDTH/2, y, 40, HACKER_GREEN);
-		DrawTextCentered("Jacob Wesley Tantleff", SCREEN_WIDTH/2, y+40, 40, HACKER_GREEN);
+		DrawTextCentered("MUSIC", SCREEN_WIDTH/2, y, 40, HACKER_GREEN, TA_CENTER);
+		DrawTextCentered("Jacob Wesley Tantleff", SCREEN_WIDTH/2, y+40, 40, HACKER_GREEN, TA_CENTER);
 	}
 
 

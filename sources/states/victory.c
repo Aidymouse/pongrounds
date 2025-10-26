@@ -75,7 +75,7 @@ void draw_victory(VictoryState *victory_state) {
 		char n[128];
 		sprintf(n, "Player %d has acquired the necessary amount of points\nto be determined the victor.", victory_state->victor->paddle->id);
 		float w = MeasureText(n, 20);
-		DrawTextCentered(n, SCREEN_WIDTH/2, 140, 20, HACKER_GREEN);
+		DrawTextCentered(n, SCREEN_WIDTH/2, 140, 20, HACKER_GREEN, TA_CENTER);
 		DrawText(pn, SCREEN_WIDTH/2-w/2, 140-10, 20, victory_state->victor->paddle->color);
 		DrawText("And yet the clock is still ticking.", SCREEN_WIDTH/2-w/2, 240, 20, HACKER_GREEN);
 		DrawText("Show mercy and prolong the game?", SCREEN_WIDTH/2-w/2, 320, 20, HACKER_GREEN);
@@ -90,9 +90,9 @@ void draw_victory(VictoryState *victory_state) {
 		DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, bg);
 
 		if (victory_state->flash_timer > 1) {
-			DrawTextCentered(pn, SCREEN_WIDTH/2, SCREEN_HEIGHT/2-100, 100, victory_state->victor->paddle->color);
+			DrawTextCentered(pn, SCREEN_WIDTH/2, SCREEN_HEIGHT/2-100, 100, victory_state->victor->paddle->color, TA_CENTER);
 			if ((int)(victory_state->flash_timer / 0.5) % 2 == 1) {
-				DrawTextCentered("GLORIOUS VICTOR", SCREEN_WIDTH/2, SCREEN_HEIGHT/2+100, 80, HACKER_GREEN);
+				DrawTextCentered("GLORIOUS VICTOR", SCREEN_WIDTH/2, SCREEN_HEIGHT/2+100, 80, HACKER_GREEN, TA_CENTER);
 			}
 		}
 	}

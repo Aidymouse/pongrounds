@@ -9,9 +9,48 @@ int randInt(int lower, int upper) {
 	return rand() % (upper - lower + 1) + lower;
 }
 
-void DrawTextCentered(const char *t, int x, int y, int fontSize, Color color) {
-	int width = MeasureText(t, fontSize);
-	DrawText(t, x-width/2, y-fontSize/2, fontSize, color);
+void DrawTextCentered(const char *t, int x, int y, int fontSize, Color color, TextAnchor anchor) {
+
+	// Find Height
+	int h_lines = 1; // You might think lines should start at 1 since we always have one at least, but the math on position works out that we don't need to subtract anything unless there's more than one
+	int si = 0;
+	while (t[si] != 0) {
+		si += 1;
+		if (t[si] == '\n') { h_lines += 1; }
+	}
+	int total_height = h_lines * fontSize;
+
+	// Render each line of text centered by offsetting width
+	int line_num = 0;
+	char line[256] = {0};
+	int line_idx = 0;
+
+	si = -1;
+
+	int offset = -fontSize/2; // Centered by default
+
+	if (anchor == TA_BOTTOM) {
+		offset = -total_height;
+	} else if (anchor == TA_TOP) {
+		offset = 0;
+	}
+
+	while ((si == -1 || t[si] != 0) && line_idx < 256) {
+		si += 1;
+		if (t[si] == '\n' || t[si] == 0) {
+			int width = MeasureText(line, fontSize);
+			//printf("%s\n", line);
+			DrawText(line, x-width/2, y+(fontSize*line_num)+offset, fontSize, color);
+			//line = {0};
+			line_idx = 0;
+			line_num += 1;
+		} else {
+			line[line_idx] = t[si];
+			if (line_idx < 256) { line[line_idx+1] = 0; }
+			line_idx += 1;
+		}
+	}
+
 }
 
 void DrawPolygon(const Vector2 *points, int num_points, float thickness, Color color) {
