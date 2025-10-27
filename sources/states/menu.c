@@ -1,20 +1,20 @@
-#include "states/states.h"
-#include "structs.h"
-#include "helper.h"
-#include "raylib.h"
-#include <stdio.h>
-#include "state_change.h"
-#include <math.h>
-#include "defines.h"
+	#include "states/states.h"
+	#include "structs.h"
+	#include "helper.h"
+	#include "raylib.h"
+	#include <stdio.h>
+	#include "state_change.h"
+	#include <math.h>
+	#include "defines.h"
 
-const int button_width = 200;
-const int button_height = 60;
-const Rectangle autospace = { .x = -1, .y = -1, .width = button_width, .height = button_height };
+	const int button_width = 250;
+	const int button_height = 60;
+	const Rectangle autospace = { .x = -1, .y = -1, .width = button_width, .height = button_height };
 
-int num_btns_main_menu = 5;
+	int num_btns_main_menu = 5;
 MenuButton main_menu[MAX_MENU_BUTTONS] = {
 	{ .dims = (Rectangle){-1, -1, 0, 0}, .color = HACKER_GREEN, .text = "SUPER PONG", .id = BTN_TITLE, },
-	{ .dims = autospace, .color = HACKER_GREEN, .text = "Play", .id = BTN_PLAY, },
+	{ .dims = autospace, .color = HACKER_GREEN, .text = "Play", .id = BTN_TO_PLAY, },
 	{ .dims = autospace, .color = HACKER_GREEN, .text = "Controls", .id = BTN_TO_KEYBINDS, },
 	{ .dims = autospace, .color = HACKER_GREEN, .text = "Credits", .id = BTN_CREDITS, },
 	{ .dims = autospace, .color = HACKER_GREEN, .text = "Quit", .id = BTN_QUIT },
@@ -31,6 +31,21 @@ MenuButton controls_menu[MAX_MENU_BUTTONS] = {
 int num_btns_credits = 1;
 MenuButton credits_menu[MAX_MENU_BUTTONS] = {
 	{ .dims = (Rectangle){50, SCREEN_HEIGHT-button_height-50, button_width, button_height}, .color = HACKER_GREEN, .text = "< Back", .id = BTN_TO_MAIN_MENU, },
+	0
+};
+
+int num_btns_play = 3;
+MenuButton play_menu[MAX_MENU_BUTTONS] = {
+	{ .dims = (Rectangle){SCREEN_WIDTH/2 - button_width - 25, SCREEN_HEIGHT/2 - button_height/2, button_width, button_height}, .color = HACKER_GREEN, .text = "One Player", .id = BTN_ONE_PLAYER, },
+	{ .dims = (Rectangle){SCREEN_WIDTH/2 + 25, SCREEN_HEIGHT/2 - button_height/2, button_width, button_height}, .color = HACKER_GREEN, .text = "Two Player", .id = BTN_TWO_PLAYER, },
+	{ .dims = (Rectangle){50, SCREEN_HEIGHT-button_height-50, button_width, button_height}, .color = HACKER_GREEN, .text = "< Back", .id = BTN_TO_MAIN_MENU, },
+	0
+};
+
+int num_btns_pause = 2;
+MenuButton pause_menu[MAX_MENU_BUTTONS] = {
+	{ .dims = autospace, .color = HACKER_GREEN, .text = "Resume", .id = BTN_RESUME, },
+	{ .dims = autospace, .color = HACKER_GREEN, .text = "Back to Main Menu", .id = BTN_STOP_PLAYING, },
 	0
 };
 
@@ -69,6 +84,12 @@ void select_menu(MENU menu_id, MenuButton **buttons, int *num_buttons) {
 	if (menu_id == MENU_MAIN) {
 		*buttons = (MenuButton*)main_menu;
 		*num_buttons = num_btns_main_menu;
+	} else if (menu_id == MENU_PLAY) {
+		*buttons = (MenuButton*)play_menu;
+		*num_buttons = num_btns_play;
+	} else if (menu_id == MENU_PAUSE) {
+		*buttons = (MenuButton*)pause_menu;
+		*num_buttons = num_btns_pause;
 	} else if (menu_id == MENU_CONTROLS) {
 		*buttons = (MenuButton*)controls_menu;
 		*num_buttons = num_btns_controls;
@@ -79,29 +100,39 @@ void select_menu(MENU menu_id, MenuButton **buttons, int *num_buttons) {
 
 }
 
-void perform_button_action(BUTTON button_id, GameState *state) {
-	if (button_id == BTN_PLAY) {
+void perform_button_action(BUTTON button_id, MenuState *menu_state, GameState *state) {
+	if (button_id == BTN_TO_PLAY) {
+		menu_state->menu_id = MENU_PLAY;
+	} else if (button_id == BTN_ONE_PLAYER) {
+		// TODO
+		printf("One Player TODO\n");
 		change_state_to_pong(state);
-
+		state->player1->paddle->brain = PB_COMPUTER;
+	} else if (button_id == BTN_TWO_PLAYER) {
+		change_state_to_pong(state);
 	} else if (button_id == BTN_QUIT) {
 		state->quit_please = true;
 
 	} else if (button_id == BTN_CREDITS) {
-		state->menu_state->menu_id = MENU_CREDITS;
+		menu_state->menu_id = MENU_CREDITS;
 		
 	} else if (button_id == BTN_TO_MAIN_MENU) {
-		state->menu_state->menu_id = MENU_MAIN;
+		menu_state->menu_id = MENU_MAIN;
 	
 	} else if (button_id == BTN_TO_KEYBINDS) {
-		state->menu_state->menu_id = MENU_CONTROLS;
+		menu_state->menu_id = MENU_CONTROLS;
+	} else if (button_id == BTN_RESUME) {
+		state->state = state->pause_state->prior_state;
+	} else if (button_id == BTN_STOP_PLAYING) {
+		//state->state = state->pause_state->prior_state;
+		change_state_to_menu(state);
 	}
 
-	state->menu_state->hovered_id = BTN_NULL;
+	menu_state->hovered_id = BTN_NULL;
 }
 
 /** State fn for the menu */
-void state_menu(float dt, struct GameState *state) {
-	MenuState *menu_state = state->menu_state;
+void state_menu(float dt, MenuState *menu_state, GameState *state) {
 
 	Vector2 mouse = GetMousePosition();
 	
@@ -122,7 +153,7 @@ void state_menu(float dt, struct GameState *state) {
 			menu_state->hovered_id = btn->id;
 
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-				perform_button_action(btn->id, state);
+				perform_button_action(btn->id, menu_state, state);
 			}
 		}
 	}
@@ -195,7 +226,9 @@ void draw_menu(MenuState *menu_state) {
 
 
 	// Draw the menu
-	draw_cool_background(menu_state);
+	if (menu_state->menu_id != MENU_PAUSE) {
+		draw_cool_background(menu_state);
+	}
 
 	MenuButton *buttons;
 	int num_buttons;
@@ -242,8 +275,8 @@ void draw_menu(MenuState *menu_state) {
 	if (menu_state->menu_id == MENU_CONTROLS) {
 		DrawRectangle(50, 50, SCREEN_WIDTH-100, SCREEN_HEIGHT - 100 - button_height - 50, bg_controls);
 
-		DrawText("Player 1", p1x, y, font_size, BLUE);
-		DrawText("Player 2", p2x, y, font_size, ORANGE);
+		DrawText("Player 1", p1x, y, font_size, ORANGE);
+		DrawText("Player 2", p2x, y, font_size, BLUE);
 
 		y += row_height;
 		DrawText("Left", col1x, y, font_size, HACKER_GREEN);

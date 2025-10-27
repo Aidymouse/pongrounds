@@ -43,10 +43,11 @@ int main(int argc, char **argv) {
 		"states/pick_item.c",
 		"states/pong.c",
 		"states/victory.c",
+		"states/pause.c",
 
 		"main.c",
 	};
-	int NUM_SOURCE_FILES = 21;
+	int NUM_SOURCE_FILES = 22;
 	
 	nob_mkdir_if_not_exists("build");
 

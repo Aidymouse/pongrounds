@@ -91,6 +91,16 @@ typedef struct PaddleControls {
 	int item;
 } PaddleControls;
 
+// Virtual paddle controls for computers to push
+typedef struct PaddleInputs {
+	bool left;
+	bool right;
+	bool dash;
+	bool up;
+	bool down;
+	bool item;
+} PaddleInputs;
+
 // Paddle
 typedef enum PaddleBrain {
 	PB_PLAYER=0,
@@ -104,6 +114,7 @@ typedef struct PaddleData {
 	//Vector2 desired_vel; // This is manipulated by paddle controls
 	Vector2 facing; // What direction we're facing. Yeah I know it's a rectangle
 	int id; // 2 owns the bottom of the screen
+	int label; // P1 and 2 got switched at the end of development. Changing the id was unstable, so im just making a label fuck it
 	PaddleBrain brain;
 	bool delete_me;
 	float invincibility_timer; // Paddle flashes intermittently when this timer is > 0?
@@ -285,20 +296,28 @@ struct PickItemsState {
 
 typedef enum {
 	MENU_MAIN,
+	MENU_PLAY,
 	MENU_CONTROLS,
 	MENU_CREDITS,
+	MENU_PAUSE,
 } MENU;
 
 typedef enum {
 	BTN_NULL, 
 
 	BTN_TITLE, // No really a button but idgaf
-	BTN_PLAY,
+	BTN_TO_PLAY,
 	BTN_CREDITS,
 	BTN_QUIT,
 
 	BTN_TO_MAIN_MENU,
 	BTN_TO_KEYBINDS,
+
+	BTN_ONE_PLAYER,
+	BTN_TWO_PLAYER,
+
+	BTN_RESUME,
+	BTN_STOP_PLAYING,
 
 	/*
 	BTN_REBIND_LEFT,
@@ -339,6 +358,7 @@ typedef struct VictoryState {
 	int hovered_option;
 	bool deciding;
 	float flash_timer;
+	float computer_decision_timer; // Unused
 } VictoryState;
 
 
@@ -370,6 +390,13 @@ typedef struct MusicMind {
 
 } MusicMind;
 
+typedef struct PauseState {
+	
+	MenuState inner_menu;
+	int prior_state;
+	bool pause_lock;
+
+} PauseState;
 
 typedef struct GameState {
 	int state; // GAME_STATE
@@ -383,6 +410,7 @@ typedef struct GameState {
 	struct PickItemsState *pick_items_state;
 	MenuState *menu_state;
 	VictoryState *victory_state;
+	PauseState *pause_state;
 	Camera2D *camera;
 	MusicMind *music_mind;
 	float screenshake_timer;

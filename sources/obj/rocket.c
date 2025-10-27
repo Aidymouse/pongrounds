@@ -240,7 +240,8 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 		}
 	
 		// If we hit a sword --- DAMN!
-		if (paddle->sword_timer > 0) {
+		// For safety, we can't hit a sword unless we're actually flying. Should prevent hitting your own rocket
+		if (paddle->sword_timer > 0 && r->fall_timer <= 0) {
 			Rectangle sword_box = sword_get_hitbox(paddle);
 			if (CheckCollisionCircleRec(c_head_pos, c_head.radius, sword_box)) {
 				r->dir = Vec2Rotate(r->dir, 180);

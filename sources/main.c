@@ -9,6 +9,7 @@
 #include "anim.h"
 #include "textures.h"
 #include "audio.h"
+#include "state_change.h"
 
 #include "defines.h"
 #include "controls.h"
@@ -76,6 +77,7 @@ int main(void)
 	srand(time(NULL));
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
+    SetExitKey(0);
 	InitAudioDevice();
     SetTargetFPS(60);
 
@@ -110,12 +112,16 @@ int main(void)
 	MenuState menu_state;
 	init_state_menu(&menu_state);
 
+	PauseState pause_state;
+	init_state_pause(&pause_state);
+
 	VictoryState victory_state;
 	init_state_victory(&victory_state);
 
 	paddle_init( &pong_state.paddles[0] );
 	struct PaddleData *p1 = &pong_state.paddles[0];
 	p1->id = 1;
+	p1->label = 2;
 	p1->pos.y = 40;
 	p1->color = BLUE;
 	p1->facing = (Vector2){ 0, 1 };
@@ -123,6 +129,7 @@ int main(void)
 	paddle_init( &pong_state.paddles[1] );
 	struct PaddleData *p2 = &pong_state.paddles[1];
 	p2->id = 2;
+	p2->label = 1;
 	p2->pos.y = SCREEN_HEIGHT - (p2->paddle_thickness - 40);
 	p2->color = ORANGE;
 	p2->facing = (Vector2){ 0, -1 };
@@ -164,6 +171,7 @@ int main(void)
 	state.pong_state = &pong_state;
 	state.pick_items_state = &pick_items_state;
 	state.menu_state = &menu_state;
+	state.pause_state = &pause_state;
 	state.victory_state = &victory_state;
 	state.music_mind = &music_mind;
 	state.camera = &camera;
@@ -188,7 +196,10 @@ int main(void)
 			printf("Key: %d\n", key);
 		}
 		*/
-
+		if (IsKeyPressed(KEY_ESCAPE) && state.state != STATE_PAUSE) {
+			change_state_to_pause(&state);
+		}
+		
 		// Update
 		music_mind_update(dt, &music_mind);
 
@@ -201,9 +212,11 @@ int main(void)
 			} else if (state.state == STATE_PICK_ITEM) {
 				state_pick_items(dt, state.pick_items_state, &state);
 			} else if (state.state == STATE_MENU) {
-				state_menu(dt, &state);
+				state_menu(dt, state.menu_state, &state);
 			} else if (state.state == STATE_VICTORY) {
 				state_victory(dt, &state);
+			} else if (state.state == STATE_PAUSE) {
+				state_pause(dt, &state);
 			}
 		}
 	
@@ -219,6 +232,9 @@ int main(void)
 		} else if (state.state == STATE_PICK_ITEM) {
 			draw_pong(&state); // Still in background
 			draw_pick_items(state.pick_items_state, tex_item_cards);
+		} else if (state.state == STATE_PAUSE) {
+			draw_pong(&state); // Still in background
+			draw_pause(&state);
 		} else if (state.state == STATE_MENU) {
 			draw_menu(state.menu_state);
 	 	} else if (state.state == STATE_VICTORY) {

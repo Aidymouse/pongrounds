@@ -73,6 +73,8 @@ void change_state_to_pong(struct GameState *state) {
 	if (state->state == STATE_MENU) {
 		init_player(state->player1);
 		init_player(state->player2);
+		paddle_init(state->player1->paddle);
+		paddle_init(state->player2->paddle);
 		init_state_pong(state->pong_state);
 		init_state_pick_items(state->pick_items_state);
 
@@ -113,6 +115,7 @@ void change_state_to_pong(struct GameState *state) {
 void change_state_to_victory(struct GameState *state, struct PlayerData *victor) {
 	state->victory_state->victor = victor;
 	state->state = STATE_VICTORY;
+	//if (victor->paddle->brain == PB_COMPUTER) { }
 
 	//queue_track(state->music_mind, &msc_theme, 0);
 	SetMusicVolume(*state->music_mind->playing, MAX_MUSIC_VOLUME * 0.5);
@@ -120,6 +123,7 @@ void change_state_to_victory(struct GameState *state, struct PlayerData *victor)
 
 void change_state_to_menu(struct GameState *state) {
 	state->state = STATE_MENU;
+	state->menu_state->menu_id = MENU_MAIN;
 
 	SetMusicVolume(*state->music_mind->playing, 1);
 
@@ -127,3 +131,12 @@ void change_state_to_menu(struct GameState *state) {
 	state->music_mind->mode = MM_REPEAT;
 	
 }
+
+void change_state_to_pause(GameState *game_state) {
+	if (!(game_state->state == STATE_PONG || game_state->state == STATE_PICK_ITEM)) { return; }
+
+	game_state->pause_state->prior_state = game_state->state;
+	game_state->pause_state->pause_lock = true;
+	game_state->state = STATE_PAUSE;
+}
+

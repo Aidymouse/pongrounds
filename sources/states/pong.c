@@ -151,6 +151,7 @@ void display_score(struct PlayerData *pl, int x, int y, float alpha) {
 
 void state_pong(float dt, struct GameState *state) {
 
+
 	struct PongState *pong_state = state->pong_state;
 
 	struct PlayerData *player1 = state->player1;
@@ -361,7 +362,7 @@ void draw_pong(struct GameState *state) {
 
 		EndMode2D();
 	
-		if (state->pong_state->fuck_you_timer > 0 && state->state == STATE_PONG) {
+		if (state->pong_state->fuck_you_timer > 0 && state->state != STATE_PICK_ITEM && state->pause_state->prior_state != STATE_PICK_ITEM) {
 			display_fuck_you(state->pong_state);
 		}
 

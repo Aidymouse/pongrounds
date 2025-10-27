@@ -21,9 +21,9 @@ struct PaddleData *paddle_spawn(struct PongState *pong_state) {
 void paddle_init(PaddleData *p) {
 	p->pos.x = SCREEN_WIDTH/2 - PADDLE_DEFAULT_WIDTH/2;
 	p->paddle_width = PADDLE_DEFAULT_WIDTH;
-	p->delete_me = false;
 	p->paddle_thickness = PADDLE_DEFAULT_THICKNESS;
-	p->color = WHITE;
+	p->delete_me = false;
+	//p->color = WHITE;
 	p->hp = PADDLE_DEFAULT_HP;
 	p->max_hp = PADDLE_DEFAULT_HP;
 	p->dir = (Vector2){0, 0};
@@ -251,24 +251,23 @@ void paddle_activate_items(float dt, PaddleData *p, GameState *game_state) {
 }
 
 
-/** 
- * a.k.a paddle_brain_player()
- * */
-void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls controls, struct GameState *state) {
+
+
+void paddle_movement(float dt, PaddleData *p, PaddleInputs inputs, GameState *state) {
 	// Higher than max speed and we're dashing - no control allowed. 
 	// Dash speed reduction handled in update
 	Vector2 moving_impulse = { .x = 0, .y = 0 };
 	if (p->speed.x <= p->max_speed.x && p->speed.y <= p->max_speed.y) { 
-		if (IsKeyDown(controls.left)) {
+		if (inputs.left) {
 			moving_impulse.x = -1;
-		} else if (IsKeyDown(controls.right)) {
+		} else if (inputs.right) {
 			moving_impulse.x = 1;
 		} 
 
 		if (p->items[ITEM_BACHELOR_OF_PSYCHOLOGY_HONS] > 0) {
-			if (IsKeyDown(controls.up)) {
+			if (inputs.up) {
 				moving_impulse.y = -1;
-			} else if (IsKeyDown(controls.down)) {
+			} else if (inputs.down) {
 				moving_impulse.y = 1;
 			} 	
 		} 
@@ -303,7 +302,7 @@ void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls
 	}
 
 	if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && p->item_cooldown_timers[ITEM_CHERRY_BLOSSOM_CLOAK
-] <= 0 && IsKeyPressed(controls.dash)) {
+] <= 0 && inputs.dash) {
 		if (moving_impulse.x != 0) {
 			p->speed.x = CLOAK_DASH_SPEED + CLOAK_DASH_SPEED_BONUS*p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1;
 		}
@@ -316,14 +315,30 @@ void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls
 	}
 
 	if (state->pong_state->end_round_timer <= 0) {
-		if (IsKeyPressed(controls.item)) {
+		if (inputs.item) {
 			paddle_activate_items(dt, p, state);
 		}
 	}
 }
 
+PaddleInputs get_inputs_from_controls(PaddleControls controls) {
+	PaddleInputs inputs = { false };
+	if (IsKeyDown(controls.left)) { inputs.left = true; }
+	if (IsKeyDown(controls.right)) { inputs.right = true; }
+	if (IsKeyDown(controls.up)) { inputs.up = true; }
+	if (IsKeyDown(controls.down)) { inputs.down = true; }
+	if (IsKeyDown(controls.item)) { inputs.item = true; }
+	if (IsKeyDown(controls.dash)) { inputs.dash = true; }
+	return inputs;
+}
 
-
+/** 
+ * a.k.a paddle_brain_player()
+ * */
+void paddle_player_control(float dt, struct PaddleData *p, PaddleControls controls, struct GameState *state) {
+	PaddleInputs inputs = get_inputs_from_controls(controls);
+	paddle_movement(dt, p, inputs, state);
+}
 
 
 /**  */
@@ -368,6 +383,23 @@ void paddle_brain_clone(struct PaddleData *paddle, struct GameState *state) {
 	}
 }
 
+void paddle_brain_computer(float dt, PaddleData *paddle, GameState *state) {
+	// Move towards the ball. That's it.
+	PaddleInputs computer_inputs = { false };
+
+	Vector2 center = paddle_center(paddle);
+	// Get first ball that exists
+	// TODO: this could be first ball that is coming towards me
+	BallData desired_ball = state->pong_state->balls[0];
+	if (desired_ball.pos.x < center.x - paddle->paddle_width/4) {
+		computer_inputs.left = true;
+	} else if (desired_ball.pos.x > center.x + paddle->paddle_width/4) {
+		computer_inputs.right = true;
+	}
+
+	paddle_movement(dt, paddle, computer_inputs, state);
+}
+
 /** */
 void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorders borders) {
 
@@ -391,6 +423,8 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorder
 	} else if (p->brain == PB_CLONE) {
 
 		paddle_brain_clone(p, state);
+	} else if (p->brain == PB_COMPUTER) {
+		paddle_brain_computer(dt, p, state);
 	}
 
 

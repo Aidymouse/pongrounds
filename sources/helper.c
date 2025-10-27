@@ -44,6 +44,7 @@ void DrawTextCentered(const char *t, int x, int y, int fontSize, Color color, Te
 			//line = {0};
 			line_idx = 0;
 			line_num += 1;
+			line[line_idx] = 0;
 		} else {
 			line[line_idx] = t[si];
 			if (line_idx < 256) { line[line_idx+1] = 0; }
