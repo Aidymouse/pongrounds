@@ -36,6 +36,7 @@ typedef struct ItemData {
 	const char* description_offset;
 } ItemData;
 
+
  
 typedef struct Animation {
 	Rectangle rect;
@@ -368,6 +369,7 @@ typedef struct MusicMind {
 	int num_playing_sounds;
 
 } MusicMind;
+
 
 typedef struct GameState {
 	int state; // GAME_STATE

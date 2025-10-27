@@ -12,7 +12,7 @@
 #include "Vec2.h"
 #include "helper.h"
 
-#define NUM_FY_STRINGS 11
+#define NUM_FY_STRINGS 12
 
 const char* fuck_you_strings[] = {
 	"VICTORY",
@@ -27,6 +27,7 @@ const char* fuck_you_strings[] = {
 	"LOSER",
 	"SKILL ISSUE",
 	"TASTE THE PAIN",
+	"BITE ME",
 };
 
 const int fuck_you_size[] = {
@@ -40,7 +41,8 @@ const int fuck_you_size[] = {
 	150,
 	150,
 	100, // Skill Issue
-	90, // Taste the Pain
+	80, // Taste the Pain
+	120, // Taste the Pain
 };
 
 void display_fuck_you(struct PongState *pong_state) {

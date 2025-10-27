@@ -4,6 +4,7 @@
 #include "Vec2.h"
 #include "helper.h"
 #include <stdio.h>
+#include "audio.h"
 
 /**
  * WARN: returns NULL if no paddle is made
@@ -174,7 +175,9 @@ void paddle_flip_across_axis(PaddleData *paddle) {
 }
 
 /** */
-void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state) {
+void paddle_activate_items(float dt, PaddleData *p, GameState *game_state) {
+
+	PongState *pong_state = game_state->pong_state;
 
 	if (p->destroyed_timer > 0) { return; }
 
@@ -183,6 +186,7 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 		p->sword_timer = SWORD_DURATION;
 		p->sword_anim_timer = SWORD_FRAME_TIME;
 		p->item_use_timers[ITEM_CEREMONIAL_SWORD] = SWORD_DURATION;
+		play_sfx(game_state->music_mind, SFX_SWORD_SWING);
 	}
 
 	// Nuclear Launch Codes
@@ -193,6 +197,8 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 		pong_state->rockets[pong_state->num_rockets] = r;
 		pong_state->num_rockets += 1;
 		p->item_cooldown_timers[ITEM_NUCLEAR_LAUNCH_CODES] = MISSILE_COOLDOWN;
+
+		play_sfx(game_state->music_mind, SFX_MISSILE_LAUNCH);
 
 	}
 
@@ -213,6 +219,7 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 		p->item_use_timers[ITEM_ANTIQUE_GAME_CONSOLE] = ITEM_USE_BUMP_TIME;
 		p->item_cooldown_timers[ITEM_ANTIQUE_GAME_CONSOLE] = GAME_CONSOLE_COOLDOWN;
 
+		play_sfx(game_state->music_mind, SFX_ANTIQUE_CONSOLE);
 	}
 
 	// Cloning Vat
@@ -224,7 +231,7 @@ void paddle_activate_items(float dt, PaddleData *p, struct PongState *pong_state
 			*c = clone;
 			// Find pos
 			c->pos = Vec2Add(p->pos, Vec2MultScalar(p->facing, (p->paddle_thickness + 10)));
-			// TODO: how to stop paddles layering on top of one another
+			play_sfx(game_state->music_mind, SFX_PADDLE_DUPLICATED);
 		}
 	}
 
@@ -310,7 +317,7 @@ void paddle_player_control(float dt, struct PaddleData *p, struct PaddleControls
 
 	if (state->pong_state->end_round_timer <= 0) {
 		if (IsKeyPressed(controls.item)) {
-			paddle_activate_items(dt, p, state->pong_state);
+			paddle_activate_items(dt, p, state);
 		}
 	}
 }
@@ -352,6 +359,7 @@ void paddle_brain_clone(struct PaddleData *paddle, struct GameState *state) {
 
 	if (paddle->cv_health <= 0) {
 		paddle->delete_me = true;
+		play_sfx(state->music_mind, SFX_PADDLE_BREAKS);
 		//following->item_cooldown_timers[ITEM_CLONING_VAT] = CV_CLONE_COOLDOWN;
 	}
 

@@ -28,7 +28,7 @@ void change_state_to_pick_items(struct GameState *state, struct PlayerData *choo
 	choosing->paddle->hp = 1;
 
 	// If we came from victory sound will be lower so increase it back to one here
-	SetMusicVolume(*state->music_mind->playing, 1);
+	SetMusicVolume(*state->music_mind->playing, MAX_MUSIC_VOLUME);
 
 	pick_items_state->choosing_player = choosing;
 	state->state = STATE_PICK_ITEM;
@@ -115,7 +115,7 @@ void change_state_to_victory(struct GameState *state, struct PlayerData *victor)
 	state->state = STATE_VICTORY;
 
 	//queue_track(state->music_mind, &msc_theme, 0);
-	SetMusicVolume(*state->music_mind->playing, 0.5);
+	SetMusicVolume(*state->music_mind->playing, MAX_MUSIC_VOLUME * 0.5);
 }
 
 void change_state_to_menu(struct GameState *state) {

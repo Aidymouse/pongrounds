@@ -6,6 +6,7 @@
 #include "anim.h"
 #include <stdio.h>
 #include "states/states.h"
+#include "audio.h"
 
 void init_state_pick_items(struct PickItemsState *s) {
 	s->num_item_choices = 3;
@@ -29,9 +30,6 @@ void roll_items(struct PickItemsState *state) {
 		state->item_anim_frames[i] = 0;
 	}
 
-	
-
-	state->item_choices[0] = ITEM_SENTIENT_HAND;
 }
 
 Rectangle get_rect_for_item_idx(int idx, int num_cards) {
@@ -45,6 +43,7 @@ void state_pick_items(float dt, struct PickItemsState *state, struct GameState *
 
 	PaddleData *choosing_paddle = state->choosing_player->paddle;
 
+	int last_hovered = state->hovered_item;
 	state->hovered_item = -1;
 	for (int i=0; i<state->num_item_choices; i++) {
 		// Mouse hovering
@@ -52,6 +51,7 @@ void state_pick_items(float dt, struct PickItemsState *state, struct GameState *
 		Rectangle mouse_rect = { GetMouseX(), GetMouseY(), 1, 1 };
 		if (CheckCollisionRecs(item_rect, mouse_rect)) {
 			state->hovered_item = i;
+			if (last_hovered != i) { play_sfx(gamestate->music_mind, SFX_CARD_HIGHLIGHT); }
 			break;
 		}
 
@@ -61,6 +61,8 @@ void state_pick_items(float dt, struct PickItemsState *state, struct GameState *
 		int item_idx = state->item_choices[state->hovered_item];
 		choosing_paddle->items[item_idx] += 1;
 		choosing_paddle->items_total[item_idx] += 1;
+
+		play_sfx(gamestate->music_mind, SFX_CARD_SELECT);
 
 		// Do any init of items
 		if (item_idx == ITEM_CEREMONIAL_SWORD) {

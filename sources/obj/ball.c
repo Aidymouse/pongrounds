@@ -4,6 +4,7 @@
 #include "helper.h"
 #include "defines.h"
 #include <stdio.h>
+#include "audio.h"
 
 /**
  */
@@ -130,6 +131,7 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 			ball->radius = ball->radius * 0.3;
 			if ( ball->radius < 1 ) { ball->radius = 1; }
 			ball->hp_timer = 0;
+	
 
 			// Split into a million pieces!!!
 			for (int i=0; i<HYDRAULIC_PRESS_NUM_BALLS; i++) {
@@ -143,6 +145,9 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 				new_ball->vel = Vec2Rotate(new_ball->vel, randInt(-20, 20));
 				new_ball->hp_timer = 0;
 			}
+			
+			// TODO: get a more distinct sound
+			play_sfx(state->music_mind, SFX_HYDRAULIC_PRESS_BALL);
 		}
 	}
 
@@ -379,9 +384,11 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 		int snotch_chance = SNOTCH_CHANCE * p->items[ITEM_SNOTCH];
 		if (randInt(1, 100) <= snotch_chance) {
 			b->score_damage *= 2;
+			play_sfx(game_state->music_mind, SFX_BALL_DAMAGE_DOUBLED);
 			p->item_use_timers[ITEM_SNOTCH] = ITEM_USE_BUMP_TIME;
 			if (b->color.b - 60 <= 0) { b->color.b = 0; } else { b->color.b -= 60; }
 			if (b->color.g - 60 <= 0) { b->color.g = 0; } else { b->color.g -= 60; }
+			play_sfx(game_state->music_mind, SFX_BALL_DAMAGE_DOUBLED);
 		}
 	}
 
@@ -401,6 +408,9 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 
 	limit_ball_angle(b);
 
+	// Play sound
+	play_sfx(game_state->music_mind, SFX_PADDLE_HIT);
+
 }
 
 void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct PlayerData *opponent) {
@@ -414,8 +424,10 @@ void ball_score_hit(struct BallData *b, struct PlayerData *scorer, struct Player
 }
 
 
-void ball_sword_hit(struct BallData *ball, struct PongState *pong_state, PaddleData *wielder) {
+void ball_sword_hit(struct BallData *ball, GameState *game_state, PaddleData *wielder) {
 	// Split into two balls!
+	PongState *pong_state = game_state->pong_state;
+
 	// Make this ball half, duplicate self
 	ball_reflect(ball, wielder->facing);
 	ball->radius = ball->radius*0.75;
@@ -433,6 +445,8 @@ void ball_sword_hit(struct BallData *ball, struct PongState *pong_state, PaddleD
 	if (dec != NULL) {
 		dec->pos = ball->pos;
 	}
+
+	play_sfx(game_state->music_mind, SFX_SWORD_SLICE);
 }
 
 
@@ -453,9 +467,11 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 	if (ball->pos.x - ball->radius <= world_borders.left) {
 		ball->pos.x = world_borders.left + ball->radius;
 		ball_reflect_wall(ball);
+		play_sfx(state->music_mind, SFX_BALL_HIT_WALL);
 	} else if (ball->pos.x + ball->radius >= world_borders.right) {
 		ball->pos.x = world_borders.right - ball->radius;
 		ball_reflect_wall(ball);
+		play_sfx(state->music_mind, SFX_BALL_HIT_WALL);
 	}
 
 	// Collisions per paddle
@@ -472,7 +488,7 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 		// Sword
 		if (paddle->items[ITEM_CEREMONIAL_SWORD] > 0 && paddle->sword_timer > 0) {
 			if (CheckCollisionCircleRec(ball->pos, ball->radius, sword_get_hitbox(paddle))) {
-				ball_sword_hit(ball, state->pong_state, paddle);
+				ball_sword_hit(ball, state, paddle);
 				paddle->sword_timer = 0;
 			}
 		}
@@ -501,10 +517,12 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 		p1->items[ITEM_EXPIRED_PANADOL] -= 1;
 		p1->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
 		ball->vel.y = -ball->vel.y; // TODO: better reflection fn ?
+		play_sfx(state->music_mind, SFX_EXPIRED_PANADOL);
 	} else if (ball->pos.y + ball->radius > world_borders.bottom && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
 		p2->items[ITEM_EXPIRED_PANADOL] -= 1;
 		p2->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
 		ball->vel.y = -ball->vel.y; // TODO: better reflection fn ?
+		play_sfx(state->music_mind, SFX_EXPIRED_PANADOL);
 	}
 
 	// Scoring

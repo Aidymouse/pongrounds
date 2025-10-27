@@ -91,6 +91,7 @@ int main(void)
 	load_textures();
 	load_audio();
 
+
 	// Init State //
 	enum GAME_STATES game_state = STATE_MENU;
 
@@ -146,17 +147,14 @@ int main(void)
 	load_controls(&player1, &player2);
 
 	/* DEBUG: hard code in some items
-	*/
-	int debug_item = ITEM_NUCLEAR_LAUNCH_CODES;
-	p2->items[debug_item] += 2;
-	p2->items_total[debug_item] += 2;
-	debug_item = ITEM_CLONING_VAT;
+	int debug_item = ITEM_EXPIRED_PANADOL;
 	p2->items[debug_item] += 1;
 	p2->items_total[debug_item] += 1;
-	//debug_item = ITEM_BROKEN_MIND_CONTROL_MACHINE;
+	debug_item = ITEM_SNOTCH;
 	p1->items[debug_item] += 1;
 	p1->items_total[debug_item] += 1;
 	// /DEBUG
+	*/
 
 	struct BallData ball;
 	ball_init(&ball);

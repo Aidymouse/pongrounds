@@ -8,6 +8,7 @@
 #include "textures.h"
 #include "structs.h"
 #include "defines.h"
+#include "audio.h"
 
 FrameAnimation missile_init = {
 	.tex_width = MISSILE_TEX_DIMS_PX,
@@ -75,7 +76,7 @@ void rocket_fly(float dt, RocketData *r, struct GameState *state) {
 			Circle c_head = get_missile_head_hitbox(r);
 			Vector2 c_head_pos = { .x = c_head.x, .y = c_head.y };
 			r->delete_me = true;
-			explosion_spawn(c_head_pos, pong_state);
+			explosion_spawn(c_head_pos, state);
 			state->screenshake_timer = MISSILE_SHAKE_DUR;
 			state->screenshake_amplitude = MISSILE_SHAKE_AMPL;
 			return;
@@ -93,6 +94,7 @@ void rocket_fly(float dt, RocketData *r, struct GameState *state) {
 		r->fall_timer -= dt*r->speed_multiplier;
 		if (r->fall_timer < 0) {
 			r->speed = ROCKET_FLY_INIT_SPEED;
+			play_sfx(state->music_mind, SFX_MISSILE_FLY);
 		}
 	} else {
 		r->pos = Vec2Add(r->pos, Vec2MultScalar(r->dir, r->speed*r->speed_multiplier*dt));
@@ -168,7 +170,7 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 		struct BallData *ball = &pong_state->balls[i];
 		if (CheckCollisionCircles(ball->pos, ball->radius, c_head_pos, c_head.radius)) {
 			r->delete_me = true;
-			explosion_spawn(c_head_pos, pong_state);
+			explosion_spawn(c_head_pos, state);
 			state->screenshake_timer = 0.5;
 			state->screenshake_amplitude = 2;
 			return;
@@ -188,9 +190,9 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 		if (CheckCollisionCircles(c_head_pos, c_head.radius, r_c_head_pos, r_c_head.radius) || 
 			CheckCollisionCircles(c_head_pos, c_head.radius, r_c_base_pos, r_c_head.radius)) {
 			r->delete_me = true;
-			explosion_spawn(c_head_pos, pong_state);
+			explosion_spawn(c_head_pos, state);
 			rocket->delete_me = true;
-			explosion_spawn(r_c_head_pos, pong_state);
+			//explosion_spawn(r_c_head_pos, state);
 			state->screenshake_timer = 0.5;
 			state->screenshake_amplitude = 2;
 			return;
@@ -211,8 +213,9 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 			r->delete_me = true;
 			if (paddle->invincibility_timer <= 0) {
 				paddle->destroyed_timer = MISSILE_DEATH_TIME;
+				play_sfx(state->music_mind, SFX_PADDLE_BREAKS);
 			}
-			explosion_spawn(c_head_pos, pong_state);
+			explosion_spawn(c_head_pos, state);
 			state->screenshake_timer = MISSILE_SHAKE_DUR;
 			state->screenshake_amplitude = MISSILE_SHAKE_AMPL;
 			return;
@@ -238,7 +241,6 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 	
 		// If we hit a sword --- DAMN!
 		if (paddle->sword_timer > 0) {
-			printf("Checking paddle %d for missile collision\n", paddle->id);
 			Rectangle sword_box = sword_get_hitbox(paddle);
 			if (CheckCollisionCircleRec(c_head_pos, c_head.radius, sword_box)) {
 				r->dir = Vec2Rotate(r->dir, 180);
@@ -252,6 +254,8 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 				if (dec != NULL) {
 					dec->pos = c_head_pos;
 				}
+
+				play_sfx(state->music_mind, SFX_SWORD_SLICE); // TODO make this a special sound
 			}
 		}
 	}

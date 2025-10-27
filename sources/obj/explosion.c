@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include "anim.h"
 #include "textures.h"
+#include "audio.h"
 
 FrameAnimation anim_explosion = {
 	.tex_width = 128,
@@ -21,12 +22,16 @@ void explosion_init(Explosion *e) {
 	e->delete_me = false;
 }
 
-void explosion_spawn(Vector2 pos, struct PongState *pong_state) {
+void explosion_spawn(Vector2 pos, GameState *game_state) {
+	PongState *pong_state = game_state->pong_state;
+
 	Explosion e;
 	e.pos = pos;
 	explosion_init(&e);
 	pong_state->explosions[pong_state->num_explosions] = e;
 	pong_state->num_explosions += 1;
+
+	play_sfx(game_state->music_mind, SFX_MISSILE_IMPACT);
 }
 
 void explosion_update(float dt, Explosion *e) {
