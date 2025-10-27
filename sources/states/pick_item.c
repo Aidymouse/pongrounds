@@ -57,7 +57,16 @@ void state_pick_items(float dt, struct PickItemsState *state, struct GameState *
 
 	}
 
-	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && state->hovered_item != -1) {
+	int selected_item = -1;
+
+	if (choosing_paddle->brain == PB_COMPUTER) {
+		selected_item = randInt(0, state->num_item_choices-1);
+	} else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && state->hovered_item != -1) {
+		selected_item = state->hovered_item;
+	}
+
+
+	if (selected_item != -1) {
 		int item_idx = state->item_choices[state->hovered_item];
 		choosing_paddle->items[item_idx] += 1;
 		choosing_paddle->items_total[item_idx] += 1;

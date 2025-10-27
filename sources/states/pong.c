@@ -41,7 +41,7 @@ const int fuck_you_size[] = {
 	150,
 	150,
 	100, // Skill Issue
-	80, // Taste the Pain
+	75, // Taste the Pain
 	120, // Taste the Pain
 };
 

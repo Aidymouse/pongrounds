@@ -6,6 +6,10 @@
 #define HACKER_GREEN (Color){95, 247, 158, 255}
 #define BG_COLOR 0x12110fff
 
+// CPU control
+#define CPU_MAX_ITEM_TIMER 20
+#define CPU_MIN_ITEM_TIMER 2
+
 // Music
 #define NUM_TRACKS 3
 #define MAX_SFX 32
@@ -13,7 +17,8 @@
 #define MAX_MUSIC_VOLUME 0.6
 
 // State Vars
-#define NUM_ROUNDS (1) // a.k.a points required to win
+#define NUM_ROUNDS (10) // a.k.a points required to win
+#define ADDITIONAL_ROUNDS_ON_CONTINUE 5
 #define DEFAULT_SCREENSHAKE_DECAY 1
 #define FUCK_YOU_DURATION 0.5
 
@@ -115,8 +120,8 @@
 #define RUSSIAN_SECRETS_SPEED_MULT 3
 #define RUSSIAN_SECRETS_SPEED_ADDITIONAL 0.5
 #define RS_SPIKE_DECELLERATION 0.2
-#define RUSSIAN_SECRETS_SHAKE_TIME 1
-#define RUSSIAN_SECRETS_SHAKE_AMPL 6
+#define RUSSIAN_SECRETS_SHAKE_TIME 0.5
+#define RUSSIAN_SECRETS_SHAKE_AMPL 4
 
 // Hydraulic Press
 #define HYDRAULIC_PRESS_CHANCE 20

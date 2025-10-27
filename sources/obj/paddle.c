@@ -31,6 +31,7 @@ void paddle_init(PaddleData *p) {
 	p->max_speed = (Vector2){PADDLE_SPEED, PADDLE_SPEED*0.6};
 	p->invincibility_timer = 0;
 	p->hit_timer = 0;
+	p->cpu_items_timer = randInt(CPU_MAX_ITEM_TIMER, CPU_MIN_ITEM_TIMER);
 
 	p->sword_frame = 0;
 	p->sword_anim_timer = 0;
@@ -397,6 +398,13 @@ void paddle_brain_computer(float dt, PaddleData *paddle, GameState *state) {
 		computer_inputs.right = true;
 	}
 
+	// Use items?
+	paddle->cpu_items_timer -= dt;
+	if (paddle->cpu_items_timer <= 0) {
+		computer_inputs.item = true;
+		paddle->cpu_items_timer = randInt(CPU_MIN_ITEM_TIMER, CPU_MAX_ITEM_TIMER);
+	}
+
 	paddle_movement(dt, paddle, computer_inputs, state);
 }
 
@@ -424,6 +432,13 @@ void paddle_update(float dt, PaddleData *p, struct GameState *state, WorldBorder
 
 		paddle_brain_clone(p, state);
 	} else if (p->brain == PB_COMPUTER) {
+		if (p->destroyed_timer > 0) { 
+			p->destroyed_timer -= dt;
+			if (p->destroyed_timer <= 0) {
+				p->invincibility_timer = DAMAGE_INVINCIBILITY_TIME;
+			}
+			return;
+		}
 		paddle_brain_computer(dt, p, state);
 	}
 

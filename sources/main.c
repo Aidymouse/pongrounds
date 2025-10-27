@@ -153,15 +153,6 @@ int main(void)
 
 	load_controls(&player1, &player2);
 
-	/* DEBUG: hard code in some items
-	int debug_item = ITEM_EXPIRED_PANADOL;
-	p2->items[debug_item] += 1;
-	p2->items_total[debug_item] += 1;
-	debug_item = ITEM_SNOTCH;
-	p1->items[debug_item] += 1;
-	p1->items_total[debug_item] += 1;
-	// /DEBUG
-	*/
 
 	struct BallData ball;
 	ball_init(&ball);

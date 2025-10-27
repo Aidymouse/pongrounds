@@ -61,7 +61,7 @@ void state_victory(float dt, struct GameState *state) {
 			state->victory_state->deciding = false;
 			state->victory_state->flash_timer = VICTORY_FLASH_DURATION;
 		} else if (decision == 1) {
-			state->pong_state->points_to_win += NUM_ROUNDS;
+			state->pong_state->points_to_win += ADDITIONAL_ROUNDS_ON_CONTINUE;
 			state->pong_state->fuck_you_timer = FUCK_YOU_DURATION;
 			state->pong_state->fuck_you_size = 100;
 			sprintf(state->pong_state->fuck_you_text, "FIRST TO %d", state->pong_state->points_to_win);

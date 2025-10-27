@@ -446,6 +446,9 @@ void ball_sword_hit(struct BallData *ball, GameState *game_state, PaddleData *wi
 		dec->pos = ball->pos;
 	}
 
+	wielder->sword_timer = 0;
+	wielder->item_cooldown_timers[ITEM_CEREMONIAL_SWORD] = SWORD_COOLDOWN;
+
 	play_sfx(game_state->music_mind, SFX_SWORD_SLICE);
 }
 
