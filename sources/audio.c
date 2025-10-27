@@ -4,14 +4,19 @@
 
 Music msc_theme;
 Music msc_tracks[NUM_TRACKS];
+Sound sfx[MAX_SFX];
 
 
 void load_audio() {
+	// Music
 	msc_theme = LoadMusicStream(ASSETS_PATH"music/Superpong Theme.mp3");
 
 	msc_tracks[0] = LoadMusicStream(ASSETS_PATH"music/Superpong Gameplay Theme 1.mp3");
 	msc_tracks[1] = LoadMusicStream(ASSETS_PATH"music/Superpong Gameplay 2.mp3");
 	msc_tracks[2] = LoadMusicStream(ASSETS_PATH"music/Superpong Gameplay Theme 3.mp3");
+
+	// SFX
+	sfx[SFX_PADDLE_HIT_1] = LoadSound(ASSETS_PATH"sounds/Paddle Hit 1.mp3");
 
 }
 
@@ -20,6 +25,8 @@ void unload_audio() {
 	UnloadMusicStream(msc_tracks[0]);
 	UnloadMusicStream(msc_tracks[1]);
 	UnloadMusicStream(msc_tracks[2]);
+
+	UnloadSound(sfx[SFX_PADDLE_HIT_1]);
 }
 
 void init_music_mind(MusicMind *mind) {
@@ -30,6 +37,8 @@ void init_music_mind(MusicMind *mind) {
 	mind->fade_timer_start = 0;
 	mind->mode = MM_REPEAT;
 }
+
+/** MUSIC **/
 
 /** 
  * Starts the process of fading from one track to another
@@ -54,8 +63,31 @@ void queue_track(MusicMind *mind, Music *new, float fade_duration) {
 	mind->fade_timer_start = fade_duration;
 }
 
+/** SFX **/
+void play_sfx(MusicMind *mind, SFX sound_effect) {
+
+	if (mind->num_playing_sounds >= MAX_SFX) { return; }
+
+	Sound desired = sfx[sound_effect];
+	Sound copy = LoadSoundAlias(desired);
+	
+	mind->playing_sfx[mind->num_playing_sounds] = copy;
+	PlaySound(copy);
+}
+
 void music_mind_update(float dt, MusicMind *mind) {
 
+	// SFX
+	for (int s=0; s<mind->num_playing_sounds; s++) {
+		if (IsSoundPlaying( mind->playing_sfx[s] ) == false ) {
+			UnloadSoundAlias(mind->playing_sfx[s]);
+			mind->playing_sfx[s] = mind->playing_sfx[mind->num_playing_sounds];
+			mind->num_playing_sounds -= 1;
+			s -= 1;
+		}
+	}
+	
+	// MUSIC
 	if (mind->fade_timer > 0) {
 		mind->fade_timer -= dt;
 		float volume = mind->fade_timer / mind->fade_timer_start;

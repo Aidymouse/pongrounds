@@ -363,6 +363,10 @@ typedef struct MusicMind {
 	float fade_timer;
 	// Used to figure out how far we are to 0 volume
 	float fade_timer_start;
+
+	Sound playing_sfx[MAX_SFX];
+	int num_playing_sounds;
+
 } MusicMind;
 
 typedef struct GameState {

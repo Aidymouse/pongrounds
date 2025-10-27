@@ -8,6 +8,7 @@
 
 // Music
 #define NUM_TRACKS 3
+#define MAX_SFX 16
 
 // State Vars
 #define NUM_ROUNDS (10) // a.k.a points required to win
