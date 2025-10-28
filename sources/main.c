@@ -174,7 +174,11 @@ int main(void)
 
 	// Start theme plaing
 	queue_track(&music_mind, &msc_theme, 0);
+
+	RenderTexture2D target = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+	Shader crt = LoadShader(0, ASSETS_PATH"shaders/crtfrag.glsl");
 	
+    ClearBackground(bg);
 	// Game loop //
     while (!WindowShouldClose() && !state.quit_please)
     {
@@ -214,7 +218,7 @@ int main(void)
 
 
 		// Draw
-        BeginDrawing();
+		BeginTextureMode(target);
         ClearBackground(bg);
 
 
@@ -232,16 +236,24 @@ int main(void)
 			draw_pong(&state); // Still in background
 			draw_victory(state.victory_state);
 		}
+		EndTextureMode();
 
 		// Not sure bout this
 		//DrawTexture(scanlines, 0, 0, ColorAlpha(WHITE, 0.2));
 
+
+        BeginDrawing();
+			BeginShaderMode(crt);
+				DrawTextureRec(target.texture, (Rectangle){0, 0, SCREEN_WIDTH, -SCREEN_HEIGHT}, (Vector2){0, 0} ,WHITE);
+			EndShaderMode();
         EndDrawing();
     }
 
 	// Unload textures //
 	unload_textures();
 	unload_audio();
+	UnloadShader(crt);
+	UnloadRenderTexture(target);
 
 	CloseAudioDevice();
     CloseWindow();
