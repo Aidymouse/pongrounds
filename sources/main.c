@@ -81,12 +81,16 @@ int main(void)
 	InitAudioDevice();
     SetTargetFPS(60);
 
+    SetConfigFlags(FLAG_MSAA_4X_HINT);      // Enable Multi Sampling Anti Aliasing 4x (if available)
+
 
 	// Loading Screen
 	BeginDrawing();
 	DrawText("Loading...", SCREEN_HEIGHT/2, SCREEN_WIDTH/2, 50, HACKER_GREEN);
 	EndDrawing();
 
+
+	Texture2D pixels = LoadTexture(ASSETS_PATH"pixels.png");
 
 	// Load Textures //
 	// TODO: make this a program state
@@ -241,11 +245,15 @@ int main(void)
 		// Not sure bout this
 		//DrawTexture(scanlines, 0, 0, ColorAlpha(WHITE, 0.2));
 
+		
 
         BeginDrawing();
-			BeginShaderMode(crt);
+
+			//BeginShaderMode(crt);
 				DrawTextureRec(target.texture, (Rectangle){0, 0, SCREEN_WIDTH, -SCREEN_HEIGHT}, (Vector2){0, 0} ,WHITE);
-			EndShaderMode();
+			//EndShaderMode();
+
+			//DrawTextureRec(pixels, (Rectangle){0, 0, SCREEN_WIDTH, SCREEN_HEIGHT}, (Vector2){0, 0}, ColorAlpha(WHITE, 0.2));
         EndDrawing();
     }
 
@@ -254,6 +262,7 @@ int main(void)
 	unload_audio();
 	UnloadShader(crt);
 	UnloadRenderTexture(target);
+	UnloadTexture(pixels);
 
 	CloseAudioDevice();
     CloseWindow();
