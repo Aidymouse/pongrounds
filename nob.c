@@ -4,8 +4,8 @@
 
 #define NOB_IMPLEMENTATION
 
-//#define TARGET_WIN32
-#define TARGET_UNIX
+#define TARGET_WIN32
+//#define TARGET_UNIX
 
 #include "nob.h"
 
@@ -80,6 +80,7 @@ int main(int argc, char **argv) {
 		nob_cmd_append(&cmd, "-L./lib/win32");
 		nob_cmd_append(&cmd, "-Wl,-rpath,./lib/win32");
 		nob_cmd_append(&cmd, "-lraylibdll");
+		nob_cmd_append(&cmd, "-mwindows");
 
 	#endif
 
