@@ -2,7 +2,7 @@
 #define SCREEN_WIDTH (800)
 #define SCREEN_HEIGHT (600)
 
-#define WINDOW_TITLE "Prounds"
+#define WINDOW_TITLE "SUPER PONG"
 #define HACKER_GREEN (Color){95, 247, 158, 255}
 #define BG_COLOR 0x12110fff
 

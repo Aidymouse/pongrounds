@@ -145,6 +145,9 @@ void paddle_refresh(PaddleData *p, PaddleData *opponent, struct GameState *state
 			p->pos.y = world_bottom - p->paddle_thickness - 40;
 		}
 	}
+	
+	p->sword_timer = 0;
+	p->sword_hit_something = false;
 
 
 }
@@ -606,6 +609,7 @@ void paddle_cleanup(struct PongState *pong_state) {
 	for (int p=0; p < pong_state->num_paddles; p++) {
 		PaddleData *paddle = &pong_state->paddles[p];
 		if (paddle->sword_hit_something) {
+			paddle->sword_hit_something = false;
 			paddle->sword_timer = 0;
 			//paddle->item_cooldown_timers[ITEM_CEREMONIAL_SWORD] = SWORD_COOLDOWN;
  			paddle->item_cooldown_timers[ITEM_CEREMONIAL_SWORD] = SWORD_COOLDOWN - 0.2 * paddle->items[ITEM_CEREMONIAL_SWORD];
