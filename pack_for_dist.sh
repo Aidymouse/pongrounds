@@ -5,4 +5,4 @@ cp pongrounds.exe ./dist
 cp -r ./assets ./dist
 cp -r ./lib ./dist
 zip -r SuperPong ./dist
-rm -rf dist
+rm -rf dist/*

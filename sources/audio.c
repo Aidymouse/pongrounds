@@ -178,7 +178,6 @@ void music_mind_update(float dt, MusicMind *mind) {
 		
 		float length = GetMusicTimeLength(*mind->playing);
 		float time_played = GetMusicTimePlayed(*mind->playing);
-		printf("%.2f / %.2f\n", time_played, length);
 		float dur_left = length - time_played;
 
 		if (mind->mode == MM_PLAYLIST && dur_left < 0.03) {
