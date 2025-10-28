@@ -112,7 +112,6 @@ void change_state_to_pong(struct GameState *state) {
 	state->pong_state->score_timer = BALL_RESPAWN_DELAY;
 
 	/* DEBUG: hard code in some items
-	*/
 	int debug_item = ITEM_CEREMONIAL_SWORD;
 	state->player1->paddle->items[debug_item] += 1;
 	state->player1->paddle->items_total[debug_item] += 1;
@@ -125,6 +124,7 @@ void change_state_to_pong(struct GameState *state) {
 	state->player2->paddle->items[debug_item] += 1;
 	state->player2->paddle->items_total[debug_item] += 1;
 	// /DEBUG
+	*/
 
 	state->state = STATE_PONG;
 }
