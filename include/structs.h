@@ -151,6 +151,7 @@ typedef struct PaddleData {
 	float sword_anim_timer;
 	int sword_frame;
 	int sword_anim_dir; // -1 if back, 1 if forward
+	bool sword_hit_something; // If the frame ends and the sword has hit something (ball, missile or paddle), turn it off
 
 	//bool cv_clone; // Clone paddles are destroyed when the ball hits them or their destroyed timer goes up by one
 	struct PaddleData *cv_creator;

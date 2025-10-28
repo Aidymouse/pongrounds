@@ -208,6 +208,7 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 	for (int p=0; p<pong_state->num_paddles; p++) {
 		PaddleData *paddle = &pong_state->paddles[p];
 		if (paddle->destroyed_timer > 0) { continue; }
+
 		Rectangle paddle_rect = paddle_get_rect(paddle);
 		if (CheckCollisionCircleRec(c_head_pos, c_head.radius, paddle_rect)) {
 			r->delete_me = true;
@@ -246,6 +247,8 @@ void rocket_check_collisions(RocketData *r, WorldBorders borders, struct GameSta
 			if (CheckCollisionCircleRec(c_head_pos, c_head.radius, sword_box)) {
 				r->dir = Vec2Rotate(r->dir, 180);
 				r->detonation_timer = 1;
+
+				paddle->sword_hit_something = true;
 
 				state->hitstop_timer = SWORD_MISSILE_HITSTOP;
 				state->screenshake_timer = MISSILE_SHAKE_DUR;

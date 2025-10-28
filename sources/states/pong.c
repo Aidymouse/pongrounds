@@ -201,9 +201,7 @@ void state_pong(float dt, struct GameState *state) {
 
 	// Decorations
 	for (int d_idx = 0; d_idx < pong_state->num_decorations; d_idx++) {
-		// Left and right of screen
 		Decoration *de = &(pong_state->decorations[d_idx]);
-
 		decoration_update(dt, de);
 	}
 

@@ -37,6 +37,7 @@ void paddle_init(PaddleData *p) {
 	p->sword_anim_timer = 0;
 	p->sword_anim_dir = 1;
 	p->sword_timer = 0;
+	p->sword_hit_something = false;
 	p->brain = PB_PLAYER;
 
 	for (int i=0; i<NUM_ITEMS; i++) {
@@ -165,6 +166,9 @@ void clone_paddle_init(struct PaddleData *c, struct PaddleData *creator) {
 		c->items[i] = 0;
 		c->items_total[i] = 0;
 	}
+
+	c->sword_timer = 0;
+	c->sword_hit_something = 0;
 }
 
 void paddle_flip_across_axis(PaddleData *paddle) {
@@ -548,10 +552,12 @@ void paddle_check_collisions(PaddleData *p, struct GameState *state) {
 			if (p->brain == PB_CLONE) {
 				if (p->cv_creator != paddle) {
 					p->cv_health -= 5;
-				}
+					paddle->sword_hit_something = true;
+				 }
 			} else {
 				p->hp -= SWORD_DAMAGE;
 				p->invincibility_timer = DAMAGE_INVINCIBILITY_TIME;
+				paddle->sword_hit_something = true;
 			}
 		}
 	}
@@ -597,7 +603,16 @@ void paddle_draw(PaddleData *p, bool debug) {
 
 void paddle_cleanup(struct PongState *pong_state) {
 
-	for (int p=2; p<pong_state->num_paddles; p++) {
+	for (int p=0; p < pong_state->num_paddles; p++) {
+		PaddleData *paddle = &pong_state->paddles[p];
+		if (paddle->sword_hit_something) {
+			paddle->sword_timer = 0;
+			//paddle->item_cooldown_timers[ITEM_CEREMONIAL_SWORD] = SWORD_COOLDOWN;
+ 			paddle->item_cooldown_timers[ITEM_CEREMONIAL_SWORD] = SWORD_COOLDOWN - 0.2 * paddle->items[ITEM_CEREMONIAL_SWORD];
+		}
+	}
+
+	for (int p=2; p < pong_state->num_paddles; p++) {
 		struct PaddleData *paddle = &pong_state->paddles[p];
 		if (pong_state->num_paddles <= 2) { return; }
 

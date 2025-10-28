@@ -59,6 +59,7 @@ void handle_sentient_hand(PaddleData *thief, PaddleData *victim) {
 	//steal_item(state->player1->paddle, state->player2->paddle);		
 }
 
+
 /** */
 void change_state_to_pong(struct GameState *state) {
 	int nerd_glasses = state->player1->paddle->items[ITEM_NERD_GLASSES] + state->player2->paddle->items[ITEM_NERD_GLASSES];
@@ -76,15 +77,6 @@ void change_state_to_pong(struct GameState *state) {
 		paddle_init(state->player1->paddle);
 		paddle_init(state->player2->paddle);
 
-		/* DEBUG: hard code in some items
-		debug_item = ITEM_SNOTCH;
-		p1->items[debug_item] += 1;
-		p1->items_total[debug_item] += 1;
-		int debug_item = ITEM_CEREMONIAL_SWORD;
-		state->player2->paddle->items[debug_item] += 1;
-		state->player2->paddle->items_total[debug_item] += 1;
-		*/
-		// /DEBUG
 	
 		init_state_pong(state->pong_state);
 		init_state_pick_items(state->pick_items_state);
@@ -119,6 +111,20 @@ void change_state_to_pong(struct GameState *state) {
 
 	state->pong_state->score_timer = BALL_RESPAWN_DELAY;
 
+	/* DEBUG: hard code in some items
+	*/
+	int debug_item = ITEM_CEREMONIAL_SWORD;
+	state->player1->paddle->items[debug_item] += 1;
+	state->player1->paddle->items_total[debug_item] += 1;
+	//state->player2->paddle->items[debug_item] += 1;
+	//state->player2->paddle->items_total[debug_item] += 1;
+	debug_item = ITEM_CLONING_VAT;
+	state->player1->paddle->items[debug_item] += 1;
+	state->player1->paddle->items_total[debug_item] += 1;
+	debug_item = ITEM_NUCLEAR_LAUNCH_CODES;
+	state->player2->paddle->items[debug_item] += 1;
+	state->player2->paddle->items_total[debug_item] += 1;
+	// /DEBUG
 
 	state->state = STATE_PONG;
 }
