@@ -128,8 +128,10 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 	if (ball->hp_timer > 0) {
 		ball->hp_timer -= dt;
 		if (ball->hp_timer <= 0) {
-			ball->radius = ball->radius * 0.3;
+			ball->radius = ball->radius * 0.5;
 			if ( ball->radius < 1 ) { ball->radius = 1; }
+			ball->score_damage /= (HYDRAULIC_PRESS_NUM_BALLS + 1);
+			if (ball->score_damage < 1) { ball->score_damage = 1; }
 			ball->hp_timer = 0;
 	
 
@@ -139,7 +141,7 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 				if (new_ball == NULL) { continue; }
 				new_ball->radius = new_ball->radius * 0.5;
 				if ( new_ball->radius < 1 ) { new_ball->radius = 1; }
-				new_ball->score_damage = new_ball->score_damage / HYDRAULIC_PRESS_NUM_BALLS + 1;
+				new_ball->score_damage = new_ball->score_damage / (HYDRAULIC_PRESS_NUM_BALLS + 1);
 				if (new_ball->score_damage < 1) { new_ball->score_damage = 1; }
 
 				new_ball->vel = Vec2Rotate(new_ball->vel, randInt(-20, 20));
