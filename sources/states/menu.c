@@ -323,7 +323,7 @@ void draw_menu(MenuState *menu_state) {
 
 		y += 130;
 		DrawTextCentered("MUSIC", SCREEN_WIDTH/2, y, 40, HACKER_GREEN, TA_CENTER);
-		DrawTextCentered("Jacob Wesley Tantleff", SCREEN_WIDTH/2, y+40, 40, HACKER_GREEN, TA_CENTER);
+		DrawTextCentered("Jacob Tantleff", SCREEN_WIDTH/2, y+40, 40, HACKER_GREEN, TA_CENTER);
 	}
 
 

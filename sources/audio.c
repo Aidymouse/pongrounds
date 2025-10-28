@@ -1,6 +1,7 @@
 #include "audio.h"
 #include "defines.h"
 #include "helper.h"
+#include <stdio.h>
 
 Music msc_theme;
 Music msc_tracks[NUM_TRACKS];
@@ -174,9 +175,27 @@ void music_mind_update(float dt, MusicMind *mind) {
 
 	if (mind->playing != 0 && IsMusicStreamPlaying(*mind->playing)) {
 		UpdateMusicStream(*mind->playing);
+		
+		float length = GetMusicTimeLength(*mind->playing);
+		float time_played = GetMusicTimePlayed(*mind->playing);
+		printf("%.2f / %.2f\n", time_played, length);
+		float dur_left = length - time_played;
 
+		if (mind->mode == MM_PLAYLIST && dur_left < 0.03) {
+			int new_idx = randInt(0, NUM_TRACKS-1);
+			// TODO: i can do better than this. but not now
+			while (new_idx == mind->track_idx) {
+				new_idx = randInt(0, NUM_TRACKS-1);
+			}
+			mind->track_idx = new_idx;
+			queue_track(mind, &msc_tracks[new_idx], 0);
+		}
+		
+			
+		/*
 		// Change track if we're getting toward the end of this one
-		if (mind->mode == MM_PLAYLIST && GetMusicTimeLength(*mind->playing) - GetMusicTimePlayed(*mind->playing) < 15) {
+		
+		if (mind->mode == MM_PLAYLIST &&  < 15) {
 			int new_idx = randInt(0, NUM_TRACKS-1);
 			// TODO: i can do better than this. but not now
 			while (new_idx == mind->track_idx) {
@@ -187,6 +206,7 @@ void music_mind_update(float dt, MusicMind *mind) {
 		} else if (mind->mode == MM_REPEAT) {
 			
 		}
+		*/
 	}
 
 	if (mind->fade != 0 && IsMusicStreamPlaying(*mind->fade)) { 

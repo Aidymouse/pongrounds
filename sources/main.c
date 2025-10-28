@@ -81,7 +81,7 @@ int main(void)
 	InitAudioDevice();
     SetTargetFPS(60);
 
-    SetConfigFlags(FLAG_MSAA_4X_HINT);      // Enable Multi Sampling Anti Aliasing 4x (if available)
+    //SetConfigFlags(FLAG_MSAA_4X_HINT);      // Enable Multi Sampling Anti Aliasing 4x (if available)
 
 
 	// Loading Screen
@@ -90,7 +90,7 @@ int main(void)
 	EndDrawing();
 
 
-	Texture2D pixels = LoadTexture(ASSETS_PATH"pixels.png");
+	//Texture2D pixels = LoadTexture(ASSETS_PATH"pixels.png");
 
 	// Load Textures //
 	// TODO: make this a program state
@@ -180,7 +180,7 @@ int main(void)
 	queue_track(&music_mind, &msc_theme, 0);
 
 	RenderTexture2D target = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
-	Shader crt = LoadShader(0, ASSETS_PATH"shaders/crtfrag.glsl");
+	//Shader crt = LoadShader(0, ASSETS_PATH"shaders/crtfrag.glsl");
 	
     ClearBackground(bg);
 	// Game loop //
@@ -260,9 +260,9 @@ int main(void)
 	// Unload textures //
 	unload_textures();
 	unload_audio();
-	UnloadShader(crt);
-	UnloadRenderTexture(target);
-	UnloadTexture(pixels);
+	//UnloadShader(crt);
+	//UnloadRenderTexture(target);
+	//UnloadTexture(pixels);
 
 	CloseAudioDevice();
     CloseWindow();
