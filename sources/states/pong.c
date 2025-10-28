@@ -8,6 +8,7 @@
 #include "raylib.h"
 #include "textures.h"
 #include "states/states.h"
+#include "audio.h"
 
 #include "Vec2.h"
 #include "helper.h"
@@ -258,6 +259,7 @@ void state_pong(float dt, struct GameState *state) {
 			state->pong_state->fuck_you_timer = FUCK_YOU_DURATION;
 			state->pong_state->fuck_you_size = fuck_you_size[idx];
 			sprintf(state->pong_state->fuck_you_text, "%s", fuck_you_strings[idx]);
+			play_sfx(state->music_mind, SFX_SCORE);
 			//state->pong_state->fuck_you_text = 
 	}
 

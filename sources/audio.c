@@ -53,6 +53,7 @@ SoundEffect sfx[MAX_SFX] = {
 	{ { SR_BALL_DAMAGE_DOUBLED }, { 0.5 }, 1 }, 
 	{ { SR_PADDLE_DUPLICATED }, { 1 }, 1 },  // Antique console activates, placeholder
 	{ { SR_PADDLE_BREAKS }, { 1 }, 1 },  // Hydraulic press breaks ball, placeholder
+	{ { SR_BALL_HIT_WALL_1 }, { 1 }, 1 },  // Ball Score Sound
 	0
 };
 

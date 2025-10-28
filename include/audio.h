@@ -23,7 +23,8 @@ typedef enum SFX {
 	SFX_EXPIRED_PANADOL,
 	SFX_BALL_DAMAGE_DOUBLED,
 	SFX_ANTIQUE_CONSOLE,
-	SFX_HYDRAULIC_PRESS_BALL
+	SFX_HYDRAULIC_PRESS_BALL,
+	SFX_SCORE,
 } SFX;
 
 // Must match the order sounds are loaded in
