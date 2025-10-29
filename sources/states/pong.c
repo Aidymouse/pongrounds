@@ -253,6 +253,13 @@ void state_pong(float dt, struct GameState *state) {
 		state->pong_state->fuck_you_timer -= dt;
 	}
 
+	// If any paddles are at 0 HP, delete all balls
+	if (state->player1->paddle->hp <= 0 || state->player2->paddle->hp <= 0) {
+		for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
+			struct BallData *ball = &(state->pong_state->balls[b_idx]);
+			ball->delete_me = true;
+		}
+	}
 
 	// If all balls are destroyed, set the timer to respawn the ball
 	bool all_destroyed = true;
@@ -283,6 +290,7 @@ void state_pong(float dt, struct GameState *state) {
 		}
 	}
 
+	// If anyone is dead and we haven't started the end round timer, start it
 	if ((player1->paddle->hp <= 0 || player2->paddle->hp <= 0) && pong_state->end_round_timer <= 0) {
 		pong_state->end_round_timer = BALL_RESPAWN_DELAY;
 	} 
@@ -293,8 +301,7 @@ void state_pong(float dt, struct GameState *state) {
 	if (pong_state->end_round_timer > 0) {
 
 		// If the round can't actually end, don't!
-		bool round_can_end = all_destroyed 
-			&& pong_state->num_rockets == 0
+		bool round_can_end = all_destroyed && pong_state->num_rockets == 0
 			&& pong_state->num_explosions == 0;
 
 		pong_state->end_round_timer -= dt;
