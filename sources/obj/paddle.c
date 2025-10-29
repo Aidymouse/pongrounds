@@ -309,9 +309,12 @@ void paddle_movement(float dt, PaddleData *p, PaddleInputs inputs, GameState *st
 		p->speed.y = PADDLE_SPEED * 0.6;
 	}
 
+	// This very ugly if just means the paddle has to have a cloak and be (or want to be) moving and that dash is held
 	if (p->items[ITEM_CHERRY_BLOSSOM_CLOAK] > 0 && p->item_cooldown_timers[ITEM_CHERRY_BLOSSOM_CLOAK
-] <= 0 && inputs.dash) {
-		if (moving_impulse.x != 0) {
+] <= 0 && (moving_impulse.x != 0 || p->speed.x != 0 || moving_impulse.y != 0) && inputs.dash) {
+
+
+		if (moving_impulse.x != 0 || p->speed.x != 0) {
 			p->speed.x = CLOAK_DASH_SPEED + CLOAK_DASH_SPEED_BONUS*p->items[ITEM_CHERRY_BLOSSOM_CLOAK]-1;
 		}
 		if (moving_impulse.y != 0) {
@@ -337,6 +340,7 @@ PaddleInputs get_inputs_from_controls(PaddleControls controls) {
 	if (IsKeyDown(controls.down)) { inputs.down = true; }
 	if (IsKeyDown(controls.item)) { inputs.item = true; }
 	if (IsKeyDown(controls.dash)) { inputs.dash = true; }
+	printf("Dash %d\n", inputs.dash);
 	return inputs;
 }
 
