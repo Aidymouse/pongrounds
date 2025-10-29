@@ -101,11 +101,11 @@ void draw_pick_items(struct PickItemsState *state, Texture2D *textures) {
 
 	PaddleData *choosing_paddle = state->choosing_player->paddle;
 
-	// Who is picking
+	// Who is picking. Yes it's backwards. Yes it's intentional
 	if (choosing_paddle->id == 1) {
-		DrawTextCentered("Player 1 To Choose", SCREEN_WIDTH/2, 120, 40, choosing_paddle->color, TA_CENTER);
-	} else if (choosing_paddle->id == 2) {
 		DrawTextCentered("Player 2 To Choose", SCREEN_WIDTH/2, 120, 40, choosing_paddle->color, TA_CENTER);
+	} else if (choosing_paddle->id == 2) {
+		DrawTextCentered("Player 1 To Choose", SCREEN_WIDTH/2, 120, 40, choosing_paddle->color, TA_CENTER);
 	}
 
 	// Show items
