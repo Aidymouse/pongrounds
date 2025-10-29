@@ -253,22 +253,9 @@ void ball_reflect(BallData *b, Vector2 norm) {
 void ball_paddle_hit_check(struct BallData *b, PaddleData *p, GameState *game_state) {
 	
 	/** Cast a ray, for high speed ball scenarios **/
-
-	// How it was before: rectangle check
-	/*
-	Rectangle p_rect = paddle_get_rect(p);
-	if (!CheckCollisionCircleRec(b->new_pos, b->radius, p_rect)) { 
-		return;
-	}
-	*/
-
 	
-	/** Push ball out of the paddle **/
 	// Four vecs to the paddles corners determine what the ball is bouncing off of
 	Vector2 center = paddle_center(p);
-
-	// TODO:
-	Vector2 adjusted_pos = b->pos;
 
 	// Determine which face of the 
 	Vector2 facing_l = Vec2Rotate(p->facing, -90);
@@ -284,8 +271,8 @@ void ball_paddle_hit_check(struct BallData *b, PaddleData *p, GameState *game_st
 	Vector2 front_center = Vec2Add(center, Vec2MultScalar(p->facing, p->paddle_thickness/2));
 	Vector2 front_left = Vec2Add(front_center, Vec2MultScalar(facing_l, p->paddle_width/2));
 	Vector2 front_right = Vec2Add(front_center, Vec2MultScalar(facing_r, p->paddle_width/2));
-	Vector2 back_left = Vec2Add(front_left, Vec2MultScalar(p->facing, -p->paddle_width/2));
-	Vector2 back_right = Vec2Add(front_right, Vec2MultScalar(p->facing, -p->paddle_width/2));
+	Vector2 back_left = Vec2Add(front_left, Vec2MultScalar(p->facing, -p->paddle_thickness/2));
+	Vector2 back_right = Vec2Add(front_right, Vec2MultScalar(p->facing, -p->paddle_thickness/2));
 
 	/*
 	printf("FL %.2f, %.2f\n", front_left.x, front_left.y);
@@ -306,6 +293,7 @@ void ball_paddle_hit_check(struct BallData *b, PaddleData *p, GameState *game_st
 
 	if (!(hit_front || hit_left || hit_right || hit_back)) { return; }
 
+	// Closest intersection is the hit point
 	Vector2 closest_intersection = intersect_front;
 	float dist_closest_intersection = 99999999.0;
 	int hit_face = 0; // 1, 2 = front or back (facing handles new dir), 3 = left, 4 = right
@@ -345,9 +333,8 @@ void ball_paddle_hit_check(struct BallData *b, PaddleData *p, GameState *game_st
 		}
 	}
 
-	//printf("HIT: Left [%d], Right [%d], Front [%d], Back [%d]\n", hit_left, hit_right, hit_front, hit_back);
+	printf("HIT: Left [%d], Right [%d], Front [%d], Back [%d]\n", hit_left, hit_right, hit_front, hit_back);
 	
-	// Closest intersection is the hit point
 	// ???: Linearly push ball out of paddle from point of intersection (technically means it slides but i dont think I care) (the alternative is walk back along the way just enough that i'm touching the paddle)
 	// That's my new pos!
 	
@@ -406,12 +393,14 @@ void ball_paddle_hit_check(struct BallData *b, PaddleData *p, GameState *game_st
 
 		//adjusted_pos = Vec2Add(intersect_point)
 
-		adjusted_pos.y = center.y + Vec2MultScalar(base_dir, b->radius+p->paddle_thickness/2).y;
+		b->new_pos = Vec2Add(closest_intersection, Vec2MultScalar(base_dir, b->radius));
+		//adjusted_pos.y = center.y + Vec2MultScalar(base_dir, b->radius+p->paddle_thickness/2).y;
 
 		ball_reflect(b, base_dir);
 
 	} else if (hit_face == 3) { // LEFT
-		adjusted_pos.x = center.x + Vec2MultScalar(facing_l, b->radius+p->paddle_width/2).x;
+		//adjusted_pos.x = center.x + Vec2MultScalar(facing_l, b->radius+p->paddle_width/2).x;
+		b->new_pos = Vec2Add(closest_intersection, Vec2MultScalar(facing_l, b->radius));
 
 		Vector2 new_dir = Vec2Rotate(facing_l, randInt(-30, 0));
 		b->vel = new_dir;
@@ -419,7 +408,8 @@ void ball_paddle_hit_check(struct BallData *b, PaddleData *p, GameState *game_st
 		if (b->speed < p->speed.x) { b->speed = p->speed.x; }
 
 	} else if (hit_face == 4) { // RIGHT
-		adjusted_pos.x = center.x + Vec2MultScalar(facing_r, b->radius+p->paddle_width/2).x;
+		b->new_pos = Vec2Add(closest_intersection, Vec2MultScalar(facing_r, b->radius));
+		//adjusted_pos.x = center.x + Vec2MultScalar(facing_r, b->radius+p->paddle_width/2).x;
 
 		Vector2 new_dir = Vec2Rotate(facing_r, randInt(0, 30));
 		b->vel = new_dir;
@@ -506,7 +496,7 @@ void ball_paddle_hit_check(struct BallData *b, PaddleData *p, GameState *game_st
 	}
 
 	/** Apply position adjustment from earlier detection */
-	b->new_pos = adjusted_pos;
+	//b->new_pos = adjusted_pos;
 
 	limit_ball_angle(b);
 
