@@ -131,7 +131,10 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 		ball->hp_timer -= dt;
 		if (ball->hp_timer <= 0) {
 			ball->radius = ball->radius * 0.5;
-			if ( ball->radius < 1 ) { ball->radius = 1; }
+			if ( ball->radius < 1 ) { 
+				ball->delete_me = true;
+				//ball->radius = 1;
+			}
 			ball->score_damage /= (HYDRAULIC_PRESS_NUM_BALLS + 1);
 			if (ball->score_damage < 1) { ball->score_damage = 1; }
 			ball->hp_timer = 0;
@@ -139,8 +142,10 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 
 			// Split into a million pieces!!!
 			for (int i=0; i<HYDRAULIC_PRESS_NUM_BALLS; i++) {
+				if (ball->delete_me) { continue; }
 				struct BallData *new_ball = ball_clone(ball, state->pong_state);
 				if (new_ball == NULL) { continue; }
+				// Don't need to reduce damage because this ball is a clone of a ball with reduced size and damage already!
 				//new_ball->radius = new_ball->radius * 0.5;
 				//if ( new_ball->radius < 1 ) { new_ball->radius = 1; }
 				//new_ball->score_damage = new_ball->score_damage / (HYDRAULIC_PRESS_NUM_BALLS + 1);
@@ -523,8 +528,8 @@ void ball_sword_hit(struct BallData *ball, GameState *game_state, PaddleData *wi
 	// Make this ball half, duplicate self
 	ball_reflect(ball, wielder->facing);
 	ball->radius = ball->radius*0.75;
-	if (ball->radius < 1) { ball->radius = 1; }
-	ball->score_damage /= 2;
+	if (ball->radius < 2) { ball->delete_me = true; return; }
+	ball->score_damage /= 1.9; // Two balls does slightly more than one full ball
 	if (ball->score_damage < 5) { ball->score_damage = 5; }
 
 	struct BallData copy = *ball;
