@@ -333,7 +333,7 @@ void ball_paddle_hit_check(struct BallData *b, PaddleData *p, GameState *game_st
 		}
 	}
 
-	printf("HIT: Left [%d], Right [%d], Front [%d], Back [%d]\n", hit_left, hit_right, hit_front, hit_back);
+	//printf("HIT: Left [%d], Right [%d], Front [%d], Back [%d]\n", hit_left, hit_right, hit_front, hit_back);
 	
 	// ???: Linearly push ball out of paddle from point of intersection (technically means it slides but i dont think I care) (the alternative is walk back along the way just enough that i'm touching the paddle)
 	// That's my new pos!
