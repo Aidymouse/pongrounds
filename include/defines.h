@@ -45,7 +45,7 @@
 #define ITEM_USE_BUMP_TIME (0.3) // Time an item is highlighted for if it is used once
 
 // Ball
-#define BALL_INIT_SPEED (400) 
+#define BALL_INIT_SPEED (100) 
 #define BALL_SCORE_DAMAGE (50) // Damage against opponent when you score against them
 #define BALL_RESPAWN_DELAY (1) // seconds after score that the ball respawns
 #define BALL_RADIUS (6)

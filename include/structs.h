@@ -183,6 +183,9 @@ typedef struct BallData {
 	PaddleData *last_hit_by;
 	// How much damage to inflict when a point is scored with this ball
 	int score_damage; 
+	//bool shifted; // If shifted is true, some other state (collisions) moved me this frame, so don't update my position this frame
+	//float speed_mult_for_collisions; // We track how we're moving this frame
+	Vector2 new_pos; // Because of collision logic, balls don't update position automatically, rather they get a new pos applied at the end of frame
 
 	enum BallState state;
 

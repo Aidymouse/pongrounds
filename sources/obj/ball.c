@@ -5,12 +5,14 @@
 #include "defines.h"
 #include <stdio.h>
 #include "audio.h"
+#include "raymath.h"
 
 /**
  */
 void ball_init(struct BallData *b) {
 	b->pos.x = SCREEN_WIDTH/2;
 	b->pos.y = SCREEN_HEIGHT/2;
+	b->new_pos = b->pos;
 	b->radius = 6;
 	b->vel.y = 1;
 	if (randInt(1, 2) == 2) { b->vel.y = -1; }
@@ -139,10 +141,10 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 			for (int i=0; i<HYDRAULIC_PRESS_NUM_BALLS; i++) {
 				struct BallData *new_ball = ball_clone(ball, state->pong_state);
 				if (new_ball == NULL) { continue; }
-				new_ball->radius = new_ball->radius * 0.5;
-				if ( new_ball->radius < 1 ) { new_ball->radius = 1; }
-				new_ball->score_damage = new_ball->score_damage / (HYDRAULIC_PRESS_NUM_BALLS + 1);
-				if (new_ball->score_damage < 1) { new_ball->score_damage = 1; }
+				//new_ball->radius = new_ball->radius * 0.5;
+				//if ( new_ball->radius < 1 ) { new_ball->radius = 1; }
+				//new_ball->score_damage = new_ball->score_damage / (HYDRAULIC_PRESS_NUM_BALLS + 1);
+				//if (new_ball->score_damage < 1) { new_ball->score_damage = 1; }
 
 				new_ball->vel = Vec2Rotate(new_ball->vel, randInt(-20, 20));
 				new_ball->hp_timer = 0;
@@ -202,7 +204,8 @@ void ball_move(float dt, struct BallData *ball, struct GameState *state) {
 		gravitate_towards(dt, ball->pos, &ball->vel, ball->ym_gravity_center, ball->ym_gravity_turn_speed * speed_multiplier);
 	}
 
-	ball->pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, (ball->speed+ball->mm_speed_bonus)*speed_multiplier*dt));
+	// Updated at end of frame
+	ball->new_pos = Vec2Add(ball->pos, Vec2MultScalar(ball->vel, (ball->speed+ball->mm_speed_bonus)*speed_multiplier*dt));
 }
 
 void ball_respawn(struct BallData *b) {
@@ -239,7 +242,6 @@ void ball_reflect_wall(struct BallData *b) {
 
 /** Takes the normal from the plane to reflect on (a.k.a the base dir of the balls new random angle) */
 void ball_reflect(BallData *b, Vector2 norm) {
-		
 
 		// Find new dir
 		Vector2 new_dir = Vec2Rotate(norm, randInt(-60, 60));
@@ -248,17 +250,111 @@ void ball_reflect(BallData *b, Vector2 norm) {
 	
 }
 
-void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
+void ball_paddle_hit_check(struct BallData *b, PaddleData *p, GameState *game_state) {
+	
+	/** Cast a ray, for high speed ball scenarios **/
+
+	// How it was before: rectangle check
+	/*
+	Rectangle p_rect = paddle_get_rect(p);
+	if (!CheckCollisionCircleRec(b->new_pos, b->radius, p_rect)) { 
+		return;
+	}
+	*/
+
 	
 	/** Push ball out of the paddle **/
 	// Four vecs to the paddles corners determine what the ball is bouncing off of
 	Vector2 center = paddle_center(p);
 
+	// TODO:
 	Vector2 adjusted_pos = b->pos;
 
 	// Determine which face of the 
 	Vector2 facing_l = Vec2Rotate(p->facing, -90);
 	Vector2 facing_r = Vec2Rotate(p->facing, 90);
+
+	// Cast a ray from balls pos to it's new pos (where it'll be by the end of frame)
+	// I don't even need to cast a ray cos of how the fn is set up!
+
+	// Gotta walk a little further than the new pos's center because the ball has radius
+	Vector2 ball_end_point = Vec2Add(b->new_pos, Vec2MultScalar(b->vel, b->radius));
+
+	// Find the four points of the paddle
+	Vector2 front_center = Vec2Add(center, Vec2MultScalar(p->facing, p->paddle_thickness/2));
+	Vector2 front_left = Vec2Add(front_center, Vec2MultScalar(facing_l, p->paddle_width/2));
+	Vector2 front_right = Vec2Add(front_center, Vec2MultScalar(facing_r, p->paddle_width/2));
+	Vector2 back_left = Vec2Add(front_left, Vec2MultScalar(p->facing, -p->paddle_width/2));
+	Vector2 back_right = Vec2Add(front_right, Vec2MultScalar(p->facing, -p->paddle_width/2));
+
+	/*
+	printf("FL %.2f, %.2f\n", front_left.x, front_left.y);
+	printf("FR %.2f, %.2f\n", front_right.x, front_right.y);
+	printf("BL %.2f, %.2f\n", back_left.x, back_left.y);
+	printf("BR %.2f, %.2f\n", back_right.x, back_right.y);
+	*/
+	
+	// Get intersections with ray and paddle sides
+	Vector2 intersect_front;
+	bool hit_front = CheckCollisionLines(b->pos, ball_end_point, front_left, front_right, &intersect_front);
+	Vector2 intersect_left;
+	bool hit_left = CheckCollisionLines(b->pos, ball_end_point, front_left, back_left, &intersect_left);
+	Vector2 intersect_right;
+	bool hit_right = CheckCollisionLines(b->pos, ball_end_point, front_right, back_right, &intersect_right);
+	Vector2 intersect_back;
+	bool hit_back = CheckCollisionLines(b->pos, ball_end_point, back_left, back_right, &intersect_back);
+
+	if (!(hit_front || hit_left || hit_right || hit_back)) { return; }
+
+	Vector2 closest_intersection = intersect_front;
+	float dist_closest_intersection = 99999999.0;
+	int hit_face = 0; // 1, 2 = front or back (facing handles new dir), 3 = left, 4 = right
+	if (hit_front) {
+		float dist_front = Vector2Distance(b->pos, intersect_front);
+		if ( dist_front < dist_closest_intersection) {
+			dist_closest_intersection = dist_front;
+			closest_intersection = intersect_front;
+			hit_face = 1;
+		}
+	}
+	
+	if (hit_left) {
+		float dist_left = Vector2Distance(b->pos, intersect_left);
+		if ( dist_left < dist_closest_intersection) {
+			dist_closest_intersection = dist_left;
+			closest_intersection = intersect_left;
+			hit_face = 3;
+		}
+	}
+
+	if (hit_right) {
+		float dist_right = Vector2Distance(b->pos, intersect_right);
+		if ( dist_right < dist_closest_intersection) {
+			dist_closest_intersection = dist_right;
+			closest_intersection = intersect_right;
+			hit_face = 4;
+		}
+	}
+
+	if (hit_back) {
+		float dist_back = Vector2Distance(b->pos, intersect_back);
+		if ( dist_back < dist_closest_intersection) {
+			dist_closest_intersection = dist_back;
+			closest_intersection = intersect_back;
+			hit_face = 2;
+		}
+	}
+
+	//printf("HIT: Left [%d], Right [%d], Front [%d], Back [%d]\n", hit_left, hit_right, hit_front, hit_back);
+	
+	// Closest intersection is the hit point
+	// ???: Linearly push ball out of paddle from point of intersection (technically means it slides but i dont think I care) (the alternative is walk back along the way just enough that i'm touching the paddle)
+	// That's my new pos!
+	
+	//
+	// Then do all the items
+	
+
 
 	// The foci are at the point in the paddle you get if you follow the corners 45 degrees inwards
 	// ---------------------
@@ -266,7 +362,8 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 	// | >---------------< |
 	// |/                 \|
 	// ---------------------
-	Vector2 focus_l = Vec2Add(center, Vec2MultScalar(facing_l, (p->paddle_width/2) - p->paddle_thickness));
+	/*
+ 	Vector2 focus_l = Vec2Add(center, Vec2MultScalar(facing_l, (p->paddle_width/2) - p->paddle_thickness));
 	Vector2 focus_r = Vec2Add(center, Vec2MultScalar(facing_r, (p->paddle_width/2) - p->paddle_thickness));
 
 	float ang_l_front_left = Vec2GetAngle(facing_l) + 45;
@@ -294,6 +391,7 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 		hit_face = 1;
 	}
 	
+	*/
 	
 
 
@@ -305,6 +403,8 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 		if (hit_face == 2) {
 			base_dir = Vec2MultScalar(base_dir, -1);
 		}
+
+		//adjusted_pos = Vec2Add(intersect_point)
 
 		adjusted_pos.y = center.y + Vec2MultScalar(base_dir, b->radius+p->paddle_thickness/2).y;
 
@@ -406,7 +506,7 @@ void ball_paddle_hit(struct BallData *b, PaddleData *p, GameState *game_state) {
 	}
 
 	/** Apply position adjustment from earlier detection */
-	b->pos = adjusted_pos;
+	b->new_pos = adjusted_pos;
 
 	limit_ball_angle(b);
 
@@ -445,7 +545,7 @@ void ball_sword_hit(struct BallData *ball, GameState *game_state, PaddleData *wi
 
 	Decoration *dec = decoration_spawn(DE_SLICE, pong_state);
 	if (dec != NULL) {
-		dec->pos = ball->pos;
+		dec->pos = ball->new_pos;
 	}
 
 	wielder->sword_hit_something = true;
@@ -454,44 +554,36 @@ void ball_sword_hit(struct BallData *ball, GameState *game_state, PaddleData *wi
 }
 
 
+/** Check collisions for the ball 
+ * Note that collisions need to be with the balls NEW pos because it's moved this frame, though it hasn't been applied
+ * The exception is, of course, paddles, which do a complicated ray thing
+ * */
 void ball_check_collisions(struct BallData *ball, struct GameState *state, WorldBorders world_borders) {
 	if (ball->delete_me) { return; }
-
-	// Explosions
-	for (int p=0; p<state->pong_state->num_explosions; p++) {
-		Explosion e = state->pong_state->explosions[p];
-		if (CheckCollisionCircles(ball->pos, ball->radius, e.pos, e.radius)) {
-			ball->delete_me = true;
-			return;
-		}
-		
-	}
-
+	
 	// World walls
-	if (ball->pos.x - ball->radius <= world_borders.left) {
-		ball->pos.x = world_borders.left + ball->radius;
+	if (ball->new_pos.x - ball->radius <= world_borders.left) {
+		ball->new_pos.x = world_borders.left + ball->radius;
 		ball_reflect_wall(ball);
 		play_sfx(state->music_mind, SFX_BALL_HIT_WALL);
-	} else if (ball->pos.x + ball->radius >= world_borders.right) {
-		ball->pos.x = world_borders.right - ball->radius;
+	} else if (ball->new_pos.x + ball->radius >= world_borders.right) {
+		ball->new_pos.x = world_borders.right - ball->radius;
 		ball_reflect_wall(ball);
 		play_sfx(state->music_mind, SFX_BALL_HIT_WALL);
 	}
 
-	// Collisions per paddle
+	// Collisions per paddle (and paddle items)
 	ball->ym_gravity_turn_speed = 0;
 	for (int p=0; p<state->pong_state->num_paddles; p++) {
 		PaddleData *paddle = &state->pong_state->paddles[p];
 		if (paddle->destroyed_timer > 0) { continue; }
+		
 		// Paddle Ball Collisions
-		struct Rectangle pRect = {paddle->pos.x, paddle->pos.y, paddle->paddle_width, paddle->paddle_thickness};
-		if (CheckCollisionCircleRec(ball->pos, ball->radius, pRect)) {
-			ball_paddle_hit(ball, paddle, state);
-		}
+		ball_paddle_hit_check(ball, paddle, state);
 
 		// Sword
 		if (paddle->items[ITEM_CEREMONIAL_SWORD] > 0 && paddle->sword_timer > 0) {
-			if (CheckCollisionCircleRec(ball->pos, ball->radius, sword_get_hitbox(paddle))) {
+			if (CheckCollisionCircleRec(ball->new_pos, ball->radius, sword_get_hitbox(paddle))) {
 				ball_sword_hit(ball, state, paddle);
 				paddle->sword_timer = 0;
 			}
@@ -500,8 +592,8 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 		// Yo Momma 
 		if (paddle->items[ITEM_YO_MOMMA] > 0) {
 			Circle paddle_gravity = paddle_get_gravity_circle(paddle);
-			if (is_heading_towards(ball->pos, ball->vel, paddle_center(paddle)) &&
-				CheckCollisionCircles((Vector2){paddle_gravity.x, paddle_gravity.y}, paddle_gravity.radius, ball->pos, ball->radius)
+			if (is_heading_towards(ball->new_pos, ball->vel, paddle_center(paddle)) &&
+				CheckCollisionCircles((Vector2){paddle_gravity.x, paddle_gravity.y}, paddle_gravity.radius, ball->new_pos, ball->radius)
 			) {
 				ball->ym_gravity_turn_speed = YM_BASE_STRENGTH;
 				ball->ym_gravity_center = paddle_center(paddle);
@@ -512,17 +604,29 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 
 	} // /paddle collisions
 
+	// Explosions
+	for (int p=0; p<state->pong_state->num_explosions; p++) {
+		Explosion e = state->pong_state->explosions[p];
+		if (CheckCollisionCircles(ball->new_pos, ball->radius, e.pos, e.radius)) {
+			ball->delete_me = true;
+			return;
+		}
+		
+	}
+
+
+
 
 
 	// Expired panadol edge of screen collision
 	PaddleData *p1 = state->player1->paddle;
 	PaddleData *p2 = state->player2->paddle;
-	if (ball->pos.y - ball->radius < world_borders.top && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
+	if (ball->new_pos.y - ball->radius < world_borders.top && p1->items[ITEM_EXPIRED_PANADOL] > 0) {
 		p1->items[ITEM_EXPIRED_PANADOL] -= 1;
 		p1->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
 		ball->vel.y = -ball->vel.y; // TODO: better reflection fn ?
 		play_sfx(state->music_mind, SFX_EXPIRED_PANADOL);
-	} else if (ball->pos.y + ball->radius > world_borders.bottom && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
+	} else if (ball->new_pos.y + ball->radius > world_borders.bottom && p2->items[ITEM_EXPIRED_PANADOL] > 0) {
 		p2->items[ITEM_EXPIRED_PANADOL] -= 1;
 		p2->item_use_timers[ITEM_EXPIRED_PANADOL] = ITEM_USE_BUMP_TIME;
 		ball->vel.y = -ball->vel.y; // TODO: better reflection fn ?
@@ -530,9 +634,9 @@ void ball_check_collisions(struct BallData *ball, struct GameState *state, World
 	}
 
 	// Scoring
-	if (ball->pos.y - ball->radius > world_borders.bottom+10) {
+	if (ball->new_pos.y - ball->radius > world_borders.bottom+10) {
 		ball_score_hit(ball, state->player1, state->player2);
-	} else if (ball->pos.y + ball->radius + 10 < world_borders.top) {
+	} else if (ball->new_pos.y + ball->radius + 10 < world_borders.top) {
 		ball_score_hit(ball, state->player2, state->player1);
 	}
 }

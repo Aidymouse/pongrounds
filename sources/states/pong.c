@@ -170,18 +170,20 @@ void state_pong(float dt, struct GameState *state) {
 		.left = world_left,
 		.right = world_right
 	};
+	
 
 	// Update //
 	// Move balls
 	for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
 		struct BallData *ball = &(state->pong_state->balls[b_idx]);
-		if (ball->delete_me) continue;
+		if (ball->delete_me) { continue; }
 		ball_move(dt, ball, state);
 	}
 
 	// Update paddles
 	for (int p_idx=0; p_idx < state->pong_state->num_paddles; p_idx++) {
-		paddle_update(dt, &state->pong_state->paddles[p_idx], state, world_borders);
+		PaddleData *p = &state->pong_state->paddles[p_idx];
+		paddle_update(dt, p, state, world_borders);
 	}
 	
 	// Sword 
@@ -191,22 +193,25 @@ void state_pong(float dt, struct GameState *state) {
 	// Rockets 
 	for (int i=0; i<pong_state->num_rockets; i++) {
 		RocketData *r = &pong_state->rockets[i];	
+		if (r->delete_me) { continue; }
 		rocket_fly(dt, r, state);
 	}
 
 	// Explosions 
 	for (int i=0; i<pong_state->num_explosions; i++) {
 		Explosion *e = &pong_state->explosions[i];	
+		if (e->delete_me) { continue; }
 		explosion_update(dt, e);
 	}
 
 	// Decorations
 	for (int d_idx = 0; d_idx < pong_state->num_decorations; d_idx++) {
 		Decoration *de = &(pong_state->decorations[d_idx]);
+		if (de->delete_me) { continue; }
 		decoration_update(dt, de);
 	}
 
-	// Clean up deleted things
+	/** Clean up deleted things */
 	paddle_cleanup(state->pong_state);
 	ball_cleanup(state->pong_state);
 	rocket_cleanup(pong_state);
@@ -214,6 +219,14 @@ void state_pong(float dt, struct GameState *state) {
 	decoration_cleanup(pong_state);
 
 	/** Collisions */
+	// Balls
+	for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
+		// Left and right of screen
+		struct BallData *ball = &(state->pong_state->balls[b_idx]);
+
+		ball_check_collisions(ball, state, world_borders);
+	}
+
 	// Rockets
 	for (int i=0; i<pong_state->num_rockets; i++) {
 		RocketData *r = &pong_state->rockets[i];	
@@ -226,18 +239,16 @@ void state_pong(float dt, struct GameState *state) {
 		paddle_check_collisions(paddle, state);
 	}
 
-	// Balls
-	for (int b_idx = 0; b_idx < state->pong_state->num_balls; b_idx++) {
-		// Left and right of screen
-		struct BallData *ball = &(state->pong_state->balls[b_idx]);
-
-		ball_check_collisions(ball, state, world_borders);
-	}
-
-
 
 	/** /COLLISIONS **/		
 
+	// After all other object updates and checks, updated the ball to it's new position
+	for (int b=0; b<pong_state->num_balls; b++) {
+		BallData *ball = &pong_state->balls[b];
+		ball->pos = ball->new_pos;
+	}
+
+	// State stuff - not objects
 	if (state->pong_state->fuck_you_timer > 0) {
 		state->pong_state->fuck_you_timer -= dt;
 	}
@@ -276,6 +287,8 @@ void state_pong(float dt, struct GameState *state) {
 		pong_state->end_round_timer = BALL_RESPAWN_DELAY;
 	} 
 
+
+	
 	// Detect end of round
 	if (pong_state->end_round_timer > 0) {
 
