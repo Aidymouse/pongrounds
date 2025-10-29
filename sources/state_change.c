@@ -112,19 +112,13 @@ void change_state_to_pong(struct GameState *state) {
 	state->pong_state->score_timer = BALL_RESPAWN_DELAY;
 
 	/* DEBUG: hard code in some items
-	int debug_item = ITEM_CEREMONIAL_SWORD;
+	int debug_item = ITEM_CHERRY_BLOSSOM_CLOAK;
 	state->player1->paddle->items[debug_item] += 1;
 	state->player1->paddle->items_total[debug_item] += 1;
-	//state->player2->paddle->items[debug_item] += 1;
-	//state->player2->paddle->items_total[debug_item] += 1;
-	debug_item = ITEM_CLONING_VAT;
-	state->player1->paddle->items[debug_item] += 1;
-	state->player1->paddle->items_total[debug_item] += 1;
-	debug_item = ITEM_NUCLEAR_LAUNCH_CODES;
 	state->player2->paddle->items[debug_item] += 1;
 	state->player2->paddle->items_total[debug_item] += 1;
-	// /DEBUG
 	*/
+	// /DEBUG
 
 	state->state = STATE_PONG;
 }
